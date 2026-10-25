@@ -229,18 +229,19 @@ Ctrl+C asks the runner to stop; completed runs are kept and summarised. `GET htt
 ```powershell
 pwsh -ExecutionPolicy Bypass -File scripts\verify.ps1
 ```
-This runs the full gate:
-1. Compose config check.
-2. Build and start.
-3. Wait for healthy services.
-4. Unit, contract and integration tests.
-5. End-to-end tests.
-6. A short baseline experiment, plus checks that its files reconcile.
-7. Stop and restart, then down.
+About 15 minutes. It clones the last **commit** into a temporary folder and runs it as a separate stack on ports 18080/18090, so your normal stack and results are not touched. Uncommitted files are not tested. It then runs 18 checks:
+- secret and credential scan;
+- config validator;
+- all automated tests, lint, e2e and the browser tests;
+- the README quick start;
+- a short baseline and a short failure experiment, with their files reconciled against the config and the service logs;
+- runtime config changes;
+- controller restart and full stop/start;
+- a really stopped container;
+- every README command checked;
+- clean removal.
 
-It prints a PASS/FAIL table and exits non-zero on any failure. Its output on your machine is the evidence that the project runs on your computer. Please send it to me. `docs/validation_report.md` lists which deliverable each check covers.
-
-**Completeness checklist.** The project brief's §15 checklist is mirrored in `docs/validation_report.md` (Phase 7). Each item links to the file or command that proves it.
+Log: `docs\evidence\verify_windows.log`. Please send it to me. What each check proves: `docs\validation_report.md`.
 
 ## 7. Troubleshooting
 
