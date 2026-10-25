@@ -1,0 +1,12 @@
+# Keep LF endings for files that run inside Linux containers, even on Windows checkouts.
+* text=auto
+*.sh text eol=lf
+Dockerfile text eol=lf
+*.Dockerfile text eol=lf
+*.py text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+Makefile text eol=lf
+*.png binary
+*.pptx binary
+*.pdf binary
