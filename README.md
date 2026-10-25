@@ -39,7 +39,7 @@ On Windows PowerShell, use `Invoke-RestMethod` (see [`docs/testing_on_windows.md
 
 ```bash
 docker compose --profile test run --rm tests                 # unit + integration (no running stack needed)
-docker compose --profile test run --rm tests pytest -m e2e   # end-to-end (stack must be up)
+docker compose --profile test run --rm tests pytest -p no:cacheprovider -m e2e   # end-to-end (stack up)
 bash scripts/phase2_acceptance.sh                            # full Phase 2 acceptance run (Linux/macOS/Git Bash)
 pwsh -ExecutionPolicy Bypass -File scripts/phase2_acceptance.ps1   # same checks in PowerShell 7 (Windows)
 pwsh -ExecutionPolicy Bypass -File scripts/phase3_acceptance.ps1   # Phase 3: placement, routing, adapters (any OS with pwsh 7)
