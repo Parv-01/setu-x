@@ -30,7 +30,27 @@ docker version; docker compose version
 ```
 In Git Bash or WSL you can also run `./scripts/check_env.sh` (exit code 0 = required tools OK).
 
-## 2. Start, inspect and stop the stack (Phase 2)
+## 1b. Phase 2 acceptance in one command (available now)
+
+With Docker Desktop running, from the `setu-x` folder in PowerShell 7:
+```powershell
+pwsh -ExecutionPolicy Bypass -File scripts\phase2_acceptance.ps1
+```
+It builds the images, starts the stack and runs 14 checks:
+- **A1–A5:** config valid, build, start, every service healthy, health endpoints.
+- **A6:** an order returns the expected result.
+- **A7–A8:** unit/integration tests and end-to-end tests.
+- **A9:** a stopped inventory service gives a fast 503, then the stack recovers.
+- **A10:** a paused (unresponsive) inventory service gives a 503 after about 0.8 s.
+- **A11:** a stopped pricing service gives a degraded order.
+- **A12:** container hardening, read back from `docker inspect`.
+- **A13–A14:** graceful shutdown with exit 0, and a clean restart.
+
+The run ends with `PHASE 2 ACCEPTANCE: PASS` or `FAIL` and writes the full log to `docs\evidence\phase2_acceptance_windows.log`. **Please send me that log file.** It is the evidence that the project runs on your machine. (The same checks exist for Git Bash, Linux and macOS as `scripts/phase2_acceptance.sh`.)
+
+The first run downloads the Python base image and packages, so it takes a few minutes. Later runs use the cache.
+
+## 2. Start, inspect and stop the stack (Phase 2, available now)
 
 ```powershell
 docker compose config            # validates compose.yaml; prints the resolved file
@@ -42,7 +62,7 @@ docker compose down              # stop and remove containers (images stay cache
 
 In VS Code you can see the same thing in the **Container Tools** side bar. Right-click a container for **View Logs** or **Attach Shell**.
 
-## 3. Manual smoke test in the browser (Phase 2: API; Phase 6: dashboard)
+## 3. Manual smoke test in the browser (API available now; dashboard in Phase 6)
 
 | What | URL | Expected |
 |---|---|---|
@@ -60,8 +80,9 @@ Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8080/api/orders `
 
 ### 4a. Inside Docker: recommended, no local Python needed (Phase 2)
 ```powershell
-docker compose --profile test run --rm tests                    # unit + contract + integration
-docker compose --profile test run --rm tests pytest -m e2e      # end-to-end against the running stack
+docker compose --profile test run --rm tests                                     # unit + integration (contract tests arrive in Phase 3)
+docker compose --profile test run --rm tests pytest -p no:cacheprovider -m e2e   # end-to-end against the running stack
+docker compose --profile test run --rm tests ruff check --no-cache src tests     # lint
 ```
 The summary line at the end (`N passed`, or failures with details) is the result.
 
@@ -76,7 +97,7 @@ pytest -m "not e2e"
 ```
 Then in VS Code:
 1. `Ctrl+Shift+P` → **Python: Select Interpreter** → choose `.venv` (or `setu-x`).
-2. Open the **Testing** panel (flask icon). The repo's `.vscode/settings.json` (added in Phase 2) points it at pytest and `tests/`.
+2. Open the **Testing** panel (flask icon). The repo's `.vscode/settings.json` points it at pytest and `tests/` (excluding `e2e`). `.vscode/extensions.json` makes VS Code suggest the three extensions above.
 3. Click ▶ to run all tests, or ▶ next to a single test. Use the bug icon to debug with breakpoints.
 
 End-to-end tests (`-m e2e`) need the stack running (`docker compose up -d`) first.
