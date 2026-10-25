@@ -325,7 +325,7 @@ foreach ($blk in [regex]::Matches($readme, '```[a-z]*\r?\n(.*?)```', 'Singleline
 foreach ($m in [regex]::Matches($readme, '`((?:docker|pwsh|python|node|bash|curl) [^`]+)`')) { $cmds += $m.Groups[1].Value.Trim() }
 $unmapped = @()
 foreach ($c in ($cmds | Sort-Object -Unique)) {
-    $key = $readmeCovered.Keys | Where-Object { $c -eq $_ -or $c.StartsWith($_) } | Select-Object -First 1
+    $key = $readmeCovered.Keys | Where-Object { $c -eq $_ -or $c.StartsWith($_) } | Sort-Object Length -Descending | Select-Object -First 1
     if ($key) { Log ("  [{0}] {1}" -f $readmeCovered[$key], $c) } else { $unmapped += $c; Log "  [NOT COVERED] $c" }
 }
 $missingEv = @($readmeCovered.Values | Where-Object { $_ -like 'MISSING*' -or $_ -like 'NOT executed*' })
