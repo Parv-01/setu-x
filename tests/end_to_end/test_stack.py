@@ -70,7 +70,7 @@ def test_controller_reports_simulated_envs_and_honest_adapters(ctl):
 def test_controller_sees_all_services_ready(ctl):
     rows = ctl.get("/api/services").json()["services"]
     assert {r["instance"]: r["status"] for r in rows} == {
-        "gateway": "ready", "inventory-a": "ready", "inventory-b": "ready", "pricing": "ready"}
+        "gateway": "ready", "runner": "ready", "inventory-a": "ready", "inventory-b": "ready", "pricing": "ready"}
 
 
 def _wait_for_version(gw, version, timeout_s=10):
