@@ -34,7 +34,7 @@ Resume from this file if work is interrupted. Updated at every phase boundary.
 | Mutation checks (retry cap, breaker never opens, fallback ignored, multi-probe half-open, delay in local mode, unbounded fault duration, allow-list bypass, backoff ignoring deadline, 4xx retried) | all 9 caught. The deadline one initially survived, so a test was added |
 | `ruff check` | clean |
 | `phase4_acceptance.ps1` (pwsh 7.6.8, Linux) | 15/15 PASS |
-| Windows (Parv's PC) | Phase 4 run pending |
+| Windows (Parv's PC), run 1 on cbaee22 | 14/15: C10 failed because of a cross-clock lower bound in the check (see finding 6); check fixed, re-run pending |
 
 ## Findings to carry into Phase 8 (threats to validity / limitations)
 
@@ -43,10 +43,15 @@ Resume from this file if work is interrupted. Updated at every phase boundary.
 3. **Recovery time depends on traffic.** A breaker only leaves OPEN when a request arrives after the reset timeout. Acceptance C11 measured 0.021 s from fault expiry to the first inventory-a-served order only because no traffic was sent while the breaker was open. Phase 5 must measure recovery under continuous load and report the probe timing explicitly.
 4. **Observation, not a result:** with p = 0.5 seeded errors and retries = 2, 34/40 orders succeeded (85%). Under independence the expectation is 87.5%. H5 is evaluated properly in Phase 8 with repeated runs.
 5. Faults are application-level: health endpoints stay up during `error`/`slow`/`hang`, so Docker health status does not reflect them. Container stop covers process failure.
+6. **Clock domains.**
+   - Windows Phase 4 run 1 (commit cbaee22) failed check C10. The hung call was cut by the 800 ms timeout and the 503 said "timeout", but the client stopwatch on the Windows host read 0.797 s.
+   - On Docker Desktop, the host and the Linux VM running the containers are different clock domains, so client wall time cannot serve as a lower bound for a server-side timer.
+   - Fix (commit after cbaee22): C10's lower bound now uses the gateway-measured `elapsed_ms` (same clock as the timer); the client time is used only for the upper bound. Evidence: `docs/evidence/phase4_acceptance_windows_run1_c10_check_bug.log`.
+   - Implication for Phase 5: latency must be measured by a generator in the same clock domain as the services (inside the Compose network). Any cross-domain timing must be labelled as such.
 
 ## Unresolved issues
 
-1. Windows Phase 4 acceptance log pending.
+1. Windows Phase 4 re-run pending with the fixed C10 check.
 2. GitHub credentials unavailable; GitHub name availability unverified.
 3. No cloud credentials (expected); real-cloud integration not implemented (documented).
 4. Leftover folders `E:\Projects\Cloud_Mini_Project\.p0\` (sync staging) and `_to_delete\` (safe to delete).

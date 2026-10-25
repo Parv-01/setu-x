@@ -111,9 +111,15 @@ Log '=== C10 unresponsive dependency (hang): cut by timeout; with fallback -> se
 $withFb = Order; Log "fallback on : HTTP $($withFb.Code) via $($withFb.Json.inventory.instance) in $(Fmt $withFb.Seconds)s; tried=$($withFb.Json.dependencies[0].tried | ConvertTo-Json -Compress)"
 $applied = Apply { param($p) $p.resilience.fallback = $false }
 $noFb = Order; Log "fallback off: HTTP $($noFb.Code) in $(Fmt $noFb.Seconds)s: $($noFb.Json.error.message)"
-$ok = $withFb.Code -eq 200 -and $withFb.Json.inventory.instance -eq 'inventory-b' -and $withFb.Seconds -ge 0.8 -and $withFb.Seconds -lt 1.6 -and `
-      $applied -and $noFb.Code -eq 503 -and $noFb.Json.error.message -like '*timeout*' -and $noFb.Seconds -ge 0.8 -and $noFb.Seconds -lt 1.6
-Record 'C10' $ok "with fallback 200 in $(Fmt $withFb.Seconds)s; without 503 timeout in $(Fmt $noFb.Seconds)s (timeout 0.8s)"
+# Lower bounds ("waited for the 0.8 s timeout, did not fail fast") use the GATEWAY's own measurement,
+# i.e. the same clock as the timer. The client stopwatch runs on the host, which on Docker Desktop is a
+# different clock domain from the Linux VM, so it is only used for the upper bound ("did not hang").
+$gwWith = [double]$withFb.Json.dependencies[0].elapsed_ms
+$gwWithout = [double]$noFb.Json.error.details.dependencies[0].elapsed_ms
+Log ("gateway-measured inventory time: fallback on {0} ms (timeout on a + call to b), fallback off {1} ms" -f $gwWith, $gwWithout)
+$ok = $withFb.Code -eq 200 -and $withFb.Json.inventory.instance -eq 'inventory-b' -and $gwWith -ge 795 -and $withFb.Seconds -lt 1.6 -and `
+      $applied -and $noFb.Code -eq 503 -and $noFb.Json.error.message -like '*timeout*' -and $gwWithout -ge 795 -and $noFb.Seconds -lt 1.6
+Record 'C10' $ok "timeout honoured (gateway-measured $gwWith / $gwWithout ms vs 800 ms timeout); client saw 200 in $(Fmt $withFb.Seconds)s with fallback, 503 timeout in $(Fmt $noFb.Seconds)s without (upper bound 1.6 s)"
 Reset-All
 
 Log '=== C11 circuit breaker: opens, stops calls to the failing instance, recovers (recovery time measured)'
