@@ -1,0 +1,730 @@
+SETU-X Phase 6 acceptance (PowerShell)
+date_utc: 2026-10-25T13:19:41Z
+git_commit: 235e006 (uncommitted files outside docs/evidence: 2)
+powershell: 7.6.8 on windows
+docker: client 29.4.2 / server 29.4.2
+compose: 5.1.3
+
+=== E1 docker compose config
+$ docker compose config --quiet
+>>> E1 PASS - compose configuration valid
+=== E2 build images (services, tests, and browser tests unless -SkipBrowser)
+$ docker compose --profile test --profile browser build
+ Image setu-x:0.6.0 Building 
+ Image setu-x-browser-test:0.6.0 Building 
+ Image setu-x:0.6.0 Building 
+ Image setu-x:0.6.0 Building 
+ Image setu-x:0.6.0 Building 
+ Image setu-x:0.6.0 Building 
+ Image setu-x-test:0.6.0 Building 
+ Image setu-x:0.6.0 Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 3.93kB done
+#1 DONE 0.0s
+
+#2 [browser-tests internal] load build definition from Dockerfile
+#2 DONE 0.0s
+
+#2 [inventory-a internal] load build definition from Dockerfile
+#2 transferring dockerfile: 3.52kB done
+#2 DONE 0.0s
+
+#3 [inventory-b] resolve image config for docker-image://docker.io/docker/dockerfile:1
+#3 DONE 1.5s
+
+#4 [inventory-b] docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#4 resolve docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e 0.0s done
+#4 CACHED
+
+#5 [tests internal] load metadata for docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377
+#5 DONE 0.0s
+
+#6 [controller internal] load .dockerignore
+#6 transferring context: 158B done
+#6 DONE 0.0s
+
+#7 [inventory-a internal] load build context
+#7 DONE 0.0s
+
+#8 [inventory-a base 1/2] FROM docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377
+#8 resolve docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377 0.0s done
+#8 resolve docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377 0.0s done
+#8 DONE 0.0s
+
+#7 [runner internal] load build context
+#7 transferring context: 4.16kB done
+#7 DONE 0.0s
+
+#9 [tests internal] load build context
+#9 transferring context: 6.27kB done
+#9 DONE 0.0s
+
+#10 [pricing runtime 2/7] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels setu-x
+#10 CACHED
+
+#11 [pricing runtime 4/7] COPY dashboard/index.html ./dashboard/index.html
+#11 CACHED
+
+#12 [pricing runtime 6/7] COPY dashboard/js ./dashboard/js
+#12 CACHED
+
+#13 [pricing builder 4/4] RUN --mount=type=secret,id=pip_ca,required=false     if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi;     pip wheel --wheel-dir /wheels --constraint requirements/dev.lock ".[dev]"
+#13 CACHED
+
+#14 [pricing builder 3/4] COPY src ./src
+#14 CACHED
+
+#15 [pricing runtime 3/7] COPY configs ./configs
+#15 CACHED
+
+#16 [pricing runtime 5/7] COPY dashboard/css ./dashboard/css
+#16 CACHED
+
+#17 [pricing builder 2/4] COPY requirements ./requirements
+#17 CACHED
+
+#18 [pricing builder 1/4] COPY pyproject.toml README.md ./
+#18 CACHED
+
+#19 [runner runtime 7/7] RUN mkdir -p /app/results && chown 10001:10001 /app/results
+#19 CACHED
+
+#20 [tests runtime 3/7] COPY configs ./configs
+#20 CACHED
+
+#21 [tests runtime 7/7] RUN mkdir -p /app/results && chown 10001:10001 /app/results
+#21 CACHED
+
+#22 [tests runtime 6/7] COPY dashboard/js ./dashboard/js
+#22 CACHED
+
+#23 [tests test 2/4] COPY pyproject.toml compose.yaml ./
+#23 CACHED
+
+#24 [tests builder 4/4] RUN --mount=type=secret,id=pip_ca,required=false     if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi;     pip wheel --wheel-dir /wheels --constraint requirements/dev.lock ".[dev]"
+#24 CACHED
+
+#25 [tests runtime 2/7] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels setu-x
+#25 CACHED
+
+#26 [tests runtime 1/7] RUN useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin setu
+#26 CACHED
+
+#27 [tests base 2/2] WORKDIR /app
+#27 CACHED
+
+#28 [tests runtime 4/7] COPY dashboard/index.html ./dashboard/index.html
+#28 CACHED
+
+#29 [tests builder 1/4] COPY pyproject.toml README.md ./
+#29 CACHED
+
+#30 [tests builder 2/4] COPY requirements ./requirements
+#30 CACHED
+
+#31 [tests builder 3/4] COPY src ./src
+#31 CACHED
+
+#32 [tests runtime 5/7] COPY dashboard/css ./dashboard/css
+#32 CACHED
+
+#33 [tests test 3/4] COPY src ./src
+#33 CACHED
+
+#34 [tests test 1/4] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels "setu-x[dev]"
+#34 CACHED
+
+#35 [tests test 4/4] COPY tests ./tests
+#35 CACHED
+
+#36 [tests] exporting to image
+#36 exporting layers done
+#36 exporting manifest sha256:57473dbae67076985ec2b2941ab59022cc992832171feab3f501600ab48f70a3 0.0s done
+#36 exporting config sha256:167cd5f3b25020103c33871746970a8b6b053c111a463291b9360de5d68659ba 0.0s done
+#36 exporting attestation manifest sha256:dfdea44eaae13f5182fc8b8d6f99e584fb72d4c6f6b9f468ee5a3ce5d7840180
+#36 exporting attestation manifest sha256:dfdea44eaae13f5182fc8b8d6f99e584fb72d4c6f6b9f468ee5a3ce5d7840180 0.2s done
+#36 exporting manifest list sha256:b014aa7bce1e0304344d881d72ffe2e9a475e745696cf75c98da76927ca98e59
+#36 exporting manifest list sha256:b014aa7bce1e0304344d881d72ffe2e9a475e745696cf75c98da76927ca98e59 0.1s done
+#36 naming to docker.io/library/setu-x-test:0.6.0 0.0s done
+#36 unpacking to docker.io/library/setu-x-test:0.6.0
+#36 unpacking to docker.io/library/setu-x-test:0.6.0 0.0s done
+#36 DONE 0.5s
+
+#37 [runner] exporting to image
+#37 exporting layers done
+#37 exporting manifest sha256:4a2aa6a134d003c991c0a291899738f1721933b9d897be8cdc8dc9df9de920bb done
+#37 exporting config sha256:0c010141b17f88fcb4b4219586a23bcaa6c8b4c677aec5deccf1398c600f5734 done
+#37 exporting attestation manifest sha256:c3874c7a96a8de344d32bc516e27910fdbcad29022b4454edcfb901e56617261 0.2s done
+#37 exporting manifest list sha256:33eacf724a376b7895640d130fbf7dfef81b71fbf5f744b6535efcf4c7774285 0.1s done
+#37 naming to docker.io/library/setu-x:0.6.0 0.0s done
+#37 unpacking to docker.io/library/setu-x:0.6.0 0.1s done
+#37 DONE 0.5s
+
+#38 [pricing] exporting to image
+#38 exporting layers done
+#38 exporting manifest sha256:81f3d72f2555efa6e53225c6dfb30fdc1a52b874fd3b1a23e39490a31205b0e2 0.0s done
+#38 exporting config sha256:f03d52396eaec2be190a1bba6bf8bf93fe44bde921ec20c6d90de89c1f4c424f 0.0s done
+#38 exporting attestation manifest sha256:67f623b7f5bf2853aa3cd499edf480c40b2def5bea09ad6db6bbbcba4b25e3d6 0.2s done
+#38 exporting manifest list sha256:7b59f5d76d962f8a4156a8e72adafec9815667595ca69e737c51eb708563c4de 0.1s done
+#38 naming to docker.io/library/setu-x:0.6.0 0.0s done
+#38 unpacking to docker.io/library/setu-x:0.6.0 0.0s done
+#38 DONE 0.5s
+
+#39 [gateway] exporting to image
+#39 exporting layers done
+#39 exporting manifest sha256:a032ae6b098d2f8e0304d90b0b1e89184191a1a65f6da1f72266042cb1de1169 0.0s done
+#39 exporting config sha256:4f33424e03aa592fd3f6653c3056de946cdfda96fbd7becdf31b94fbea4bbc76 0.0s done
+#39 exporting attestation manifest sha256:d1fbe8c462020b244505071076dd88ede1aa09c7373570389e02983bb2f905a9 0.2s done
+#39 exporting manifest list sha256:00dde673992cee4a237d7619b4a30fdeb8ca00949d5bc34749223f88be585872 0.1s done
+#39 naming to docker.io/library/setu-x:0.6.0 0.0s done
+#39 unpacking to docker.io/library/setu-x:0.6.0 0.0s done
+#39 DONE 0.5s
+
+#40 [inventory-a] exporting to image
+#40 exporting layers done
+#40 exporting manifest sha256:4b9a9460ecd28c292a1bcd66f7bd06f2d5cc590dffaddeee7c0077bd994d4e31 0.0s done
+#40 exporting config sha256:d9dfa09aef90b02d0b5bcfffd4209cb71f1499e5ff93df8ba4f09c9603701b91 0.0s done
+#40 exporting attestation manifest sha256:4d25341ca1528eec1a6f13f3421a2f49c301774746ad895ed8744d6fb455a22e 0.2s done
+#40 exporting manifest list sha256:ecfbb964a70c69e643bdf277717c24debe9837c0da0952b6be6f439dc4255a70 0.1s done
+#40 naming to docker.io/library/setu-x:0.6.0 0.0s done
+#40 unpacking to docker.io/library/setu-x:0.6.0 0.0s done
+#40 DONE 0.5s
+
+#41 [controller] exporting to image
+#41 exporting layers done
+#41 exporting manifest sha256:c22bbbf4df697beb90033193037ef034c550526769e9b7511ebd2ce9ccfd622d 0.0s done
+#41 exporting config sha256:99c8889ed0e49d1b3f833ec124065b2ce051050753d84c9ff5e5f12b2f91b3f9 0.0s done
+#41 exporting attestation manifest sha256:c2c7329c40caf72849dea9e44e2ed6d8453d45301a6dc04158c98949c24445f1 0.2s done
+#41 exporting manifest list sha256:737e3eea3bd785ae8666200917f05d3ddd87c931a7a0dfd9ba8cc0711e5a5aaa 0.1s done
+#41 naming to docker.io/library/setu-x:0.6.0 0.0s done
+#41 unpacking to docker.io/library/setu-x:0.6.0 0.0s done
+#41 DONE 0.5s
+
+#42 [inventory-b] exporting to image
+#42 exporting layers done
+#42 exporting manifest sha256:697983cbb29d8e85306ac88bd71401be2be689a7911140920c286d5995b46280 0.0s done
+#42 exporting config sha256:224cbf810f16fa5e925411fec208bc5a045168dbde47b44f7ef3b8ecc30b34a2 0.0s done
+#42 exporting attestation manifest sha256:0fb2ae6394b5905f11dd30fddddb48291399e97985f0ed1ba5bdcf995efabc61 0.2s done
+#42 exporting manifest list sha256:9de4a7b0f5a0a30c87a186eddedd7b0d0a3e95ff09363bb5ac6b4ab22acdb3d0 0.1s done
+#42 naming to docker.io/library/setu-x:0.6.0 0.0s done
+#42 unpacking to docker.io/library/setu-x:0.6.0 0.0s done
+#42 DONE 0.5s
+
+#43 [browser-tests internal] load metadata for mcr.microsoft.com/playwright/python:v1.63.0-noble@sha256:72bd171a9ffc2b4b59532aaa6210e21014d07093120dc25528870c0b840da1f0
+#43 ...
+
+#44 [inventory-b] resolving provenance for metadata file
+#44 DONE 0.2s
+
+#45 [runner] resolving provenance for metadata file
+#45 DONE 0.3s
+
+#46 [pricing] resolving provenance for metadata file
+#46 DONE 0.3s
+
+#47 [inventory-a] resolving provenance for metadata file
+#47 DONE 0.1s
+
+#48 [controller] resolving provenance for metadata file
+#48 DONE 0.3s
+
+#49 [tests] resolving provenance for metadata file
+#49 DONE 0.2s
+
+#50 [gateway] resolving provenance for metadata file
+#50 DONE 0.0s
+
+#43 [browser-tests internal] load metadata for mcr.microsoft.com/playwright/python:v1.63.0-noble@sha256:72bd171a9ffc2b4b59532aaa6210e21014d07093120dc25528870c0b840da1f0
+#43 DONE 1.7s
+
+#6 [browser-tests internal] load .dockerignore
+#6 CACHED
+
+#51 [browser-tests internal] load build context
+#51 transferring context: 274B 0.0s done
+#51 DONE 0.0s
+
+#52 [browser-tests browser-test 1/5] FROM mcr.microsoft.com/playwright/python:v1.63.0-noble@sha256:72bd171a9ffc2b4b59532aaa6210e21014d07093120dc25528870c0b840da1f0
+#52 resolve mcr.microsoft.com/playwright/python:v1.63.0-noble@sha256:72bd171a9ffc2b4b59532aaa6210e21014d07093120dc25528870c0b840da1f0 0.0s done
+#52 DONE 0.1s
+
+#52 [browser-tests browser-test 1/5] FROM mcr.microsoft.com/playwright/python:v1.63.0-noble@sha256:72bd171a9ffc2b4b59532aaa6210e21014d07093120dc25528870c0b840da1f0
+#52 sha256:8d325af5888b74be784c993fd685b8e9657598b353d41edf72820183c88d2378 0B / 46.27MB 0.2s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 0B / 841.95MB 0.2s
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 0B / 95.95MB 0.2s
+#52 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 0B / 29.76MB 0.2s
+#52 sha256:8d325af5888b74be784c993fd685b8e9657598b353d41edf72820183c88d2378 3.15MB / 46.27MB 0.8s
+#52 sha256:8d325af5888b74be784c993fd685b8e9657598b353d41edf72820183c88d2378 6.29MB / 46.27MB 1.2s
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 5.24MB / 95.95MB 1.4s
+#52 sha256:8d325af5888b74be784c993fd685b8e9657598b353d41edf72820183c88d2378 9.44MB / 46.27MB 2.0s
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 10.49MB / 95.95MB 2.0s
+#52 sha256:8d325af5888b74be784c993fd685b8e9657598b353d41edf72820183c88d2378 12.58MB / 46.27MB 2.7s
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 15.73MB / 95.95MB 2.6s
+#52 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 2.10MB / 29.76MB 3.0s
+#52 sha256:8d325af5888b74be784c993fd685b8e9657598b353d41edf72820183c88d2378 15.73MB / 46.27MB 3.3s
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 20.97MB / 95.95MB 3.6s
+#52 sha256:8d325af5888b74be784c993fd685b8e9657598b353d41edf72820183c88d2378 18.87MB / 46.27MB 4.1s
+#52 sha256:8d325af5888b74be784c993fd685b8e9657598b353d41edf72820183c88d2378 22.02MB / 46.27MB 4.7s
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 26.21MB / 95.95MB 4.7s
+#52 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 4.19MB / 29.76MB 4.7s
+#52 sha256:8d325af5888b74be784c993fd685b8e9657598b353d41edf72820183c88d2378 25.17MB / 46.27MB 5.3s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 25.17MB / 841.95MB 5.3s
+#52 sha256:8d325af5888b74be784c993fd685b8e9657598b353d41edf72820183c88d2378 28.31MB / 46.27MB 5.9s
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 31.46MB / 95.95MB 5.9s
+#52 sha256:8d325af5888b74be784c993fd685b8e9657598b353d41edf72820183c88d2378 31.46MB / 46.27MB 6.5s
+#52 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 6.29MB / 29.76MB 6.3s
+#52 sha256:8d325af5888b74be784c993fd685b8e9657598b353d41edf72820183c88d2378 34.60MB / 46.27MB 7.1s
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 36.70MB / 95.95MB 7.1s
+#52 sha256:8d325af5888b74be784c993fd685b8e9657598b353d41edf72820183c88d2378 37.75MB / 46.27MB 7.7s
+#52 sha256:8d325af5888b74be784c993fd685b8e9657598b353d41edf72820183c88d2378 40.89MB / 46.27MB 8.3s
+#52 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 8.39MB / 29.76MB 8.1s
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 41.94MB / 95.95MB 8.3s
+#52 sha256:8d325af5888b74be784c993fd685b8e9657598b353d41edf72820183c88d2378 44.04MB / 46.27MB 8.9s
+#52 sha256:8d325af5888b74be784c993fd685b8e9657598b353d41edf72820183c88d2378 46.27MB / 46.27MB 9.3s done
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 47.19MB / 95.95MB 9.3s
+#52 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 10.49MB / 29.76MB 10.1s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 45.09MB / 841.95MB 10.4s
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 52.43MB / 95.95MB 10.4s
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 57.67MB / 95.95MB 11.3s
+#52 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 12.58MB / 29.76MB 11.4s
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 62.91MB / 95.95MB 12.3s
+#52 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 14.68MB / 29.76MB 12.8s
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 68.16MB / 95.95MB 13.4s
+#52 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 16.78MB / 29.76MB 13.8s
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 73.40MB / 95.95MB 14.3s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 74.45MB / 841.95MB 15.5s
+#52 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 18.87MB / 29.76MB 15.5s
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 78.64MB / 95.95MB 15.6s
+#52 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 20.97MB / 29.76MB 17.0s
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 83.89MB / 95.95MB 17.7s
+#52 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 23.00MB / 29.76MB 18.5s
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 89.13MB / 95.95MB 19.5s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 98.57MB / 841.95MB 20.6s
+#52 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 25.17MB / 29.76MB 20.4s
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 94.37MB / 95.95MB 20.9s
+#52 sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 95.95MB / 95.95MB 21.2s done
+#52 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 27.26MB / 29.76MB 22.8s
+#52 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 29.36MB / 29.76MB 25.2s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 133.17MB / 841.95MB 25.7s
+#52 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 29.76MB / 29.76MB 25.5s done
+#52 extracting sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58
+#52 extracting sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 0.9s done
+#52 extracting sha256:8d325af5888b74be784c993fd685b8e9657598b353d41edf72820183c88d2378
+#52 extracting sha256:8d325af5888b74be784c993fd685b8e9657598b353d41edf72820183c88d2378 1.5s done
+#52 extracting sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d
+#52 extracting sha256:780286d9a7ac6ce567a0b1125bbb28a1dbb2df0aebbf1a493789e23a31879f3d 0.2s done
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 163.58MB / 841.95MB 30.8s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 199.23MB / 841.95MB 35.9s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 231.74MB / 841.95MB 41.0s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 260.05MB / 841.95MB 46.1s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 288.36MB / 841.95MB 51.1s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 319.82MB / 841.95MB 56.3s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 347.08MB / 841.95MB 61.3s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 371.20MB / 841.95MB 66.4s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 400.56MB / 841.95MB 71.5s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 434.11MB / 841.95MB 76.6s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 475.00MB / 841.95MB 81.7s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 507.51MB / 841.95MB 86.8s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 537.92MB / 841.95MB 92.0s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 571.47MB / 841.95MB 97.1s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 614.47MB / 841.95MB 101.9s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 657.46MB / 841.95MB 105.5s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 684.72MB / 841.95MB 110.6s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 710.93MB / 841.95MB 115.7s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 747.63MB / 841.95MB 120.8s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 790.63MB / 841.95MB 125.1s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 833.37MB / 841.95MB 128.9s
+#52 sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 841.95MB / 841.95MB 130.0s done
+#52 extracting sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1
+#52 extracting sha256:1b410ff087eccb9613563907f5381c27c0e2c02bad2a2bc9b408539c09efbac1 11.9s done
+#52 DONE 142.0s
+
+#53 [browser-tests browser-test 2/5] WORKDIR /app
+#53 DONE 0.4s
+
+#54 [browser-tests browser-test 3/5] COPY requirements/browser.lock ./requirements/browser.lock
+#54 DONE 0.1s
+
+#55 [browser-tests browser-test 4/5] RUN --mount=type=secret,id=pip_ca,required=false     if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi;     pip install --break-system-packages --no-deps -r requirements/browser.lock
+#55 1.715 Collecting anyio==4.15.1 (from -r requirements/browser.lock (line 4))
+#55 1.875   Downloading anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
+#55 1.983 Collecting certifi==2026.10.23 (from -r requirements/browser.lock (line 5))
+#55 2.007   Downloading certifi-2026.10.23-py3-none-any.whl.metadata (2.5 kB)
+#55 4.979 Collecting greenlet==3.2.5 (from -r requirements/browser.lock (line 6))
+#55 5.324   Downloading greenlet-3.2.5-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (4.1 kB)
+#55 5.456 Collecting h11==0.16.0 (from -r requirements/browser.lock (line 7))
+#55 5.472   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+#55 5.866 Collecting httpcore==1.0.9 (from -r requirements/browser.lock (line 8))
+#55 5.884   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+#55 6.317 Collecting httpx==0.28.1 (from -r requirements/browser.lock (line 9))
+#55 6.339   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+#55 6.587 Collecting idna==3.20 (from -r requirements/browser.lock (line 10))
+#55 6.609   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+#55 6.694 Collecting iniconfig==2.3.1 (from -r requirements/browser.lock (line 11))
+#55 6.714   Downloading iniconfig-2.3.1-py3-none-any.whl.metadata (2.8 kB)
+#55 7.060 Collecting packaging==26.3 (from -r requirements/browser.lock (line 12))
+#55 7.082   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+#55 7.999 Collecting playwright==1.63.0 (from -r requirements/browser.lock (line 13))
+#55 8.017   Downloading playwright-1.63.0-py3-none-manylinux1_x86_64.whl.metadata (3.3 kB)
+#55 8.476 Collecting pluggy==1.7.0 (from -r requirements/browser.lock (line 14))
+#55 8.491   Downloading pluggy-1.7.0-py3-none-any.whl.metadata (5.0 kB)
+#55 8.785 Collecting pyee==13.0.1 (from -r requirements/browser.lock (line 15))
+#55 8.805   Downloading pyee-13.0.1-py3-none-any.whl.metadata (3.0 kB)
+#55 9.070 Collecting pygments==2.21.0 (from -r requirements/browser.lock (line 16))
+#55 9.089   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+#55 9.414 Collecting pytest==9.1.1 (from -r requirements/browser.lock (line 17))
+#55 9.430   Downloading pytest-9.1.1-py3-none-any.whl.metadata (7.6 kB)
+#55 9.556 Collecting typing_extensions==4.16.0 (from -r requirements/browser.lock (line 18))
+#55 9.575   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#55 9.604 Downloading anyio-4.15.1-py3-none-any.whl (132 kB)
+#55 9.649 Downloading certifi-2026.10.23-py3-none-any.whl (135 kB)
+#55 10.09 Downloading greenlet-3.2.5-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (611 kB)
+#55 10.15    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 611.1/611.1 kB 13.0 MB/s  0:00:00
+#55 10.17 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#55 10.19 Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+#55 10.22 Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+#55 10.25 Downloading idna-3.20-py3-none-any.whl (69 kB)
+#55 10.28 Downloading iniconfig-2.3.1-py3-none-any.whl (7.6 kB)
+#55 10.30 Downloading packaging-26.3-py3-none-any.whl (129 kB)
+#55 10.34 Downloading playwright-1.63.0-py3-none-manylinux1_x86_64.whl (48.2 MB)
+#55 13.32    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 48.2/48.2 MB 16.2 MB/s  0:00:02
+#55 13.34 Downloading pluggy-1.7.0-py3-none-any.whl (27 kB)
+#55 13.36 Downloading pyee-13.0.1-py3-none-any.whl (15 kB)
+#55 13.37 Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+#55 13.45    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 1.3/1.3 MB 18.3 MB/s  0:00:00
+#55 13.46 Downloading pytest-9.1.1-py3-none-any.whl (386 kB)
+#55 13.50 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#55 13.58 Installing collected packages: typing_extensions, pytest, pygments, pyee, pluggy, playwright, packaging, iniconfig, idna, httpx, httpcore, h11, greenlet, certifi, anyio
+#55 16.02 
+#55 16.02 Successfully installed anyio-4.15.1 certifi-2026.10.23 greenlet-3.2.5 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.20 iniconfig-2.3.1 packaging-26.3 playwright-1.63.0 pluggy-1.7.0 pyee-13.0.1 pygments-2.21.0 pytest-9.1.1 typing_extensions-4.16.0
+#55 16.02 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#55 DONE 16.3s
+
+#56 [browser-tests browser-test 5/5] COPY tests/browser ./tests/browser
+#56 DONE 0.1s
+
+#57 [browser-tests] exporting to image
+#57 exporting layers
+#57 exporting layers 5.2s done
+#57 exporting manifest sha256:6f3736ecebd0b788fa416de13258c7f0e036ac65d82b55db80b67dff4a11349c 0.0s done
+#57 exporting config sha256:5c22c73193293b862731a45d6cf5197d8b8ca35db7f1980a9979384a4e1e61a6 0.0s done
+#57 exporting attestation manifest sha256:91c37c7ae3e766497061478e0a362d4faa5959f5aa4fca56dd259888eae4dfe7 0.1s done
+#57 exporting manifest list sha256:49e9752fdde3f4f5d74d0ee674fccd88c1ffd839446d39b0d88ecae127e97e76 0.0s done
+#57 naming to docker.io/library/setu-x-browser-test:0.6.0 done
+#57 unpacking to docker.io/library/setu-x-browser-test:0.6.0
+#57 unpacking to docker.io/library/setu-x-browser-test:0.6.0 1.0s done
+#57 DONE 6.5s
+
+#58 [browser-tests] resolving provenance for metadata file
+#58 DONE 0.0s
+ Image setu-x-browser-test:0.6.0 Built 
+ Image setu-x:0.6.0 Built 
+ Image setu-x:0.6.0 Built 
+ Image setu-x:0.6.0 Built 
+ Image setu-x:0.6.0 Built 
+ Image setu-x:0.6.0 Built 
+ Image setu-x:0.6.0 Built 
+ Image setu-x-test:0.6.0 Built
+>>> E2 PASS - images built
+=== E3 start stack (local mode): 6 services healthy
+$ docker compose up -d --wait --wait-timeout 150
+ Network setu-x_default Creating 
+ Network setu-x_default Created 
+ Container setu-x-pricing-1 Creating 
+ Container setu-x-inventory-b-1 Creating 
+ Container setu-x-inventory-a-1 Creating 
+ Container setu-x-controller-1 Creating 
+ Container setu-x-inventory-b-1 Created 
+ Container setu-x-controller-1 Created 
+ Container setu-x-inventory-a-1 Created 
+ Container setu-x-pricing-1 Created 
+ Container setu-x-gateway-1 Creating 
+ Container setu-x-gateway-1 Created 
+ Container setu-x-runner-1 Creating 
+ Container setu-x-runner-1 Created 
+ Container setu-x-inventory-b-1 Starting 
+ Container setu-x-controller-1 Starting 
+ Container setu-x-inventory-a-1 Starting 
+ Container setu-x-pricing-1 Starting 
+ Container setu-x-pricing-1 Started 
+ Container setu-x-inventory-a-1 Started 
+ Container setu-x-controller-1 Started 
+ Container setu-x-inventory-b-1 Started 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-gateway-1 Starting 
+ Container setu-x-gateway-1 Started 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-gateway-1 Healthy 
+ Container setu-x-runner-1 Starting 
+ Container setu-x-runner-1 Started 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-runner-1 Waiting 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-gateway-1 Healthy 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-runner-1 Healthy
+>>> E3 PASS - all 6 services healthy
+=== E4 automated tests (unit + contract + integration, includes dashboard backend tests)
+$ docker compose --profile test run --rm tests
+ Container setu-x-tests-run-0fee33a1369d Creating 
+ Container setu-x-tests-run-0fee33a1369d Created 
+============================= test session starts ==============================
+platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
+rootdir: /app
+configfile: pyproject.toml
+testpaths: tests
+plugins: asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 346 items / 10 deselected / 1 skipped / 336 selected
+
+tests/contract/test_adapter_contract.py ................................ [  9%]
+......................                                                   [ 16%]
+tests/integration/test_controller.py ........                            [ 18%]
+tests/integration/test_dashboard_backend.py ...............              [ 22%]
+tests/integration/test_experiment_runner.py ........                     [ 25%]
+tests/integration/test_fault_injection.py .......                        [ 27%]
+tests/integration/test_gateway_flow.py .............                     [ 31%]
+tests/integration/test_gateway_routing.py ......                         [ 33%]
+tests/integration/test_loadgen.py .....                                  [ 34%]
+tests/integration/test_resilience_flow.py ..............                 [ 38%]
+tests/integration/test_runner_service.py .....                           [ 40%]
+tests/integration/test_services.py ......                                [ 41%]
+tests/unit/test_client.py ........                                       [ 44%]
+tests/unit/test_config.py .........                                      [ 47%]
+tests/unit/test_domain.py ................................               [ 56%]
+tests/unit/test_experiment_metrics.py ............                       [ 60%]
+tests/unit/test_experiment_records.py .............                      [ 63%]
+tests/unit/test_experiment_scenario.py ................................. [ 73%]
+..                                                                       [ 74%]
+tests/unit/test_experiment_statistics.py .......                         [ 76%]
+tests/unit/test_faults.py ..............                                 [ 80%]
+tests/unit/test_ids.py ....                                              [ 81%]
+tests/unit/test_placement_config.py .................................... [ 92%]
+.....                                                                    [ 94%]
+tests/unit/test_resilience.py ............                               [ 97%]
+tests/unit/test_routing.py ........                                      [100%]
+
+=========================== short test summary info ============================
+SKIPPED [1] tests/browser/test_dashboard.py:22: could not import 'playwright.sync_api': No module named 'playwright'
+================ 336 passed, 1 skipped, 10 deselected in 50.86s ================
+>>> E4 PASS - unit + contract + integration tests passed
+=== E5 end-to-end tests
+$ docker compose --profile test run --rm tests pytest -p no:cacheprovider -m e2e
+ Container setu-x-tests-run-52609e48bc77 Creating 
+ Container setu-x-tests-run-52609e48bc77 Created 
+============================= test session starts ==============================
+platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
+rootdir: /app
+configfile: pyproject.toml
+testpaths: tests
+plugins: asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 346 items / 336 deselected / 1 skipped / 10 selected
+
+tests/end_to_end/test_stack.py ..........                                [100%]
+
+=========================== short test summary info ============================
+SKIPPED [1] tests/browser/test_dashboard.py:22: could not import 'playwright.sync_api': No module named 'playwright'
+================ 10 passed, 1 skipped, 336 deselected in 42.78s ================
+>>> E5 PASS - e2e tests passed
+=== E6 lint
+$ docker compose --profile test run --rm tests ruff check --no-cache src tests
+ Container setu-x-tests-run-c11af3775cc2 Creating 
+ Container setu-x-tests-run-c11af3775cc2 Created 
+All checks passed!
+>>> E6 PASS - ruff clean
+=== E7 dashboard served with a strict Content-Security-Policy; assets load
+GET / -> 307 /dashboard/
+GET /dashboard/ -> 200; CSP: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
+  css/app.css    200 text/css; charset=utf-8
+  js/app.js      200 application/javascript
+  js/api.js      200 application/javascript
+  js/charts.js   200 application/javascript
+  js/stats.js    200 application/javascript
+>>> E7 PASS - redirect to /dashboard/, CSP without unsafe-inline, 5 assets served with correct types
+=== E8 control surface refuses other web origins and foreign Host headers
+POST /api/faults with Origin http://evil.example -> 403 {"error":{"code":"forbidden_origin","message":"state-changing requests from origin 'http://evil.example' are refused","request_id":null}}; active faults afterwards: 0
+GET with Host attacker.example -> 400; POST reset from the dashboard's own origin -> 200
+>>> E8 PASS - foreign origin 403 (no fault set), DNS-rebinding Host 400, same-origin request accepted
+=== E9 every API the dashboard uses answers
+  /api/environments                  HTTP 200
+  /api/services                      HTTP 200
+  /api/placement                     HTTP 200
+  /api/faults                        HTTP 200
+  /api/scenarios                     HTTP 200
+  /api/experiments                   HTTP 200
+  /api/gateway/routing/decisions     HTTP 200
+  /api/gateway/resilience/events     HTTP 200
+  /api/gateway/resilience/breakers   HTTP 200
+  /api/gateway/placement/current     HTTP 200
+  /api/gateway/dependencies          HTTP 200
+test order via controller: HTTP 200 confirmed; /api/services lists: gateway, runner, inventory-a, inventory-b, pricing
+>>> E9 PASS - 11 read endpoints 200 JSON; test order confirmed; runner listed in service health
+=== E10 experiment overrides are bounded
+HTTP 422: request validation failed
+HTTP 422: smoke.yaml with overrides {'links': {'local--aws-simulated': 10}}: (root): condition 'healthy': link delays only take effect with requires_mode: simulated
+HTTP 422: smoke.yaml with overrides {'duration_s': 1.0}: (root): condition 'error-fault': fault at_s=2.0 is not inside the 1.0 s measurement window
+>>> E10 PASS - rate > 100, link override on a local scenario, window too short for the scheduled fault: all 422
+=== E11 dashboard in a real browser (Chromium), local mode
+$ docker compose --profile browser run --rm browser-tests
+ Container setu-x-browser-tests-run-fba175849485 Creating 
+ Container setu-x-browser-tests-run-fba175849485 Created 
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.7.0
+rootdir: /app/tests/browser
+configfile: pytest.ini
+plugins: anyio-4.15.1
+collected 12 items
+
+tests/browser/test_dashboard.py ............                             [100%]
+
+======================== 12 passed in 80.94s (0:01:20) =========================
+>>> E11 PASS - 12 browser tests: controls send the right requests and change the backend, errors displayed, empty states, one experiment run end to end, comparison
+=== E12 the experiment started from the dashboard left valid records
+20261025T132437Z-smoke-d57ac0 status=completed validation=True overrides={"runs":1} csv rows=180 summary rows=180
+>>> E12 PASS - completed, records validated, overrides recorded in the manifest, CSV row count matches the summary
+=== E13 dashboard in a real browser, simulated mode
+$ docker compose up -d --wait --wait-timeout 150
+ Network setu-x_default Creating 
+ Network setu-x_default Created 
+ Container setu-x-controller-1 Creating 
+ Container setu-x-inventory-a-1 Creating 
+ Container setu-x-pricing-1 Creating 
+ Container setu-x-inventory-b-1 Creating 
+ Container setu-x-inventory-a-1 Created 
+ Container setu-x-controller-1 Created 
+ Container setu-x-pricing-1 Created 
+ Container setu-x-inventory-b-1 Created 
+ Container setu-x-gateway-1 Creating 
+ Container setu-x-gateway-1 Created 
+ Container setu-x-runner-1 Creating 
+ Container setu-x-runner-1 Created 
+ Container setu-x-controller-1 Starting 
+ Container setu-x-pricing-1 Starting 
+ Container setu-x-inventory-a-1 Starting 
+ Container setu-x-inventory-b-1 Starting 
+ Container setu-x-pricing-1 Started 
+ Container setu-x-inventory-b-1 Started 
+ Container setu-x-inventory-a-1 Started 
+ Container setu-x-controller-1 Started 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-gateway-1 Starting 
+ Container setu-x-gateway-1 Started 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-gateway-1 Healthy 
+ Container setu-x-runner-1 Starting 
+ Container setu-x-runner-1 Started 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-runner-1 Waiting 
+ Container setu-x-gateway-1 Healthy 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-runner-1 Healthy
+$ docker compose --profile browser run --rm browser-tests
+ Container setu-x-browser-tests-run-7eaf18c40019 Creating 
+ Container setu-x-browser-tests-run-7eaf18c40019 Created 
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.7.0
+rootdir: /app/tests/browser
+configfile: pytest.ini
+plugins: anyio-4.15.1
+collected 12 items
+
+tests/browser/test_dashboard.py ............                             [100%]
+
+============================= 12 passed in 57.76s ==============================
+>>> E13 PASS - stack mode=simulated; same 12 browser tests incl. configured link delays shown as configured
+=== E14 dashboard is self-contained (no CDN or external URLs)
+>>> E14 PASS - no external script, style or font URLs in the dashboard
+=== E15 hardening of all 6 services, graceful stop, clean down
+$ docker compose stop
+ Container setu-x-runner-1 Stopping 
+ Container setu-x-runner-1 Stopped 
+ Container setu-x-gateway-1 Stopping 
+ Container setu-x-gateway-1 Stopped 
+ Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-controller-1 Stopping 
+ Container setu-x-inventory-b-1 Stopping 
+ Container setu-x-pricing-1 Stopping 
+ Container setu-x-pricing-1 Stopped 
+ Container setu-x-controller-1 Stopped 
+ Container setu-x-inventory-b-1 Stopped 
+ Container setu-x-inventory-a-1 Stopped
+exit codes: controller=0 gateway=0 inventory-a=0 inventory-b=0 pricing=0 runner=0
+$ docker compose down
+ Container setu-x-runner-1 Stopping 
+ Container setu-x-runner-1 Stopped 
+ Container setu-x-runner-1 Removing 
+ Container setu-x-runner-1 Removed 
+ Container setu-x-gateway-1 Stopping 
+ Container setu-x-gateway-1 Stopped 
+ Container setu-x-gateway-1 Removing 
+ Container setu-x-gateway-1 Removed 
+ Container setu-x-controller-1 Stopping 
+ Container setu-x-pricing-1 Stopping 
+ Container setu-x-inventory-b-1 Stopping 
+ Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-controller-1 Stopped 
+ Container setu-x-controller-1 Removing 
+ Container setu-x-pricing-1 Stopped 
+ Container setu-x-pricing-1 Removing 
+ Container setu-x-inventory-b-1 Stopped 
+ Container setu-x-inventory-b-1 Removing 
+ Container setu-x-inventory-a-1 Stopped 
+ Container setu-x-inventory-a-1 Removing 
+ Container setu-x-controller-1 Removed 
+ Container setu-x-inventory-a-1 Removed 
+ Container setu-x-pricing-1 Removed 
+ Container setu-x-inventory-b-1 Removed 
+ Network setu-x_default Removing 
+ Network setu-x_default Removed
+>>> E15 PASS - hardening intact; all 6 exited 0; 0 containers left
+
+================ SUMMARY ================
+E1   PASS compose configuration valid
+E2   PASS images built
+E3   PASS all 6 services healthy
+E4   PASS unit + contract + integration tests passed
+E5   PASS e2e tests passed
+E6   PASS ruff clean
+E7   PASS redirect to /dashboard/, CSP without unsafe-inline, 5 assets served with correct types
+E8   PASS foreign origin 403 (no fault set), DNS-rebinding Host 400, same-origin request accepted
+E9   PASS 11 read endpoints 200 JSON; test order confirmed; runner listed in service health
+E10  PASS rate > 100, link override on a local scenario, window too short for the scheduled fault: all 422
+E11  PASS 12 browser tests: controls send the right requests and change the backend, errors displayed, empty states, one experiment run end to end, comparison
+E12  PASS completed, records validated, overrides recorded in the manifest, CSV row count matches the summary
+E13  PASS stack mode=simulated; same 12 browser tests incl. configured link delays shown as configured
+E14  PASS no external script, style or font URLs in the dashboard
+E15  PASS hardening intact; all 6 exited 0; 0 containers left
+checks: 15  failed: 0  skipped (not executed): 0
+PHASE 6 ACCEPTANCE: PASS

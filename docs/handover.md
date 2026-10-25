@@ -3,7 +3,7 @@
 Resume from this file if work is interrupted. Updated at every phase boundary.
 
 **Last updated:** 2026-10-25 (end of Phase 6)
-**Current phase:** Phase 6 complete in the Linux build workspace (Windows run pending). Phase 5: Windows 14/15 with a check bug (D3 fixed; Linux re-run 15/15); Windows re-run pending. Next: Phase 7, integration and validation report.
+**Current phase:** Phase 6 complete, PASS on Linux and Windows (Phase 5 Windows re-run 15/15, Phase 6 Windows 15/15, both on 235e006). Progress deck (6 slides, not the final ≤5-slide deck): `presentation/setu-x_progress_deck.html`. Next: Phase 7, integration and validation report, **to start only when Parv says so**.
 
 ## Completed
 
@@ -91,7 +91,7 @@ Second defect found by the Phase 4 regression run (C7 failed once, then passed o
 
 ## Unresolved issues
 
-1. Windows runs pending: Phase 5 re-run (D3 check fixed; the other 14 checks passed on Windows, including the 100 ms simulated-delay check) and Phase 6 (first run downloads the ~3.5 GB browser-test image).
+1. (Resolved) Windows: Phase 5 re-run 15/15 (100 ms injected → +106.8 ms measured) and Phase 6 15/15, logs in `docs/evidence/`. Both headers show 2 uncommitted files on the Windows checkout (likely line-ending/index artefacts of the tar sync, not code changes).
 2. GitHub credentials unavailable; GitHub name availability unverified.
 3. No cloud credentials (expected); real-cloud integration not implemented (documented).
 4. Leftover folders `E:\Projects\Cloud_Mini_Project\.p0\` (sync staging) and `_to_delete\` (safe to delete).
