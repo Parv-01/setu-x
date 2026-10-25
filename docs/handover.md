@@ -42,7 +42,8 @@ Resume from this file if work is interrupted. Updated at every phase boundary.
 | e2e against the running stack | 10 passed (local mode) |
 | Mutation checks, Phase 5 (15): nearest-rank percentile, low p99 threshold, dropped excluded from denominators, warm-up counted, closed-loop generator, latency from actual send, in-flight cap ignored, duplicate IDs unchecked, no reset before a run, gateway reset not reseeding, percentiles averaged across runs, conditions not validated, bootstrap without resampling, mode mismatch allowed, fault outside window allowed | all 15 caught. The bootstrap one initially survived, so a test was added |
 | `ruff check src tests` | clean |
-| `phase5_acceptance.ps1` (pwsh 7.6.8, Linux) | see `docs/evidence/phase5_acceptance_linux.log` |
+| `phase5_acceptance.ps1` (pwsh 7.6.8, Linux) on 14df432 | 15/15 PASS (`docs/evidence/phase5_acceptance_linux.log`). Smoke checks: median(d100) − median(d0) = 101.7 ms for an injected 100 ms; fault injected < 1 ms late; failures only inside the fault window |
+| Phase 4 regression on 14df432 | 15/15 PASS (`docs/evidence/phase4_regression_on_phase5_linux.log`); an earlier run on 1d64f6e failed C7, see below |
 | Windows | pending |
 
 Race fixed during Phase 5: the runner briefly reported `completed` before `summary.json` existed (1 failure in about 9 suite runs). The status is now `analysing` until the summary is written; a regression test covers this.
