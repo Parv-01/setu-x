@@ -44,7 +44,7 @@ Resume from this file if work is interrupted. Updated at every phase boundary.
 | `ruff check src tests` | clean |
 | `phase5_acceptance.ps1` (pwsh 7.6.8, Linux) on 14df432 | 15/15 PASS (`docs/evidence/phase5_acceptance_linux.log`). Smoke checks: median(d100) − median(d0) = 101.7 ms for an injected 100 ms; fault injected < 1 ms late; failures only inside the fault window |
 | Phase 4 regression on 14df432 | 15/15 PASS (`docs/evidence/phase4_regression_on_phase5_linux.log`); an earlier run on 1d64f6e failed C7, see below |
-| Windows | pending |
+| Windows (Parv's PC), run 1 on 3050b87 | 14/15: D3 failed because of the check, not the stack. `docker compose port` prints `invalid IP:0` for an unpublished port on Compose 5.1.3/Windows (`:0` on Linux); the container inspection in the same check showed no host port. D3 now decides from `docker inspect` (Ports + PortBindings) only; verified that it fails when the runner is published. Evidence: `docs/evidence/phase5_acceptance_windows_run1_d3_check_bug.log`. Re-run pending |
 
 Race fixed during Phase 5: the runner briefly reported `completed` before `summary.json` existed (1 failure in about 9 suite runs). The status is now `analysing` until the summary is written; a regression test covers this.
 
@@ -68,7 +68,7 @@ Second defect found by the Phase 4 regression run (C7 failed once, then passed o
 
 ## Unresolved issues
 
-1. Windows Phase 5 acceptance run pending.
+1. Windows Phase 5 re-run pending (D3 check fixed; the other 14 checks passed on Windows, including the 100 ms simulated-delay check).
 2. GitHub credentials unavailable; GitHub name availability unverified.
 3. No cloud credentials (expected); real-cloud integration not implemented (documented).
 4. Leftover folders `E:\Projects\Cloud_Mini_Project\.p0\` (sync staging) and `_to_delete\` (safe to delete).

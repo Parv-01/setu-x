@@ -79,11 +79,18 @@ Record 'D2' ((Run $buildCmd) -eq 0) 'images built'
 
 Log '=== D3 start stack (local mode): 6 services healthy, runner not published to the host'
 $st = Start-Stack 'local'
-$runnerPort = (docker compose port runner 8000 2>$null | Out-String).Trim()
-$published = (docker inspect --format '{{json .NetworkSettings.Ports}}' (Container-Id runner) | Out-String).Trim()
-Log "runner published ports: $published"
-Log "docker compose port runner 8000: '$runnerPort'"
-Record 'D3' ($st.Ok -and ($runnerPort -eq '' -or $runnerPort -eq ':0') -and $published -notmatch 'HostPort') ($(if ($st.Bad) { "unhealthy: $($st.Bad -join ',')" } else { 'all 6 services healthy; runner has no host port' }))
+# Decided from `docker inspect` only: the output of `docker compose port` for an unpublished port
+# differs between Compose builds (":0" on Linux 5.x, "invalid IP:0" on Windows 5.1.3), so it is logged
+# for information but not used.
+$runnerPort = (docker compose port runner 8000 2>&1 | Out-String).Trim()
+$cid = Container-Id runner
+$published = (docker inspect --format '{{json .NetworkSettings.Ports}}' $cid | Out-String).Trim()
+$bindings = (docker inspect --format '{{json .HostConfig.PortBindings}}' $cid | Out-String).Trim()
+Log "runner NetworkSettings.Ports: $published"
+Log "runner HostConfig.PortBindings: $bindings"
+Log "docker compose port runner 8000 (info only): '$runnerPort'"
+$noHostPort = ($published -notmatch 'HostPort') -and ($bindings -in '{}', 'null', '')
+Record 'D3' ($st.Ok -and $noHostPort) ($(if ($st.Bad) { "unhealthy: $($st.Bad -join ',')" } elseif (-not $noHostPort) { 'runner is published to the host' } else { 'all 6 services healthy; runner has no host port binding' }))
 
 Log '=== D4 automated tests (unit + contract + integration)'
 Record 'D4' ((Run 'docker compose --profile test run --rm tests') -eq 0) 'unit + contract + integration tests passed'
