@@ -18,13 +18,19 @@
 .EXAMPLE
   pwsh -File scripts/run_experiment.ps1 -Scenario smoke
   pwsh -File scripts/run_experiment.ps1 -Scenario E_scaling -DockerStats -Label "laptop, on mains power"
+  pwsh -File scripts/run_experiment.ps1 -Scenario A_baseline -Runs 2 -DurationS 20   # shortened (recorded as overrides)
 #>
 param(
     [Parameter(Mandatory = $true)][ValidatePattern('^[A-Za-z0-9][A-Za-z0-9_.-]{0,48}$')][string]$Scenario,
     [string]$Label = '',
     [int]$ControllerPort = 8090,
     [string]$OutDir = 'results',
-    [switch]$DockerStats
+    [switch]$DockerStats,
+    # Optional bounded overrides (same rules as the dashboard; validated by the runner, recorded in the manifest)
+    [double]$RateRps = 0,
+    [double]$WarmupS = -1,
+    [double]$DurationS = 0,
+    [int]$Runs = 0
 )
 
 $ErrorActionPreference = 'Stop'
@@ -46,6 +52,12 @@ if ($commit) {
     if ($dirty -gt 0) { $commit = "$commit-dirty"; Write-Warning "uncommitted changes in src/configs/compose: the manifest will say $commit" }
 }
 $body = @{ scenario = $Scenario; label = $Label }
+$overrides = @{}
+if ($RateRps -gt 0) { $overrides.rate_rps = $RateRps }
+if ($WarmupS -ge 0) { $overrides.warmup_s = $WarmupS }
+if ($DurationS -gt 0) { $overrides.duration_s = $DurationS }
+if ($Runs -gt 0) { $overrides.runs = $Runs }
+if ($overrides.Count) { $body.overrides = $overrides; Write-Host "overrides: $($overrides | ConvertTo-Json -Compress)" }
 if ($commit) { $body.git_commit = $commit }
 
 $start = Api 'POST' '/api/experiments' $body

@@ -52,6 +52,7 @@ pwsh -ExecutionPolicy Bypass -File scripts/phase5_acceptance.ps1   # Phase 5: ex
 pwsh -ExecutionPolicy Bypass -File scripts/phase6_acceptance.ps1   # Phase 6: dashboard, incl. real-browser tests (local + simulated)
 docker compose --profile browser run --rm browser-tests             # dashboard browser tests only (stack up; ~3.5 GB image)
 node --test dashboard/tests/*.test.mjs                               # dashboard JS helpers (Node 18+, optional)
+pwsh -ExecutionPolicy Bypass -File scripts/verify.ps1            # Phase 7: everything above from a clean checkout (report: docs/validation_report.md)
 ```
 
 ## Documentation

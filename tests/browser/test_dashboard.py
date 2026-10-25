@@ -307,3 +307,36 @@ def test_compare_two_experiments(page, api, mode):
     expect(page.locator("#cmp-chart svg circle.dot")).to_have_count(2 * (1 + 2))  # 2 conditions x (1 + 2) runs
     expect(page.locator("#cmp-table tbody tr")).to_have_count(2)
     expect(page.locator("#cmp-table")).to_contain_text("No significance test")
+
+
+# ------------------------------------------------------------------------------------------ JS helpers
+def _py_percentile(values, q):
+    """Type-7 percentile, same definition as setu_x.experiments.metrics.percentile (kept local: this
+    image does not install the setu_x package)."""
+    xs = sorted(values)
+    h = (len(xs) - 1) * q / 100.0
+    lo = int(h // 1)
+    hi = min(lo + 1, len(xs) - 1)
+    return xs[lo] + (h - lo) * (xs[hi] - xs[lo])
+
+
+def test_dashboard_js_helpers_match_python(page):
+    """The dashboard's stats.js runs in the browser exactly as served; its percentile must equal the
+    Python implementation used for summary.json, and its CSV parser must read the runner's CSV."""
+    import random
+
+    rng = random.Random(7)
+    cases = [[rng.lognormvariate(3, 0.6) for _ in range(rng.randint(1, 400))] for _ in range(25)]
+    page.goto(f"{BASE}/dashboard/")
+    got = page.evaluate("""async (cases) => {
+        const s = await import('/dashboard/js/stats.js');
+        const qs = [0, 1, 25, 50, 90, 95, 99, 100];
+        return cases.map((c) => qs.map((q) => s.percentile(c, q)));
+    }""", cases)
+    for c, row in zip(cases, got, strict=True):
+        for q, v in zip([0, 1, 25, 50, 90, 95, 99, 100], row, strict=True):
+            assert abs(v - _py_percentile(c, q)) < 1e-9, (len(c), q)
+    csv_text = 'a,b\r\n1,"x, ""y"""\r\n'
+    parsed = page.evaluate(
+        "async (t) => (await import('/dashboard/js/stats.js')).parseCsv(t)", csv_text)
+    assert parsed == [{"a": "1", "b": 'x, "y"'}]
