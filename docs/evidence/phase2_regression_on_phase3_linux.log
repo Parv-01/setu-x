@@ -1,0 +1,237 @@
+SETU-X Phase 2 acceptance (PowerShell)
+date_utc: 2026-10-25T09:15:20Z
+git_commit: 9bc3b83
+powershell: 7.6.8 on linux
+docker: client 29.9.2 / server 29.9.2
+compose: 5.6.1
+
+=== A1 docker compose config
+$ docker compose config --quiet
+>>> A1 PASS - compose configuration valid
+=== A2 build images
+$ true
+>>> A2 PASS - images built
+=== A3 start stack (up -d --wait)
+$ docker compose up -d --wait --wait-timeout 120
+ Network setu-x_default Creating 
+ Network setu-x_default Creating 
+ Network setu-x_default Created 
+ Network setu-x_default Created 
+ Container setu-x-pricing-1 Creating 
+ Container setu-x-inventory-b-1 Creating 
+ Container setu-x-inventory-a-1 Creating 
+ Container setu-x-controller-1 Creating 
+ Container setu-x-inventory-a-1 Created 
+ Container setu-x-inventory-b-1 Created 
+ Container setu-x-pricing-1 Created 
+ Container setu-x-controller-1 Created 
+ Container setu-x-gateway-1 Creating 
+ Container setu-x-gateway-1 Created 
+ Container setu-x-inventory-b-1 Starting 
+ Container setu-x-pricing-1 Starting 
+ Container setu-x-controller-1 Starting 
+ Container setu-x-inventory-a-1 Starting 
+ Container setu-x-inventory-b-1 Started 
+ Container setu-x-pricing-1 Started 
+ Container setu-x-controller-1 Started 
+ Container setu-x-inventory-a-1 Started 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-gateway-1 Starting 
+ Container setu-x-gateway-1 Started 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-gateway-1 Healthy
+$ docker compose ps
+NAME                   IMAGE          COMMAND                  SERVICE       CREATED          STATUS                    PORTS
+setu-x-controller-1    setu-x:0.3.0   "python -m setu_x.se…"   controller    12 seconds ago   Up 11 seconds (healthy)   127.0.0.1:8090->8000/tcp
+setu-x-gateway-1       setu-x:0.3.0   "python -m setu_x.se…"   gateway       12 seconds ago   Up 5 seconds (healthy)    127.0.0.1:8080->8000/tcp
+setu-x-inventory-a-1   setu-x:0.3.0   "python -m setu_x.se…"   inventory-a   12 seconds ago   Up 11 seconds (healthy)   8000/tcp
+setu-x-inventory-b-1   setu-x:0.3.0   "python -m setu_x.se…"   inventory-b   12 seconds ago   Up 11 seconds (healthy)   8000/tcp
+setu-x-pricing-1       setu-x:0.3.0   "python -m setu_x.se…"   pricing       12 seconds ago   Up 11 seconds (healthy)   8000/tcp
+>>> A3 PASS - stack started, compose reports healthy
+=== A4 health status of every service
+inventory-a: healthy
+pricing: healthy
+gateway: healthy
+>>> A4 PASS - inventory-a, pricing, gateway healthy
+=== A5 health endpoints return documented responses
+gateway live:  {"status":"alive","service":"gateway","instance":"gateway","env":"local","mode":"local","version":"0.3.0"}
+gateway ready: {"status":"ready","checks":{"config":"ok","http_client":"ok"},"service":"gateway","instance":"gateway","env":"local","mode":"local","version":"0.3.0","info":{"placement_source":"controller","placement_version":1,"placement_sha256":"77867e92fa4d3d941bbeaeee73fdf186343c6e67cfd6bca2e97c50bd0740c35e","placement_applied_at":"2026-10-25T09:15:28.884+00:00","controller_url":"http://controller:8000","controller_reachable":true,"last_sync_at":"2026-10-25T09:15:32.893+00:00","last_error":null}}
+inventory-a ready: {"status":"ready","checks":{"config":"ok"},"service":"inventory","instance":"inventory-a","env":"aws-simulated","mode":"local","version":"0.3.0"}
+pricing ready: {"status":"ready","checks":{"config":"ok"},"service":"pricing","instance":"pricing","env":"azure-simulated","mode":"local","version":"0.3.0"}
+>>> A5 PASS - live/ready bodies match documented shape for all services
+=== A6 request through the gateway produces the expected result
+HTTP 200 in 0.021s: {"order_id":"ord-2ad9d84452ea4674","request_id":"2ad9d84452ea46748a96763c24df0546","trace_id":"61704a184a6e51c45a378582eff2564f","status":"confirmed","sku":"SKU-001","quantity":2,"customer_tier":"standard","inventory":{"available":8,"in_stock":true,"instance":"inventory-a","env":"aws-simulated","simulated":true,"reported_by":"inventory-a@aws-simulated"},"pricing":{"unit_price_cents":5500,"discount_pct":0,"total_cents":11000,"currency":"DEMO","price_source":"pricing-service","instance":"pricing","env":"azure-simulated","simulated":true},"timings_ms":{"total":8.992,"inventory":8.848,"pricing":7.369},"dependencies":[{"name":"inventory","ok":true,"status_code":200,"error_type":null,"elapsed_ms":8.848,"served_by":"inventory-a@aws-simulated","attempts":1,"instance":"inventory-a","env":"aws-simulated","simulated":true},{"name":"pricing","ok":true,"status_code":200,"error_type":null,"elapsed_ms":7.369,"served_by":"pricing@azure-simulated","attempts":1,"instance":"pricing","env":"azure-simulated","simulated":true}],"routing":[{"seq":1,"ts":"2026-10-25T09:15:34.436+00:00","service":"inventory","policy":"primary-fallback","instance":"inventory-a","env":"aws-simulated","simulated":true,"url":"http://inventory-a:8000","reason":"primary instance","candidates":["inventory-a","inventory-b"],"placement_version":1},{"seq":2,"ts":"2026-10-25T09:15:34.436+00:00","service":"pricing","policy":"primary-fallback","instance":"pricing","env":"azure-simulated","simulated":true,"url":"http://pricing:8000","reason":"primary instance","candidates":["pricing"],"placement_version":1}],"call_mode":"parallel","environment_mode":"local","placement":{"version":1,"source":"controller","sha256":"77867e92fa4d3d941bbeaeee73fdf186343c6e67cfd6bca2e97c50bd0740c35e"},"simulated_environments":["aws-simulated","azure-simulated"],"simulation_notice":"Environment labels ending in '-simulated' are logical labels on one Docker host, not deployments on that cloud provider."}
+>>> A6 PASS - confirmed; available=8, total_cents=11000 (golden values)
+=== A7 automated tests (unit + integration) in the test container
+$ docker compose --profile test run --rm tests
+ Container setu-x-tests-run-ea5397a0ac09 Creating 
+ Container setu-x-tests-run-ea5397a0ac09 Created 
+============================= test session starts ==============================
+platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
+rootdir: /app
+configfile: pyproject.toml
+testpaths: tests
+plugins: asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 196 items / 7 deselected / 189 selected
+
+tests/contract/test_adapter_contract.py ................................ [ 16%]
+......................                                                   [ 28%]
+tests/integration/test_controller.py ........                            [ 32%]
+tests/integration/test_gateway_flow.py .............                     [ 39%]
+tests/integration/test_gateway_routing.py ......                         [ 42%]
+tests/integration/test_services.py ......                                [ 46%]
+tests/unit/test_client.py ........                                       [ 50%]
+tests/unit/test_config.py .........                                      [ 55%]
+tests/unit/test_domain.py ................................               [ 71%]
+tests/unit/test_ids.py ....                                              [ 74%]
+tests/unit/test_placement_config.py .................................... [ 93%]
+.....                                                                    [ 95%]
+tests/unit/test_routing.py ........                                      [100%]
+
+====================== 189 passed, 7 deselected in 2.19s =======================
+>>> A7 PASS - unit + integration tests passed
+=== A8 end-to-end tests against the running stack
+$ docker compose --profile test run --rm tests pytest -p no:cacheprovider -m e2e
+ Container setu-x-tests-run-b8cb98a1f426 Creating 
+ Container setu-x-tests-run-b8cb98a1f426 Created 
+============================= test session starts ==============================
+platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
+rootdir: /app
+configfile: pyproject.toml
+testpaths: tests
+plugins: asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 196 items / 189 deselected / 7 selected
+
+tests/end_to_end/test_stack.py .......                                   [100%]
+
+====================== 7 passed, 189 deselected in 3.77s =======================
+>>> A8 PASS - e2e tests passed
+=== A9 stopped dependency -> bounded 503, then recovery
+$ docker compose stop inventory-a
+ Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-inventory-a-1 Stopped
+inventory stopped: HTTP 503 in 0.043s: {"error":{"code":"dependency_unavailable","message":"inventory unavailable (connect_error)","request_id":"d292e62fe5694ad9839909b1c5ff13df","details":{"dependencies":[{"name":"inventory","ok":false,"status_code":null,"error_type":"connect_error","elapsed_ms":32.716,"served_by":null,"attempts":1,"instance":"inventory-a","env":"aws-simulated","simulated":true},{"name":"pricing","ok":true,"status_code":200,"error_type":null,"elapsed_ms":13.681,"served_by":"pricing@azure-simulated","attempts":1,"instance":"pricing","env":"azure-simulated","simulated":true}],"routing":[{"seq":15,"ts":"2026-10-25T09:15:43.799+00:00","service":"inventory","policy":"primary-fallback","instance":"inventory-a","env":"aws-simulated","simulated":true,"url":"http://inventory-a:8000","reason":"primary instance","candidates":["inventory-a","inventory-b"],"placement_version":3},{"seq":16,"ts":"2026-10-25T09:15:43.799+00:00","service":"pricing","policy":"primary-fallback","instance":"pricing","env":"azure-simulated","simulated":true,"url":"http://pricing:8000","reason":"primary instance","candidates":["pricing"],"placement_version":3}],"timings_ms":{"total":32.924},"placement":{"version":3,"source":"controller","sha256":"77867e92fa4d3d941bbeaeee73fdf186343c6e67cfd6bca2e97c50bd0740c35e"}}}}
+$ docker compose start inventory-a
+ Container setu-x-inventory-a-1 Starting 
+ Container setu-x-inventory-a-1 Started
+after restart: HTTP 200 in 0.013s
+>>> A9 PASS - 503 dependency_unavailable in 0.043s (bound 3.5s); recovered to HTTP 200
+=== A10 unresponsive (paused) dependency -> 503 cut by timeout, no hang
+$ docker compose pause inventory-a
+ Container setu-x-inventory-a-1 Paused
+inventory paused: HTTP 503 in 0.807s: {"error":{"code":"dependency_unavailable","message":"inventory unavailable (timeout)","request_id":"2a7b6c92e18a441f8de49c5e18ea0675","details":{"dependencies":[{"name":"inventory","ok":false,"status_code":null,"error_type":"timeout","elapsed_ms":802.657,"served_by":null,"attempts":1,"instance":"inventory-a","env":"aws-simulated","simulated":true},{"name":"pricing","ok":true,"status_code":200,"error_type":null,"elapsed_ms":2.291,"served_by":"pricing@azure-simulated","attempts":1,"instance":"pricing","env":"azure-simulated","simulated":true}],"routing":[{"seq":19,"ts":"2026-10-25T09:15:49.761+00:00","service":"inventory","policy":"primary-fallback","instance":"inventory-a","env":"aws-simulated","simulated":true,"url":"http://inventory-a:8000","reason":"primary instance","candidates":["inventory-a","inventory-b"],"placement_version":3},{"seq":20,"ts":"2026-10-25T09:15:49.761+00:00","service":"pricing","policy":"primary-fallback","instance":"pricing","env":"azure-simulated","simulated":true,"url":"http://pricing:8000","reason":"primary instance","candidates":["pricing"],"placement_version":3}],"timings_ms":{"total":802.841},"placement":{"version":3,"source":"controller","sha256":"77867e92fa4d3d941bbeaeee73fdf186343c6e67cfd6bca2e97c50bd0740c35e"}}}}
+$ docker compose unpause inventory-a
+ Container setu-x-inventory-a-1 Unpaused
+>>> A10 PASS - 503 (timeout) in 0.807s; expected ~0.8s per-attempt timeout (bound < 1.6s)
+=== A11 pricing stopped -> degraded order with flagged list price
+$ docker compose stop pricing
+ Container setu-x-pricing-1 Stopping 
+ Container setu-x-pricing-1 Stopped
+pricing stopped: HTTP 200 in 0.029s: {"order_id":"ord-fb3c3c623f294e74","request_id":"fb3c3c623f294e74af3778a61d1774c5","trace_id":"ca5484f0dec2d68b02eaf79e096c690b","status":"degraded","sku":"SKU-001","quantity":2,"customer_tier":"standard","inventory":{"available":8,"in_stock":true,"instance":"inventory-a","env":"aws-simulated","simulated":true,"reported_by":"inventory-a@aws-simulated"},"pricing":{"unit_price_cents":5500,"discount_pct":0,"total_cents":11000,"currency":"DEMO","price_source":"fallback-list-price","instance":null,"env":null,"simulated":null},"timings_ms":{"total":24.491,"inventory":6.685,"pricing":23.829},"dependencies":[{"name":"inventory","ok":true,"status_code":200,"error_type":null,"elapsed_ms":6.685,"served_by":"inventory-a@aws-simulated","attempts":1,"instance":"inventory-a","env":"aws-simulated","simulated":true},{"name":"pricing","ok":false,"status_code":null,"error_type":"connect_error","elapsed_ms":23.829,"served_by":null,"attempts":1,"instance":"pricing","env":"azure-simulated","simulated":true}],"routing":[{"seq":21,"ts":"2026-10-25T09:15:51.134+00:00","service":"inventory","policy":"primary-fallback","instance":"inventory-a","env":"aws-simulated","simulated":true,"url":"http://inventory-a:8000","reason":"primary instance","candidates":["inventory-a","inventory-b"],"placement_version":3},{"seq":22,"ts":"2026-10-25T09:15:51.134+00:00","service":"pricing","policy":"primary-fallback","instance":"pricing","env":"azure-simulated","simulated":true,"url":"http://pricing:8000","reason":"primary instance","candidates":["pricing"],"placement_version":3}],"call_mode":"parallel","environment_mode":"local","placement":{"version":3,"source":"controller","sha256":"77867e92fa4d3d941bbeaeee73fdf186343c6e67cfd6bca2e97c50bd0740c35e"},"simulated_environments":["aws-simulated","azure-simulated"],"simulation_notice":"Environment labels ending in '-simulated' are logical labels on one Docker host, not deployments on that cloud provider."}
+$ docker compose start pricing
+ Container setu-x-pricing-1 Starting 
+ Container setu-x-pricing-1 Started
+>>> A11 PASS - degraded with fallback-list-price in 0.029s
+=== A12 container hardening and limits (read back from docker inspect)
+inventory-a: user=10001 ro=True capdrop=ALL nanocpus=500000000 mem=268435456 secopt=no-new-privileges:true privileged=False
+pricing: user=10001 ro=True capdrop=ALL nanocpus=500000000 mem=268435456 secopt=no-new-privileges:true privileged=False
+gateway: user=10001 ro=True capdrop=ALL nanocpus=500000000 mem=268435456 secopt=no-new-privileges:true privileged=False
+gateway port binding: 127.0.0.1:8080
+>>> A12 PASS - non-root, read-only rootfs, cap_drop ALL, no-new-privileges, 0.5 CPU / 256MiB, port on 127.0.0.1
+=== A13 graceful stop (SIGTERM -> exit 0) and clean restart
+$ docker compose stop
+ Container setu-x-gateway-1 Stopping 
+ Container setu-x-gateway-1 Stopped 
+ Container setu-x-inventory-b-1 Stopping 
+ Container setu-x-pricing-1 Stopping 
+ Container setu-x-controller-1 Stopping 
+ Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-inventory-b-1 Stopped 
+ Container setu-x-controller-1 Stopped 
+ Container setu-x-inventory-a-1 Stopped 
+ Container setu-x-pricing-1 Stopped
+exit codes: gateway=0 inventory-a=0 pricing=0
+>>> A13 PASS - all services exited 0 on SIGTERM; restarted; order HTTP 200
+=== A14 down removes everything; up again from scratch works
+$ docker compose down
+ Container setu-x-gateway-1 Stopping 
+ Container setu-x-gateway-1 Stopped 
+ Container setu-x-gateway-1 Removing 
+ Container setu-x-gateway-1 Removed 
+ Container setu-x-pricing-1 Stopping 
+ Container setu-x-controller-1 Stopping 
+ Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-inventory-b-1 Stopping 
+ Container setu-x-inventory-b-1 Stopped 
+ Container setu-x-inventory-b-1 Removing 
+ Container setu-x-inventory-b-1 Removed 
+ Container setu-x-pricing-1 Stopped 
+ Container setu-x-pricing-1 Removing 
+ Container setu-x-pricing-1 Removed 
+ Container setu-x-controller-1 Stopped 
+ Container setu-x-controller-1 Removing 
+ Container setu-x-inventory-a-1 Stopped 
+ Container setu-x-inventory-a-1 Removing 
+ Container setu-x-controller-1 Removed 
+ Container setu-x-inventory-a-1 Removed 
+ Network setu-x_default Removing 
+ Network setu-x_default Removed
+$ docker compose down
+ Container setu-x-gateway-1 Stopping 
+ Container setu-x-gateway-1 Stopped 
+ Container setu-x-gateway-1 Removing 
+ Container setu-x-gateway-1 Removed 
+ Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-inventory-b-1 Stopping 
+ Container setu-x-pricing-1 Stopping 
+ Container setu-x-controller-1 Stopping 
+ Container setu-x-inventory-a-1 Stopped 
+ Container setu-x-inventory-a-1 Removing 
+ Container setu-x-inventory-a-1 Removed 
+ Container setu-x-pricing-1 Stopped 
+ Container setu-x-pricing-1 Removing 
+ Container setu-x-pricing-1 Removed 
+ Container setu-x-inventory-b-1 Stopped 
+ Container setu-x-inventory-b-1 Removing 
+ Container setu-x-inventory-b-1 Removed 
+ Container setu-x-controller-1 Stopped 
+ Container setu-x-controller-1 Removing 
+ Container setu-x-controller-1 Removed 
+ Network setu-x_default Removing 
+ Network setu-x_default Removed
+>>> A14 PASS - down left 0 containers; fresh up served HTTP 200; down again
+
+================ SUMMARY ================
+A1   PASS compose configuration valid
+A2   PASS images built
+A3   PASS stack started, compose reports healthy
+A4   PASS inventory-a, pricing, gateway healthy
+A5   PASS live/ready bodies match documented shape for all services
+A6   PASS confirmed; available=8, total_cents=11000 (golden values)
+A7   PASS unit + integration tests passed
+A8   PASS e2e tests passed
+A9   PASS 503 dependency_unavailable in 0.043s (bound 3.5s); recovered to HTTP 200
+A10  PASS 503 (timeout) in 0.807s; expected ~0.8s per-attempt timeout (bound < 1.6s)
+A11  PASS degraded with fallback-list-price in 0.029s
+A12  PASS non-root, read-only rootfs, cap_drop ALL, no-new-privileges, 0.5 CPU / 256MiB, port on 127.0.0.1
+A13  PASS all services exited 0 on SIGTERM; restarted; order HTTP 200
+A14  PASS down left 0 containers; fresh up served HTTP 200; down again
+checks: 14  failed: 0
+PHASE 2 ACCEPTANCE: PASS
