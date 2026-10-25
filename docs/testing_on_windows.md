@@ -224,6 +224,28 @@ Remove-Item Env:SETU_MODE; docker compose up -d                   # back to loca
 
 Ctrl+C asks the runner to stop; completed runs are kept and summarised. `GET http://127.0.0.1:8090/api/scenarios` lists the scenarios with their estimated duration. The method is described in `docs\methodology.md`. The same can be done from the dashboard (**Experiments** tab); runs started there record the commit as "not recorded", so use the script for the Phase 8 experiments.
 
+## 5b. Phase 8 measurement campaign (all experiments, about 70 minutes)
+
+Before starting:
+1. **Plug in the charger** and set Windows to a performance power mode (Settings → System → Power).
+2. **Close heavy programs** (browsers with many tabs, IDE indexing, games, video calls, cloud sync). Don't use the computer during the run: other load on the same CPUs changes the latency being measured.
+3. Docker Desktop → Settings → Resources: **leave the settings as they are for the whole campaign**. The script records the CPUs and memory Docker has.
+4. Make sure the last commit is checked out (`git status` shows no changes in `src`, `configs`, `compose.yaml`, `Dockerfile`).
+
+Run:
+```powershell
+pwsh -ExecutionPolicy Bypass -File scripts\run_all_experiments.ps1
+```
+The script:
+- builds and starts the stack in local mode and runs A, C, D1, D2 and E;
+- restarts in simulated mode and runs B, F and G;
+- restores local mode;
+- asks Windows not to sleep while it runs.
+
+Every experiment lands in `results\<experiment_id>\` with `docker_stats.csv`, and the machine record goes to `results\campaign_<time>.json`. A failed scenario is reported and the others continue. Re-run a single one with `-Only F_placement`.
+
+When it finishes, tell me. I read the `results\` folder directly through the linked folder; no need to send files. If you notice anything unusual during the run (sleep, heavy use, an update popping up), say so: it goes into the threats to validity.
+
 ## 6. "Is everything working and complete?" One command (Phase 7)
 
 ```powershell

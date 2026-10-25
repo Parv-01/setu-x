@@ -83,3 +83,16 @@ async def test_phases_from_warmup():
     rows, _ = await run(slow_gateway(0.0), plan(10, 1.0, warmup=0.5))
     assert [r["phase"] for r in rows] == ["warmup"] * 5 + ["measure"] * 5
     assert rows[5]["measure_offset_s"] == 0.0 and rows[0]["measure_offset_s"] == -0.5
+
+
+async def test_scenario_timeout_overrides_the_client_default():
+    # regression (Phase 8 pilot): the runner's httpx client has a 5 s default timeout, which cut
+    # requests that the scenario allowed 15 s. The scenario's request timeout must be the one sent.
+    router = HostRouter({"gateway": asgi(slow_gateway(0.0))})
+    async with httpx.AsyncClient(transport=router, timeout=0.2) as client:
+        await generate(client, "http://gateway/api/orders", plan(4, 0.5), start=time.perf_counter() + 0.05,
+                       max_in_flight=8, timeout_s=15.0, base_row=BASE)
+    assert router.requests
+    for req in router.requests:
+        t = req.extensions["timeout"]
+        assert t["read"] == 15.0 and t["write"] == 15.0 and t["pool"] == 15.0 and t["connect"] == 5.0

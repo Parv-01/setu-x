@@ -1,5 +1,6 @@
 # Experiment D (part 1) - resilience policies against an unresponsive dependency (RQ2 / H2).
-# inventory-a hangs from t = 5 s to t = 25 s of a 30 s measurement; fallback OFF so each policy's own
+# inventory-a hangs from t = 5 s to t = 25 s of a 40 s measurement (15 s after the fault to observe recovery,
+# including the breaker's 5 s reset timeout); fallback OFF so each policy's own
 # effect is visible. Lower rate (10 req/s) and a high in-flight cap because "none" holds requests
 # for up to 10 s.
 #   none                 timeout = outer deadline = 10 s (bounded only by the outer deadline)
@@ -10,7 +11,7 @@ id: D_policies_hang
 title: "D1 - Policies vs an unresponsive dependency"
 hypotheses: [H2]
 requires_mode: local
-workload: {rate_rps: 10, arrival: poisson, warmup_s: 5, duration_s: 30, max_in_flight: 256, request_timeout_s: 15}
+workload: {rate_rps: 10, arrival: poisson, warmup_s: 5, duration_s: 40, max_in_flight: 256, request_timeout_s: 15}
 runs: 3
 seed: 404
 defaults:

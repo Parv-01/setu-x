@@ -1,0 +1,2 @@
+# Phase 8 analysis only (scripts/analyze_results.py); not needed by the services or the tests.
+matplotlib==3.11.2

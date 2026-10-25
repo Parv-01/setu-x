@@ -75,7 +75,10 @@ async def generate(
         outcome: str | None = None
         try:
             async with asyncio.timeout(timeout_s):
-                r = await client.post(url, json=p.payload, headers={"X-Request-ID": p.request_id})
+                # per-request timeout = the scenario's request_timeout_s (overrides the client's default,
+                # which would otherwise cut long requests at 5 s; found in the Phase 8 pilot)
+                r = await client.post(url, json=p.payload, headers={"X-Request-ID": p.request_id},
+                                      timeout=httpx.Timeout(timeout_s, connect=min(timeout_s, 5.0)))
             status = r.status_code
             try:
                 body = r.json()

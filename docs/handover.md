@@ -2,8 +2,8 @@
 
 Resume from this file if work is interrupted. Updated at every phase boundary.
 
-**Last updated:** 2026-10-25 (end of Phase 7)
-**Current phase:** Phase 7 complete on Linux: `scripts/verify.ps1` 18/18 PASS on 21a0ba6 from a clean checkout; `docs/validation_report.md` written. Windows verify run pending. Next: Phase 8 (run Experiments A–G on Parv's Windows machine), **to start only when Parv says so**.
+**Last updated:** 2026-10-25 (Phase 8 in progress)
+**Current phase:** Phase 7 PASS on Linux and Windows (verify 18/18 both). Phase 8: campaign script and analysis script ready; Linux pilot (1 run per condition, not for findings) found and fixed a harness bug (below). Waiting for Parv's Windows campaign run.
 
 ## Completed
 
@@ -68,6 +68,8 @@ Resume from this file if work is interrupted. Updated at every phase boundary.
 | Windows (Parv's PC), run 1 on 3050b87 | 14/15: D3 failed because of the check, not the stack. `docker compose port` prints `invalid IP:0` for an unpublished port on Compose 5.1.3/Windows (`:0` on Linux); the container inspection in the same check showed no host port. D3 now decides from `docker inspect` (Ports + PortBindings) only; verified that it fails when the runner is published. Evidence: `docs/evidence/phase5_acceptance_windows_run1_d3_check_bug.log`. Re-run pending |
 
 Phase 6, first acceptance run (53c0782): 14/15. E5 failed because the e2e test `test_controller_sees_all_services_ready` still expected four services after the runner was added to `/api/services`. I had run the unit/integration suite but not the e2e suite before committing. Test updated. Log: `docs/evidence/phase6_acceptance_linux_run1_e2e_test_not_updated.log`.
+
+Phase 8 pilot (Linux, 1 run per condition): all 8 scenarios completed with valid records, but D1 "none" showed client timeouts at exactly 5 s although the scenario allows 15 s. Cause: the runner's httpx client default timeout (5 s) applied instead of the scenario's `request_timeout_s`. Fixed in `loadgen.py` (per-request timeout); a regression test checks the timeout sent with each request and fails on the old code. D_policies_hang lengthened to a 40 s window so recovery after the breaker's 5 s reset is observable. Re-pilot of D1: "none" bounded at about 10.2 s (outer deadline), timeout ≈ 0.81 s, timeout+retry ≈ 2.5 s, breaker fails fast (≈ 9 ms) with fewer inventory attempts. These are pilot observations, not findings.
 
 Race fixed during Phase 5: the runner briefly reported `completed` before `summary.json` existed (1 failure in about 9 suite runs). The status is now `analysing` until the summary is written; a regression test covers this.
 

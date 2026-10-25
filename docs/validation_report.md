@@ -5,7 +5,7 @@
 **Versions.**
 - Code: SETU-X 0.6.0, verified on commit `21a0ba6` (Linux; the first verify run on `eb4d2f0` also passed 18/18).
 - Workspace toolchain: Docker Engine 29.x with Compose 5.x, PowerShell 7.6.8.
-- Parv's Windows machine: Docker Desktop 29.4.2 with Compose 5.1.3, PowerShell 7.6.8.
+- Parv's Windows machine: Docker Desktop 29.4.2 with Compose 5.1.3, PowerShell 7.6.8. The Windows verify header lists 2 locally modified shell scripts (`check_env.sh`, `phase2_acceptance.sh`, line-ending artefacts of the file sync); the clone excludes them, as designed.
 
 ## 1. One-command verification from a clean checkout
 
@@ -19,26 +19,26 @@ Uncommitted files are therefore never part of a verification.
 
 | Check | What it proves | Linux (`21a0ba6`) | Windows |
 |---|---|---|---|
-| V1 | Clean clone of `HEAD`; nothing uncommitted is used | PASS | pending |
-| V2 | No secret patterns (private keys, AWS/GitHub/Slack/Google/OpenAI-style tokens, hard-coded passwords), no `.env`/key files tracked; any committed `results/` directory is complete and validated | PASS (173 tracked text files; patterns tested against a planted key file) | pending |
-| V3 | `docker compose config` | PASS | pending |
-| V4 | Images build from the clean checkout | PASS | pending |
-| V5 | Config validator accepts `configs/` and rejects `tests/fixtures/bad_config` | PASS (exit 0 / exit 1) | pending |
-| V6 | Unit + contract + integration tests | PASS (336 passed) | pending |
-| V7 | Lint (`ruff`) | PASS | pending |
-| V8 | Clean start; README quick start: `ps`, the README `curl` order (golden values 8 in stock, 11000 cents), `logs gateway` contains a JSON line with that request ID | PASS | pending |
-| V9 | End-to-end tests against the running stack | PASS (10) | pending |
-| V10 | Dashboard in Chromium (Playwright) | PASS (13) | pending |
-| V11 | Baseline experiment (A_baseline, 2 runs × 20 s, overrides recorded): records validated; manifest's scenario SHA-256 and git commit match the checkout; p50/p95 recomputed from the CSV match `summary.json`; p99 withheld (n < 1,000) | PASS | pending |
-| V12 | Failure experiment (C_service_failure, error and hang, 1 run × 25 s): failures only inside the actual fault window, none before it; hang failures cut at the 800 ms timeout (slowest 877 ms); recovery measured; records validated | PASS | pending |
-| V13 | Traceability: a measured request ID appears in the gateway and inventory logs; fault injection/clearing events are recorded per run with the runner's schedule | PASS | pending |
-| V14 | Runtime configuration: an invalid placement is refused with no effect; a valid one reaches the gateway and changes behaviour (sequential calls, 1 retry); reset restores the files | PASS | pending |
-| V15 | Restart: a controller restart reverts runtime placement to the files (documented limitation) while orders keep working; full stop/start recovers; results survive restarts | PASS | pending |
-| V16 | Container-level failure (`fault_container.ps1`): stopped primary → served by inventory-b; primary serves again after restart | PASS | pending |
-| V17 | Every README command (20) is executed in this run or backed by a PASS acceptance log | PASS | pending |
-| V18 | Hardening intact; all 6 containers exit 0 on stop; containers, network and verification volume removed | PASS | pending |
+| V1 | Clean clone of `HEAD`; nothing uncommitted is used | PASS | PASS |
+| V2 | No secret patterns (private keys, AWS/GitHub/Slack/Google/OpenAI-style tokens, hard-coded passwords), no `.env`/key files tracked; any committed `results/` directory is complete and validated | PASS (173 tracked text files; patterns tested against a planted key file) | PASS |
+| V3 | `docker compose config` | PASS | PASS |
+| V4 | Images build from the clean checkout | PASS | PASS |
+| V5 | Config validator accepts `configs/` and rejects `tests/fixtures/bad_config` | PASS (exit 0 / exit 1) | PASS |
+| V6 | Unit + contract + integration tests | PASS (336 passed) | PASS |
+| V7 | Lint (`ruff`) | PASS | PASS |
+| V8 | Clean start; README quick start: `ps`, the README `curl` order (golden values 8 in stock, 11000 cents), `logs gateway` contains a JSON line with that request ID | PASS | PASS |
+| V9 | End-to-end tests against the running stack | PASS (10) | PASS |
+| V10 | Dashboard in Chromium (Playwright) | PASS (13) | PASS |
+| V11 | Baseline experiment (A_baseline, 2 runs × 20 s, overrides recorded): records validated; manifest's scenario SHA-256 and git commit match the checkout; p50/p95 recomputed from the CSV match `summary.json`; p99 withheld (n < 1,000) | PASS | PASS |
+| V12 | Failure experiment (C_service_failure, error and hang, 1 run × 25 s): failures only inside the actual fault window, none before it; hang failures cut at the 800 ms timeout (slowest 877 ms); recovery measured; records validated | PASS | PASS |
+| V13 | Traceability: a measured request ID appears in the gateway and inventory logs; fault injection/clearing events are recorded per run with the runner's schedule | PASS | PASS |
+| V14 | Runtime configuration: an invalid placement is refused with no effect; a valid one reaches the gateway and changes behaviour (sequential calls, 1 retry); reset restores the files | PASS | PASS |
+| V15 | Restart: a controller restart reverts runtime placement to the files (documented limitation) while orders keep working; full stop/start recovers; results survive restarts | PASS | PASS |
+| V16 | Container-level failure (`fault_container.ps1`): stopped primary → served by inventory-b; primary serves again after restart | PASS | PASS |
+| V17 | Every README command (20) is executed in this run or backed by a PASS acceptance log | PASS | PASS |
+| V18 | Hardening intact; all 6 containers exit 0 on stop; containers, network and verification volume removed | PASS | PASS |
 
-Log: `docs/evidence/verify_linux.log`. Windows: please run `scripts/verify.ps1` and send `docs/evidence/verify_windows.log`. Until then, the Windows column is **pending**.
+Logs: `docs/evidence/verify_linux.log` (commit `21a0ba6`) and `docs/evidence/verify_windows.log` (Parv's PC, commit `5ae230d`, 18/18 PASS; the README `up --build` command ran unchanged there). On Windows the same checks gave a baseline median of about 18–19 ms (Linux workspace about 8 ms) and a slowest hang failure of 1,037 ms (bound checked: < 1,500 ms). These are verification observations, not findings.
 
 In the build workspace, `docker compose build` cannot run (it needs host networking for the proxy). There the images were built with the same Dockerfile by a workspace script, and V8 started the stack with `docker compose up -d` instead of `up --build -d`. The log states this. On Windows the README command runs unchanged.
 
@@ -51,7 +51,7 @@ In the build workspace, `docker compose build` cannot run (it needs host network
 | 4 Injection, timeouts, retries, breaker, fallback | PASS 15/15 | Run 1: 14/15 (check bug, below); re-run PASS 15/15 |
 | 5 Experiment harness | PASS 15/15 | Run 1: 14/15 (check bug, below); re-run PASS 15/15. Injected 100 ms measured as +106.8 ms |
 | 6 Dashboard | Run 1: 14/15 (test not updated, below); re-run PASS 15/15 | PASS 15/15, including 24 browser-test executions in local and simulated mode |
-| 7 Clean-checkout verification | PASS 18/18 | pending |
+| 7 Clean-checkout verification | PASS 18/18 | PASS 18/18 |
 
 Regression runs: Phase 2 on Phase 3, Phase 3 on Phase 4, Phase 4 on Phase 5, Phase 5 on Phase 6, all PASS (`docs/evidence/*_regression_*.log`).
 

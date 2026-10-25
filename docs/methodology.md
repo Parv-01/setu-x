@@ -152,7 +152,7 @@ The runner API only runs files from `configs/scenarios/`, by name, so it cannot 
 | `A_baseline.yaml` | A | local | parallel × 5 | 20 req/s Poisson, 5 + 60 s |
 | `B_network_delay.yaml` | B (H1) | simulated | {sequential, parallel} × pricing link {0, 25, 50, 100} ms; inventory link fixed at 50 ms; × 3 | 20 req/s, 5 + 30 s |
 | `C_service_failure.yaml` | C | local | error vs hang on inventory-a at 10–20 s, fallback off; × 3 | 20 req/s, 5 + 40 s |
-| `D_policies_hang.yaml` | D (H2) | local | none / timeout / timeout + retry / timeout + retry + breaker, hang at 5–25 s; × 3 | 10 req/s, 5 + 30 s |
+| `D_policies_hang.yaml` | D (H2) | local | none / timeout / timeout + retry / timeout + retry + breaker, hang at 5–25 s; × 3 | 10 req/s, 5 + 40 s |
 | `D_retries_transient.yaml` | D (H5) | local | retries 0 / 1 / 2 under 50% seeded errors; × 3 | 20 req/s, 5 + 30 s |
 | `E_scaling.yaml` | E | local | 5, 10, 20, 40, 80 req/s; × 3 | 5 + 30 s |
 | `F_placement.yaml` | F (H4) | simulated | distributed / pricing-local / inventory-local / both-local; × 3 | 20 req/s, 5 + 30 s |
