@@ -42,7 +42,7 @@ trap 'rm -f "$BODY"' EXIT
 
 echo "SETU-X Phase 2 acceptance"
 echo "date_utc: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-echo "git_commit: $(git rev-parse --short HEAD 2>/dev/null || echo unknown) (working tree may contain uncommitted changes: $(git status --porcelain 2>/dev/null | wc -l | tr -d ' ') files)"
+echo "git_commit: $(git rev-parse --short HEAD 2>/dev/null || echo unknown) (uncommitted files outside docs/evidence: $(git status --porcelain -- . ':!docs/evidence' 2>/dev/null | wc -l | tr -d ' '))"
 echo "docker: $(docker version --format 'client {{.Client.Version}} / server {{.Server.Version}}' 2>&1)"
 echo "compose: $(docker compose version --short 2>&1)"
 echo "uname: $(uname -srm)"
