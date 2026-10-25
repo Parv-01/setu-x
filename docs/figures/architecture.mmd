@@ -1,0 +1,31 @@
+flowchart LR
+  user([Reviewer / browser]) -->|HTTP 127.0.0.1:8090| ctl
+  lg -->|POST /api/orders| gw
+  user -->|HTTP 127.0.0.1:8080| gw
+
+  subgraph LOCAL["local (Docker host)"]
+    gw["gateway<br/>orders orchestration<br/>timeouts · retries · breaker · fallback"]
+    ctl["controller<br/>placement & routing config<br/>fault control plane (bounded)<br/>results + export · dashboard"]
+    lg["experiment runner<br/>(inside controller)"]
+  end
+  subgraph AWS["aws-simulated (label only)"]
+    inva["inventory-a<br/>primary"]
+  end
+  subgraph GCP["gcp-simulated (label only)"]
+    invb["inventory-b<br/>secondary replica"]
+  end
+  subgraph AZ["azure-simulated (label only)"]
+    pr["pricing"]
+  end
+
+  gw -->|"stock check<br/>+ injected link delay"| inva
+  gw -.->|fallback| invb
+  gw -->|"quote<br/>+ injected link delay"| pr
+  gw -->|poll placement| ctl
+  ctl -->|"POST /admin/fault<br/>(allow-listed, bounded)"| inva
+  ctl --> invb
+  ctl --> pr
+  ctl -->|health| gw
+
+  classDef sim stroke-dasharray: 5 5;
+  class AWS,GCP,AZ sim;

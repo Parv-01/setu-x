@@ -1,0 +1,11 @@
+flowchart TB
+  app["Application core<br/>(gateway, services, controller)<br/>provider-neutral"] --> port["CloudAdapter interface<br/>capability status per operation"]
+  port --> la["LocalDockerAdapter<br/>health + endpoint discovery: implemented"]
+  port --> aws["AwsAdapter<br/>target: ECS Express Mode / Fargate"]
+  port --> az["AzureAdapter<br/>target: Azure Container Apps"]
+  port --> gcp["GcpAdapter<br/>target: Cloud Run"]
+  m1["Mode 1 · local<br/>(default)"] -.-> la
+  m2["Mode 2 · simulated<br/>labels + injected delay/faults<br/>status = simulated"] -.-> la
+  m3["Mode 3 · cloud (off by default)<br/>configured → connected → deployed → verified<br/>explicit confirmation + cleanup"] -.-> aws
+  m3 -.-> az
+  m3 -.-> gcp

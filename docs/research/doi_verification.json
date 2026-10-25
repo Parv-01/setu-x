@@ -1,0 +1,996 @@
+[
+  {
+    "id": "mell2011nist",
+    "doi": "10.6028/NIST.SP.800-145",
+    "expect": {
+      "title": "The NIST Definition of Cloud Computing",
+      "first_author": "Mell",
+      "year": 2011
+    },
+    "registered": {
+      "title": "The NIST definition of cloud computing",
+      "authors": [
+        "P M Mell",
+        "T Grance"
+      ],
+      "year": 2011,
+      "venue": "National Institute of Standards and Technology",
+      "volume": null,
+      "issue": null,
+      "pages": null,
+      "publisher": "National Institute of Standards and Technology",
+      "type": "report",
+      "url": "https://doi.org/10.6028/nist.sp.800-145"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": null,
+    "abstract_source": null
+  },
+  {
+    "id": "verma2015borg",
+    "doi": "10.1145/2741948.2741964",
+    "expect": {
+      "title": "Large-scale cluster management at Google with Borg",
+      "first_author": "Verma",
+      "year": 2015
+    },
+    "registered": {
+      "title": "Large-scale cluster management at Google with Borg",
+      "authors": [
+        "Abhishek Verma",
+        "Luis Pedrosa",
+        "Madhukar Korupolu",
+        "David Oppenheimer",
+        "Eric Tune",
+        "John Wilkes"
+      ],
+      "year": 2015,
+      "venue": "Proceedings of the Tenth European Conference on Computer Systems",
+      "volume": null,
+      "issue": null,
+      "pages": "1-17",
+      "publisher": "ACM",
+      "type": "proceedings-article",
+      "url": "https://doi.org/10.1145/2741948.2741964"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "Google's Borg system is a cluster manager that runs hundreds of thousands of jobs, from many thousands of different applications, across a number of clusters each with up to tens of thousands of machines.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "dean2013tail",
+    "doi": "10.1145/2408776.2408794",
+    "expect": {
+      "title": "The tail at scale",
+      "first_author": "Dean",
+      "year": 2013
+    },
+    "registered": {
+      "title": "The tail at scale",
+      "authors": [
+        "Jeffrey Dean",
+        "Luiz André Barroso"
+      ],
+      "year": 2013,
+      "venue": "Communications of the ACM",
+      "volume": "56",
+      "issue": "2",
+      "pages": "74-80",
+      "publisher": "Association for Computing Machinery (ACM)",
+      "type": "journal-article",
+      "url": "https://doi.org/10.1145/2408776.2408794"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "Software techniques that tolerate latency variability are vital to building responsive large-scale Web services.",
+    "abstract_source": "crossref"
+  },
+  {
+    "id": "burns2016borg",
+    "doi": "10.1145/2890784",
+    "expect": {
+      "title": "Borg, Omega, and Kubernetes",
+      "first_author": "Burns",
+      "year": 2016
+    },
+    "registered": {
+      "title": "Borg, Omega, and Kubernetes",
+      "authors": [
+        "Brendan Burns",
+        "Brian Grant",
+        "David Oppenheimer",
+        "Eric Brewer",
+        "John Wilkes"
+      ],
+      "year": 2016,
+      "venue": "Communications of the ACM",
+      "volume": "59",
+      "issue": "5",
+      "pages": "50-57",
+      "publisher": "Association for Computing Machinery (ACM)",
+      "type": "journal-article",
+      "url": "https://doi.org/10.1145/2890784"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "Lessons learned from three container-management systems over a decade.",
+    "abstract_source": "crossref"
+  },
+  {
+    "id": "armbrust2010view",
+    "doi": "10.1145/1721654.1721672",
+    "expect": {
+      "title": "A view of cloud computing",
+      "first_author": "Armbrust",
+      "year": 2010
+    },
+    "registered": {
+      "title": "A view of cloud computing",
+      "authors": [
+        "Michael Armbrust",
+        "Armando Fox",
+        "Rean Griffith",
+        "Anthony D. Joseph",
+        "Randy Katz",
+        "Andy Konwinski",
+        "Gunho Lee",
+        "David Patterson",
+        "Ariel Rabkin",
+        "Ion Stoica",
+        "Matei Zaharia"
+      ],
+      "year": 2010,
+      "venue": "Communications of the ACM",
+      "volume": "53",
+      "issue": "4",
+      "pages": "50-58",
+      "publisher": "Association for Computing Machinery (ACM)",
+      "type": "journal-article",
+      "url": "https://doi.org/10.1145/1721654.1721672"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "Clearing the clouds away from the true potential and obstacles posed by this computing capability.",
+    "abstract_source": "crossref"
+  },
+  {
+    "id": "gan2019deathstar",
+    "doi": "10.1145/3297858.3304013",
+    "expect": {
+      "title": "An Open-Source Benchmark Suite for Microservices and Their Hardware-Software Implications for Cloud & Edge Systems",
+      "first_author": "Gan",
+      "year": 2019
+    },
+    "registered": {
+      "title": "An Open-Source Benchmark Suite for Microservices and Their Hardware-Software Implications for Cloud & Edge Systems",
+      "authors": [
+        "Yu Gan",
+        "Yanqi Zhang",
+        "Dailun Cheng",
+        "Ankitha Shetty",
+        "Priyal Rathi",
+        "Nayan Katarki",
+        "Ariana Bruno",
+        "Justin Hu",
+        "Brian Ritchken",
+        "Brendon Jackson",
+        "Kelvin Hu",
+        "Meghna Pancholi",
+        "Yuan He",
+        "Brett Clancy",
+        "Chris Colen",
+        "Fukang Wen",
+        "Catherine Leung",
+        "Siyuan Wang",
+        "Leon Zaruvinsky",
+        "Mateo Espinosa",
+        "Rick Lin",
+        "Zhongling Liu",
+        "Jake Padilla",
+        "Christina Delimitrou"
+      ],
+      "year": 2019,
+      "venue": "Proceedings of the Twenty-Fourth International Conference on Architectural Support for Programming Languages and Operating Systems",
+      "volume": null,
+      "issue": null,
+      "pages": "3-18",
+      "publisher": "ACM",
+      "type": "proceedings-article",
+      "url": "https://doi.org/10.1145/3297858.3304013"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "Cloud services have recently started undergoing a major shift from monolithic applications, to graphs of hundreds or thousands of loosely-coupled microservices. Microservices fundamentally change a lot of assumptions current cloud systems are designed with, and present both opportunities and challenges when optimizing for quality of service (QoS) and cloud utilization.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "ueda2016workload",
+    "doi": "10.1109/IISWC.2016.7581269",
+    "expect": {
+      "title": "Workload characterization for microservices",
+      "first_author": "Ueda",
+      "year": 2016
+    },
+    "registered": {
+      "title": "Workload characterization for microservices",
+      "authors": [
+        "Takanori Ueda",
+        "Takuya Nakaike",
+        "Moriyoshi Ohara"
+      ],
+      "year": 2016,
+      "venue": "2016 IEEE International Symposium on Workload Characterization (IISWC)",
+      "volume": null,
+      "issue": null,
+      "pages": "1-10",
+      "publisher": "IEEE",
+      "type": "proceedings-article",
+      "url": "https://doi.org/10.1109/iiswc.2016.7581269"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "The microservice architecture is a new framework to construct a Web service as a collection of small services that communicate with each other. It is becoming increasingly popular because it can accelerate agile software development, deployment, and operation practices. As a result, cloud service providers are expected to host an increasing number of microservices that can generate significant resource pressure on the cloud infrastructure. We want to understand the characteristics of microservice workloads to design an infrastructure optimized for microservices. In this paper, we used Acme Air, an open-source benchmark for Web services, and analyzed the behavior of two versions of the benchmark, microservice and monolithic, for two widely used language runtimes, Node.js and Java. We observed a significant overhead due to the microservice architecture; the performance of the microservice version can be 79.2% lower than the monolithic version on the same hardware configuration. On Node.js, the microservice version consumed 4.22 times more time in the libraries of Node.js than the monolithic version to process one user request. On Java, the microservice version also consumed more time in the application server than the monolithic version. We explain these performance differences from both hardware and software perspectives. We discuss the network virtualization in Docker, an infrastructure for microservices that has nonnegligible impact on performance. These findings give clues to develop optimization techniques in a language runtime and hardware for microservice workloads.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "luo2021alibaba",
+    "doi": "10.1145/3472883.3487003",
+    "expect": {
+      "title": "Characterizing Microservice Dependency and Performance: Alibaba Trace Analysis",
+      "first_author": "Luo",
+      "year": 2021
+    },
+    "registered": {
+      "title": "Characterizing Microservice Dependency and Performance",
+      "authors": [
+        "Shutian Luo",
+        "Huanle Xu",
+        "Chengzhi Lu",
+        "Kejiang Ye",
+        "Guoyao Xu",
+        "Liping Zhang",
+        "Yu Ding",
+        "Jian He",
+        "Chengzhong Xu"
+      ],
+      "year": 2021,
+      "venue": "Proceedings of the ACM Symposium on Cloud Computing",
+      "volume": null,
+      "issue": null,
+      "pages": "412-426",
+      "publisher": "ACM",
+      "type": "proceedings-article",
+      "url": "https://doi.org/10.1145/3472883.3487003"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "Loosely-coupled and light-weight microservices running in containers are replacing monolithic applications gradually. Understanding the characteristics of microservices is critical to make good use of microservice architectures. However, there is no comprehensive study about microservice and its related systems in production environments so far. In this paper, we present a solid analysis of large-scale deployments of microservices at Alibaba clusters. Our study focuses on the characterization of microservice dependency as well as its runtime performance. We conduct an in-depth anatomy of microservice call graphs to quantify the difference between them and traditional DAGs of data-parallel jobs. In particular, we observe that microservice call graphs are heavy-tail distributed and their topology is similar to a tree and moreover, many microservices are hot-spots. We reveal three types of meaningful call dependency that can be utilized to optimize microservice designs. Our investigation on microservice runtime performance indicates most microservices are much more sensitive to CPU interference than memory interference. To synthesize more representative microservice traces, we build a mathematical model to simulate call graphs. Experimental results demonstrate our model can well preserve those graph properties observed from Alibaba traces.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "zhou2021fault",
+    "doi": "10.1109/TSE.2018.2887384",
+    "expect": {
+      "title": "Fault Analysis and Debugging of Microservice Systems: Industrial Survey, Benchmark System, and Empirical Study",
+      "first_author": "Zhou",
+      "year": 2021
+    },
+    "registered": {
+      "title": "Fault Analysis and Debugging of Microservice Systems: Industrial Survey, Benchmark System, and Empirical Study",
+      "authors": [
+        "Xiang Zhou",
+        "Xin Peng",
+        "Tao Xie",
+        "Jun Sun",
+        "Chao Ji",
+        "Wenhai Li",
+        "Dan Ding"
+      ],
+      "year": 2021,
+      "venue": "IEEE Transactions on Software Engineering",
+      "volume": "47",
+      "issue": "2",
+      "pages": "243-260",
+      "publisher": "Institute of Electrical and Electronics Engineers (IEEE)",
+      "type": "journal-article",
+      "url": "https://doi.org/10.1109/tse.2018.2887384"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "The complexity and dynamism of microservice systems pose unique challenges to a variety of software engineering tasks such as fault analysis and debugging. In spite of the prevalence and importance of microservices in industry, there is limited research on the fault analysis and debugging of microservice systems. To fill this gap, we conduct an industrial survey to learn typical faults of microservice systems, current practice of debugging, and the challenges faced by developers in practice. We then develop a medium-size benchmark microservice system (being the largest and most complex open source microservice system within our knowledge) and replicate 22 industrial fault cases on it. Based on the benchmark system and the replicated fault cases, we conduct an empirical study to investigate the effectiveness of existing industrial debugging practices and whether they can be further improved by introducing the state-of-the-art tracing and visualization techniques for distributed systems. The results show that the current industrial practices of microservice debugging can be improved by employing proper tracing and visualization techniques and strategies. Our findings also suggest that there is a strong need for more intelligent trace analysis and visualization, e.g., by combining trace visualization and improved fault localization, and employing data-driven and learning-based recommendation for guided visual exploration and comparison of traces.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "leitner2016patterns",
+    "doi": "10.1145/2885497",
+    "expect": {
+      "title": "Patterns in the Chaos",
+      "first_author": "Leitner",
+      "year": 2016
+    },
+    "registered": {
+      "title": "Patterns in the Chaos—A Study of Performance Variation and Predictability in Public IaaS Clouds",
+      "authors": [
+        "Philipp Leitner",
+        "Jürgen Cito"
+      ],
+      "year": 2016,
+      "venue": "ACM Transactions on Internet Technology",
+      "volume": "16",
+      "issue": "3",
+      "pages": "1-23",
+      "publisher": "Association for Computing Machinery (ACM)",
+      "type": "journal-article",
+      "url": "https://doi.org/10.1145/2885497"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "Benchmarking the performance of public cloud providers is a common research topic. Previous work has already extensively evaluated the performance of different cloud platforms for different use cases, and under different constraints and experiment setups. In this article, we present a principled, large-scale literature review to collect and codify existing research regarding the predictability of performance in public Infrastructure-as-a-Service (IaaS) clouds. We formulate 15 hypotheses relating to the nature of performance variations in IaaS systems, to the factors of influence of performance variations, and how to compare different instance types. In a second step, we conduct extensive real-life experimentation on four cloud providers to empirically validate those hypotheses. We show that there are substantial differences between providers. Hardware heterogeneity is today less prevalent than reported in earlier research, while multitenancy has a dramatic impact on performance and predictability, but only for some cloud providers. We were unable to discover a clear impact of the time of the day or the day of the week on cloud performance.",
+    "abstract_source": "crossref"
+  },
+  {
+    "id": "iosup2011variability",
+    "doi": "10.1109/CCGrid.2011.22",
+    "expect": {
+      "title": "On the Performance Variability of Production Cloud Services",
+      "first_author": "Iosup",
+      "year": 2011
+    },
+    "registered": {
+      "title": "On the Performance Variability of Production Cloud Services",
+      "authors": [
+        "Alexandru Iosup",
+        "Nezih Yigitbasi",
+        "Dick Epema"
+      ],
+      "year": 2011,
+      "venue": "2011 11th IEEE/ACM International Symposium on Cluster, Cloud and Grid Computing",
+      "volume": null,
+      "issue": null,
+      "pages": "104-113",
+      "publisher": "IEEE",
+      "type": "proceedings-article",
+      "url": "https://doi.org/10.1109/ccgrid.2011.22"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "Cloud computing is an emerging infrastructure paradigm that promises to eliminate the need for companies to maintain expensive computing hardware. Through the use of virtualization and resource time-sharing, clouds address with a single set of physical resources a large user base with diverse needs. Thus, clouds have the potential to provide their owners the benefits of an economy of scale and, at the same time, become an alternative for both the industry and the scientific community to self-owned clusters, grids, and parallel production environments. For this potential to become reality, the first generation of commercial clouds need to be proven to be dependable. In this work we analyze the dependability of cloud services. Towards this end, we analyze long-term performance traces from Amazon Web Services and Google App Engine, currently two of the largest commercial clouds in production. We find that the performance of about half of the cloud services we investigate exhibits yearly and daily patterns, but also that most services have periods of especially stable performance. Last, through trace-based simulation we assess the impact of the variability observed for the studied cloud services on three large-scale applications, job execution in scientific computing, virtual goods trading in social networks, and state management in social gaming. We show that the impact of performance variability depends on the application, and give evidence that performance variability can be an important factor in cloud provider selection.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "schad2010runtime",
+    "doi": "10.14778/1920841.1920902",
+    "expect": {
+      "title": "Runtime measurements in the cloud",
+      "first_author": "Schad",
+      "year": 2010
+    },
+    "registered": {
+      "title": "Runtime measurements in the cloud",
+      "authors": [
+        "Jörg Schad",
+        "Jens Dittrich",
+        "Jorge-Arnulfo Quiané-Ruiz"
+      ],
+      "year": 2010,
+      "venue": "Proceedings of the VLDB Endowment",
+      "volume": "3",
+      "issue": "1-2",
+      "pages": "460-471",
+      "publisher": "Association for Computing Machinery (ACM)",
+      "type": "journal-article",
+      "url": "https://doi.org/10.14778/1920841.1920902"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "One of the main reasons why cloud computing has gained so much popularity is due to its ease of use and its ability to scale computing resources on demand. As a result, users can now rent computing nodes on large commercial clusters through several vendors, such as Amazon and rackspace. However, despite the attention paid by Cloud providers, performance unpredictability is a major issue in Cloud computing for (1) database researchers performing wall clock experiments, and (2) database applications providing service-level agreements. In this paper, we carry out a study of the performance variance of the most widely used Cloud infrastructure (Amazon EC2) from different perspectives. We use established microbenchmarks to measure performance variance in CPU, I/O, and network. And, we use a multi-node MapReduce application to quantify the impact on real dataintensive applications. We collected data for an entire month and compare it with the results obtained on a local cluster. Our results show that EC2 performance varies a lot and often falls into two bands having a large performance gap in-between --- which is somewhat surprising. We observe in our experiments that these two bands correspond to the different virtual system types provided by Amazon. Moreover, we analyze results considering different availability zones, points in time, and locations. This analysis indicates that, among others, the choice of availability zone also influences the performance variability. A major conclusion of our work is that the variance on EC2 is currently so high that wall clock experiments may only be performed with considerable care. To this end, we provide some hints to users.",
+    "abstract_source": "crossref"
+  },
+  {
+    "id": "papadopoulos2021methodological",
+    "doi": "10.1109/TSE.2019.2927908",
+    "expect": {
+      "title": "Methodological Principles for Reproducible Performance Evaluation in Cloud Computing",
+      "first_author": "Papadopoulos",
+      "year": 2021
+    },
+    "registered": {
+      "title": "Methodological Principles for Reproducible Performance Evaluation in Cloud Computing",
+      "authors": [
+        "Alessandro Vittorio Papadopoulos",
+        "Laurens Versluis",
+        "Andre Bauer",
+        "Nikolas Herbst",
+        "Joakim von Kistowski",
+        "Ahmed Ali-Eldin",
+        "Cristina L. Abad",
+        "Jose Nelson Amaral",
+        "Petr Tuma",
+        "Alexandru Iosup"
+      ],
+      "year": 2021,
+      "venue": "IEEE Transactions on Software Engineering",
+      "volume": "47",
+      "issue": "8",
+      "pages": "1528-1543",
+      "publisher": "Institute of Electrical and Electronics Engineers (IEEE)",
+      "type": "journal-article",
+      "url": "https://doi.org/10.1109/tse.2019.2927908"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "The rapid adoption and the diversification of cloud computing technology exacerbate the importance of a sound experimental methodology for this domain. This work investigates how to measure and report performance in the cloud, and how well the cloud research community is already doing it. We propose a set of eight important methodological principles that combine best-practices from nearby fields with concepts applicable only to clouds, and with new ideas about the time-accuracy trade-off. We show how these principles are applicable using a practical use-case experiment. To this end, we analyze the ability of the newly released SPEC Cloud IaaS benchmark to follow the principles, and showcase real-world experimental studies in common cloud environments that meet the principles. Last, we report on a systematic literature review including top conferences and journals in the field, from 2012 to 2017, analyzing if the practice of reporting cloud performance measurements follows the proposed eight principles. Worryingly, this systematic survey and the subsequent two-round human reviews, reveal that few of the published studies follow the eight experimental principles. We conclude that, although these important principles are simple and basic, the cloud community is yet to adopt them broadly to deliver sound measurement of cloud environments.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "hoefler2015scientific",
+    "doi": "10.1145/2807591.2807644",
+    "expect": {
+      "title": "Scientific benchmarking of parallel computing systems",
+      "first_author": "Hoefler",
+      "year": 2015
+    },
+    "registered": {
+      "title": "Scientific benchmarking of parallel computing systems",
+      "authors": [
+        "Torsten Hoefler",
+        "Roberto Belli"
+      ],
+      "year": 2015,
+      "venue": "Proceedings of the International Conference for High Performance Computing, Networking, Storage and Analysis",
+      "volume": null,
+      "issue": null,
+      "pages": "1-12",
+      "publisher": "ACM",
+      "type": "proceedings-article",
+      "url": "https://doi.org/10.1145/2807591.2807644"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "Measuring and reporting performance of parallel computers constitutes the basis for scientific advancement of high-performance computing (HPC). Most scientific reports show performance improvements of new techniques and are thus obliged to ensure reproducibility or at least interpretability. Our investigation of a stratified sample of 120 papers across three top conferences in the field shows that the state of the practice is lacking. For example, it is often unclear if reported improvements are deterministic or observed by chance. In addition to distilling best practices from existing work, we propose statistically sound analysis and reporting techniques and simple guidelines for experimental design in parallel computing and codify them in a portable benchmarking library. We aim to improve the standards of reporting research results and initiate a discussion in the HPC field. A wide adoption of our minimal set of rules will lead to better interpretability of performance results and improve the scientific culture in HPC.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "basiri2016chaos",
+    "doi": "10.1109/MS.2016.60",
+    "expect": {
+      "title": "Chaos Engineering",
+      "first_author": "Basiri",
+      "year": 2016
+    },
+    "registered": {
+      "title": "Chaos Engineering",
+      "authors": [
+        "Ali Basiri",
+        "Niosha Behnam",
+        "Ruud de Rooij",
+        "Lorin Hochstein",
+        "Luke Kosewski",
+        "Justin Reynolds",
+        "Casey Rosenthal"
+      ],
+      "year": 2016,
+      "venue": "IEEE Software",
+      "volume": "33",
+      "issue": "3",
+      "pages": "35-41",
+      "publisher": "Institute of Electrical and Electronics Engineers (IEEE)",
+      "type": "journal-article",
+      "url": "https://doi.org/10.1109/ms.2016.60"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "Modern software-based services are implemented as distributed systems with complex behavior and failure modes. Many large tech organizations are using experimentation to verify such systems' reliability. Netflix engineers call this approach chaos engineering. They've determined several principles underlying it and have used it to run experiments. This article is part of a theme issue on DevOps.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "heorhiadi2016gremlin",
+    "doi": "10.1109/ICDCS.2016.11",
+    "expect": {
+      "title": "Gremlin: Systematic Resilience Testing of Microservices",
+      "first_author": "Heorhiadi",
+      "year": 2016
+    },
+    "registered": {
+      "title": "Gremlin: Systematic Resilience Testing of Microservices",
+      "authors": [
+        "Victor Heorhiadi",
+        "Shriram Rajagopalan",
+        "Hani Jamjoom",
+        "Michael K. Reiter",
+        "Vyas Sekar"
+      ],
+      "year": 2016,
+      "venue": "2016 IEEE 36th International Conference on Distributed Computing Systems (ICDCS)",
+      "volume": null,
+      "issue": null,
+      "pages": "57-66",
+      "publisher": "IEEE",
+      "type": "proceedings-article",
+      "url": "https://doi.org/10.1109/icdcs.2016.11"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "Modern Internet applications are being disaggregated into a microservice-based architecture, with services being updated and deployed hundreds of times a day. The accelerated software life cycle and heterogeneity of language runtimes in a single application necessitates a new approach for testing the resiliency of these applications in production infrastructures. We present Gremlin, a framework for systematically testing the failure-handling capabilities of microservices. Gremlin is based on the observation that microservices are loosely coupled and thus rely on standard message-exchange patterns over the network. Gremlin allows the operator to easily design tests and executes them by manipulating inter-service messages at the network layer. We show how to use Gremlin to express common failure scenarios and how developers of an enterprise application were able to discover previously unknown bugs in their failure-handling code without modifying the application.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "felter2015containers",
+    "doi": "10.1109/ISPASS.2015.7095802",
+    "expect": {
+      "title": "An updated performance comparison of virtual machines and Linux containers",
+      "first_author": "Felter",
+      "year": 2015
+    },
+    "registered": {
+      "title": "An updated performance comparison of virtual machines and Linux containers",
+      "authors": [
+        "Wes Felter",
+        "Alexandre Ferreira",
+        "Ram Rajamony",
+        "Juan Rubio"
+      ],
+      "year": 2015,
+      "venue": "2015 IEEE International Symposium on Performance Analysis of Systems and Software (ISPASS)",
+      "volume": null,
+      "issue": null,
+      "pages": "171-172",
+      "publisher": "IEEE",
+      "type": "proceedings-article",
+      "url": "https://doi.org/10.1109/ispass.2015.7095802"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "Cloud computing makes extensive use of virtual machines because they permit workloads to be isolated from one another and for the resource usage to be somewhat controlled. In this paper, we explore the performance of traditional virtual machine (VM) deployments, and contrast them with the use of Linux containers. We use KVM as a representative hypervisor and Docker as a container manager. Our results show that containers result in equal or better performance than VMs in almost all cases. Both VMs and containers require tuning to support I/Ointensive applications. We also discuss the implications of our performance results for future cloud architectures.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "dragoni2017microservices",
+    "doi": "10.1007/978-3-319-67425-4_12",
+    "expect": {
+      "title": "Microservices: Yesterday, Today, and Tomorrow",
+      "first_author": "Dragoni",
+      "year": 2017
+    },
+    "registered": {
+      "title": "Microservices: Yesterday, Today, and Tomorrow",
+      "authors": [
+        "Nicola Dragoni",
+        "Saverio Giallorenzo",
+        "Alberto Lluch Lafuente",
+        "Manuel Mazzara",
+        "Fabrizio Montesi",
+        "Ruslan Mustafin",
+        "Larisa Safina"
+      ],
+      "year": 2017,
+      "venue": "Present and Ulterior Software Engineering",
+      "volume": null,
+      "issue": null,
+      "pages": "195-216",
+      "publisher": "Springer International Publishing",
+      "type": "book-chapter",
+      "url": "https://doi.org/10.1007/978-3-319-67425-4_12"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "Microservices is an architectural style inspired by service-oriented computing that has recently started gaining popularity. Before presenting the current state of the art in the field, this chapter reviews the history of software architecture, the reasons that led to the diffusion of objects and services first, and microservices later. Finally, open problems and future challenges are introduced. This survey primarily addresses newcomers to the discipline, while offering an academic viewpoint on the topic. In addition, we investigate some practical issues and point out a few potential solutions.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "petcu2013multicloud",
+    "doi": "10.1145/2462326.2462328",
+    "expect": {
+      "title": "Multi-Cloud: expectations and current approaches",
+      "first_author": "Petcu",
+      "year": 2013
+    },
+    "registered": {
+      "title": "Multi-Cloud",
+      "authors": [
+        "Dana Petcu"
+      ],
+      "year": 2013,
+      "venue": "Proceedings of the 2013 international workshop on Multi-cloud applications and federated clouds",
+      "volume": null,
+      "issue": null,
+      "pages": "1-6",
+      "publisher": "ACM",
+      "type": "proceedings-article",
+      "url": "https://doi.org/10.1145/2462326.2462328"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "Using resources and services from multiple Clouds is a natural evolution from consuming the ones from in-silo Clouds. Technological and administrative barriers are however slowing the process. Fortunately the recent years are marked by the appearance of several solutions that are partially overpassing them. However, the approaches are quite various and not adopted at large scale. This paper intends to offer a snapshot of the current state-of-the-art and to identify the future steps in building Multi-Clouds. A list of basic requirements for a Multi-Cloud is proposed.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "grozev2014intercloud",
+    "doi": "10.1002/spe.2168",
+    "expect": {
+      "title": "Inter-Cloud architectures and application brokering: taxonomy and survey",
+      "first_author": "Grozev",
+      "year": 2014
+    },
+    "registered": {
+      "title": "Inter‐Cloud architectures and application brokering: taxonomy and survey",
+      "authors": [
+        "Nikolay Grozev",
+        "Rajkumar Buyya"
+      ],
+      "year": 2014,
+      "venue": "Software: Practice and Experience",
+      "volume": "44",
+      "issue": "3",
+      "pages": "369-390",
+      "publisher": "Wiley",
+      "type": "journal-article",
+      "url": "https://doi.org/10.1002/spe.2168"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "SUMMARY Although Cloud computing itself has many open problems, researchers in the field have already made the leap to envision Inter‐Cloud computing. Their goal is to achieve better overall Quality of Service (QoS), reliability and cost efficiency by utilizing multiple clouds. Inter‐Cloud research is still in its infancy, and the body of knowledge in the area has not been well defined yet. In this work, we propose and motivate taxonomies for Inter‐Cloud architectures and application brokering mechanisms. We present a detailed survey of the state of the art in terms of both academic and industry developments (20 projects), and we fit each project onto the discussed taxonomies. We discuss how the current Inter‐Cloud environments facilitate brokering of distributed applications across clouds considering their nonfunctional requirements. Finally, we analyse the existing works and identify open challenges and trends in the area of Inter‐Cloud application brokering. Copyright © 2012 John Wiley &amp; Sons, Ltd.",
+    "abstract_source": "crossref"
+  },
+  {
+    "id": "oparamartins2016lockin",
+    "doi": "10.1186/s13677-016-0054-z",
+    "expect": {
+      "title": "Critical analysis of vendor lock-in and its impact on cloud computing migration: a business perspective",
+      "first_author": "Opara-Martins",
+      "year": 2016
+    },
+    "registered": {
+      "title": "Critical analysis of vendor lock-in and its impact on cloud computing migration: a business perspective",
+      "authors": [
+        "Justice Opara-Martins",
+        "Reza Sahandi",
+        "Feng Tian"
+      ],
+      "year": 2016,
+      "venue": "Journal of Cloud Computing",
+      "volume": "5",
+      "issue": "1",
+      "pages": null,
+      "publisher": "Springer Science and Business Media LLC",
+      "type": "journal-article",
+      "url": "https://doi.org/10.1186/s13677-016-0054-z"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "Vendor lock-in is a major barrier to the adoption of cloud computing, due to the lack of standardization. Current solutions and efforts tackling the vendor lock-in problem are predominantly technology-oriented. Limited studies exist to analyse and highlight the complexity of vendor lock-in problem in the cloud environment. Consequently, most customers are unaware of proprietary standards which inhibit interoperability and portability of applications when taking services from vendors. This paper provides a critical analysis of the vendor lock-in problem, from a business perspective. A survey based on qualitative and quantitative approaches conducted in this study has identified the main risk factors that give rise to lock-in situations. The analysis of our survey of 114 participants shows that, as computing resources migrate from on-premise to the cloud, the vendor lock-in problem is exacerbated. Furthermore, the findings exemplify the importance of interoperability, portability and standards in cloud computing. A number of strategies are proposed on how to avoid and mitigate lock-in risks when migrating to cloud computing. The strategies relate to contracts, selection of vendors that support standardised formats and protocols regarding standard data structures and APIs, developing awareness of commonalities and dependencies among cloud-based solutions. We strongly believe that the implementation of these strategies has a great potential to reduce the risks of vendor lock-in.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "brogi2017fog",
+    "doi": "10.1109/JIOT.2017.2701408",
+    "expect": {
+      "title": "QoS-Aware Deployment of IoT Applications Through the Fog",
+      "first_author": "Brogi",
+      "year": 2017
+    },
+    "registered": {
+      "title": "QoS-Aware Deployment of IoT Applications Through the Fog",
+      "authors": [
+        "Antonio Brogi",
+        "Stefano Forti"
+      ],
+      "year": 2017,
+      "venue": "IEEE Internet of Things Journal",
+      "volume": "4",
+      "issue": "5",
+      "pages": "1185-1192",
+      "publisher": "Institute of Electrical and Electronics Engineers (IEEE)",
+      "type": "journal-article",
+      "url": "https://doi.org/10.1109/jiot.2017.2701408"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "Fog computing aims at extending the Cloud by bringing computational power, storage, and communication capabilities to the edge of the network, in support of the IoT. Segmentation, distribution, and adaptive deployment of functionalities over the continuum from Things to Cloud are challenging tasks, due to the intrinsic heterogeneity, hierarchical structure, and very large scale infrastructure they will have to exploit. In this paper, we propose a simple, yet general, model to support the QoS-aware deployment of multicomponent IoT applications to Fog infrastructures. The model describes operational systemic qualities of the available infrastructure (latency and bandwidth), interactions among software components and Things, and business policies. Algorithms to determine eligible deployments for an application to a Fog infrastructure are presented. A Java tool, FogTorch, based on the proposed model has been prototyped.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "meiklejohn2021filibuster",
+    "doi": "10.1145/3472883.3487005",
+    "expect": {
+      "title": "Service-Level Fault Injection Testing",
+      "first_author": "Meiklejohn",
+      "year": 2021
+    },
+    "registered": {
+      "title": "Service-Level Fault Injection Testing",
+      "authors": [
+        "Christopher S. Meiklejohn",
+        "Andrea Estrada",
+        "Yiwen Song",
+        "Heather Miller",
+        "Rohan Padhye"
+      ],
+      "year": 2021,
+      "venue": "Proceedings of the ACM Symposium on Cloud Computing",
+      "volume": null,
+      "issue": null,
+      "pages": "388-402",
+      "publisher": "ACM",
+      "type": "proceedings-article",
+      "url": "https://doi.org/10.1145/3472883.3487005"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "Companies today increasingly rely on microservice architectures to deliver service for their large-scale mobile or web applications. However, not all developers working on these applications are distributed systems engineers and therefore do not anticipate partial failure: where one or more of the dependencies of their service might be unavailable once deployed into production. Therefore, it is paramount that these issues be raised early and often, ideally in a testing environment or before the code ships to production.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "jurgelionis2011netem",
+    "doi": "10.1109/ICCCN.2011.6005933",
+    "expect": {
+      "title": "An Empirical Study of NetEm Network Emulation Functionalities",
+      "first_author": "Jurgelionis",
+      "year": 2011
+    },
+    "registered": {
+      "title": "An Empirical Study of NetEm Network Emulation Functionalities",
+      "authors": [
+        "Audrius Jurgelionis",
+        "Jukka-Pekka Laulajainen",
+        "Matti Hirvonen",
+        "Alf Inge Wang"
+      ],
+      "year": 2011,
+      "venue": "2011 Proceedings of 20th International Conference on Computer Communications and Networks (ICCCN)",
+      "volume": null,
+      "issue": null,
+      "pages": "1-6",
+      "publisher": "IEEE",
+      "type": "proceedings-article",
+      "url": "https://doi.org/10.1109/icccn.2011.6005933"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "In this paper we have evaluated the main functionalities of NetEm, a popular Linux based network emulator, which we have used to stress test the performance of the Games@Large distributed gaming system. We have performed a number of tests on different NetEm functionalities in order to evaluate their practical performance conformity and validity versus the NetEm description and theoretical expectations. We have found that the NetEm behaviour conforms to expectations for the emulation of delay and packet loss without correlation. However, in the case of jitter emulation, the actual realized jitter is lower than the given input value. It is an important fact to be aware of when using NetEm for different application testing. This paper also provides a baseline methodology for network emulation tool validation.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "corneo2021clouds",
+    "doi": "10.1145/3442381.3449854",
+    "expect": {
+      "title": "Surrounded by the Clouds",
+      "first_author": "Corneo",
+      "year": 2021
+    },
+    "registered": {
+      "title": "Surrounded by the Clouds",
+      "authors": [
+        "Lorenzo Corneo",
+        "Maximilian Eder",
+        "Nitinder Mohan",
+        "Aleksandr Zavodovski",
+        "Suzan Bayhan",
+        "Walter Wong",
+        "Per Gunningberg",
+        "Jussi Kangasharju",
+        "Jörg Ott"
+      ],
+      "year": 2021,
+      "venue": "Proceedings of the Web Conference 2021",
+      "volume": null,
+      "issue": null,
+      "pages": "295-304",
+      "publisher": "ACM",
+      "type": "proceedings-article",
+      "url": "https://doi.org/10.1145/3442381.3449854"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "In the early days of cloud computing, datacenters were sparsely deployed at distant locations far from end-users with high end-to-end communication latency. However, today’s cloud datacenters have become more geographically spread, the bandwidth of the networks keeps increasing, pushing the end-users latency down. In this paper, we provide a comprehensive cloud reachability study as we perform extensive global client-to-cloud latency measurements towards 189 datacenters from all major cloud providers. We leverage the well-known measurement platform RIPE Atlas, involving up to 8500 probes deployed in heterogeneous environments, e.g., home and offices. Our goal is to evaluate the suitability of modern cloud environments for various current and predicted applications. We achieve this by comparing our latency measurements against known human perception thresholds and are able to draw inferences on the suitability of current clouds for novel applications, such as augmented reality. Our results indicate that the current cloud coverage can easily support several latency-critical applications, like cloud gaming, for the majority of the world’s population.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "becker2022emulation",
+    "doi": "10.1109/IC2E55432.2022.00007",
+    "expect": {
+      "title": "Network Emulation in Large-Scale Virtual Edge Testbeds: A Note of Caution and the Way Forward",
+      "first_author": "Becker",
+      "year": 2022
+    },
+    "registered": {
+      "title": "Network Emulation in Large-Scale Virtual Edge Testbeds: A Note of Caution and the Way Forward",
+      "authors": [
+        "Soeren Becker",
+        "Tobias Pfandzelter",
+        "Nils Japke",
+        "David Bermbach",
+        "Odej Kao"
+      ],
+      "year": 2022,
+      "venue": "2022 IEEE International Conference on Cloud Engineering (IC2E)",
+      "volume": null,
+      "issue": null,
+      "pages": "1-7",
+      "publisher": "IEEE",
+      "type": "proceedings-article",
+      "url": "https://doi.org/10.1109/ic2e55432.2022.00007"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "The growing research and industry interest in the Internet of Things and the edge computing paradigm has increased the need for cost-efficient virtual testbeds for large-scale distributed applications. Researchers, students, and practitioners need to test and evaluate the interplay of hundreds or thousands of real software components and services connected with a realistic edge network without access to phvsical infrastructure. While advances in virtualization technologies have enabled parts of this, network emulation as a crucial part in the development of edge testbeds is lagging behind: As we show in this paper, NetEm, the current state-of-the-art network emulation tooling included in the Linux kernel, imposes prohibitive scalability limits. We quantify these limits, investigate possible causes, and present a way forward for network emulation in large-scale virtual edge testbeds based on eBPFs.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "eismann2020microservices",
+    "doi": "10.1145/3358960.3379124",
+    "expect": {
+      "title": "Microservices: A Performance Tester's Dream or Nightmare?",
+      "first_author": "Eismann",
+      "year": 2020
+    },
+    "registered": {
+      "title": "Microservices: A Performance Tester's Dream or Nightmare?",
+      "authors": [
+        "Simon Eismann",
+        "Cor-Paul Bezemer",
+        "Weiyi Shang",
+        "Dušan Okanović",
+        "André van Hoorn"
+      ],
+      "year": 2020,
+      "venue": "Proceedings of the ACM/SPEC International Conference on Performance Engineering",
+      "volume": null,
+      "issue": null,
+      "pages": "138-149",
+      "publisher": "ACM",
+      "type": "proceedings-article",
+      "url": "https://doi.org/10.1145/3358960.3379124"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "In recent years, there has been a shift in software development towards microservice-based architectures, which consist of small services that focus on one particular functionality. Many companies are migrating their applications to such architectures to reap the benefits of microservices, such as increased flexibility, scalability and a smaller granularity of the offered functionality by a service. On the one hand, the benefits of microservices for functional testing are often praised, as the focus on one functionality and their smaller granularity allow for more targeted and more convenient testing. On the other hand, using microservices has their consequences (both positive and negative) on other types of testing, such as performance testing. Performance testing is traditionally done by establishing the baseline performance of a software version, which is then used to compare the performance testing results of later software versions. However, as we show in this paper, establishing such a baseline performance is challenging in microservice applications. In this paper, we discuss the benefits and challenges of microservices from a performance tester's point of view. Through a series of experiments on the TeaStore application, we demonstrate how microservices affect the performance testing process, and we demonstrate that it is not straightforward to achieve reliable performance testing results for a microservice application.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "vonkistowski2018teastore",
+    "doi": "10.1109/MASCOTS.2018.00030",
+    "expect": {
+      "title": "TeaStore: A Micro-Service Reference Application for Benchmarking, Modeling and Resource Management Research",
+      "first_author": "von Kistowski",
+      "year": 2018
+    },
+    "registered": {
+      "title": "TeaStore: A Micro-Service Reference Application for Benchmarking, Modeling and Resource Management Research",
+      "authors": [
+        "Joakim von Kistowski",
+        "Simon Eismann",
+        "Norbert Schmitt",
+        "Andre Bauer",
+        "Johannes Grohmann",
+        "Samuel Kounev"
+      ],
+      "year": 2018,
+      "venue": "2018 IEEE 26th International Symposium on Modeling, Analysis, and Simulation of Computer and Telecommunication Systems (MASCOTS)",
+      "volume": null,
+      "issue": null,
+      "pages": "223-236",
+      "publisher": "IEEE",
+      "type": "proceedings-article",
+      "url": "https://doi.org/10.1109/mascots.2018.00030"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "Modern distributed applications offer complex performance behavior and many degrees of freedom regarding deployment and configuration. Researchers employ various methods of analysis, modeling, and management that leverage these degrees of freedom to predict or improve non-functional properties of the software under consideration. In order to demonstrate and evaluate their applicability in the real world, methods resulting from such research areas require test and reference applications that offer a range of different behaviors, as well as the necessary degrees of freedom. Existing production software is often inaccessible for researchers or closed off to instrumentation. Existing testing and benchmarking frameworks, on the other hand, are either designed for specific testing scenarios, or they do not offer the necessary degrees of freedom. Further, most test applications are difficult to deploy and run, or are outdated. In this paper, we introduce the TeaStore, a state-of-the-art micro-service-based test and reference application. TeaStore offers services with different performance characteristics and many degrees of freedom regarding deployment and configuration to be used as a benchmarking framework for researchers. The TeaStore allows evaluating performance modeling and resource management techniques; it also offers instrumented variants to enable extensive run-time analysis. We demonstrate TeaStore's use in three contexts: performance modeling, cloud resource management, and energy efficiency analysis. Our experiments show that TeaStore can be used for evaluating novel approaches in these contexts and also motivates further research in the areas of performance modeling and resource management.",
+    "abstract_source": "openalex"
+  }
+]

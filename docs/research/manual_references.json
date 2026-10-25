@@ -1,0 +1,244 @@
+[
+ {
+  "id": "uta2020bigdata",
+  "type": "inproceedings",
+  "title": "Is Big Data Performance Reproducible in Modern Cloud Networks?",
+  "authors": [
+   "Alexandru Uta",
+   "Alexandru Custura",
+   "Dmitry Duplyakin",
+   "Ivo Jimenez",
+   "Jan Rellermeyer",
+   "Carlos Maltzahn",
+   "Robert Ricci",
+   "Alexandru Iosup"
+  ],
+  "year": 2020,
+  "venue": "17th USENIX Symposium on Networked Systems Design and Implementation (NSDI 20)",
+  "publisher": "USENIX Association",
+  "url": "https://www.usenix.org/conference/nsdi20/presentation/uta",
+  "note": "Preprint arXiv:1912.09256",
+  "verified_via": "USENIX NSDI 20 program page (8 authors, pp. 513-527) and arXiv abstract",
+  "pages": "513--527"
+ },
+ {
+  "id": "montesi2016circuit",
+  "type": "misc",
+  "title": "Circuit Breakers, Discovery, and API Gateways in Microservices",
+  "authors": [
+   "Fabrizio Montesi",
+   "Janine Weber"
+  ],
+  "year": 2016,
+  "venue": "arXiv preprint",
+  "url": "https://arxiv.org/abs/1609.05830",
+  "note": "arXiv:1609.05830 (not peer reviewed)",
+  "verified_via": "arXiv API record"
+ },
+ {
+  "id": "motacruz2024placement",
+  "type": "misc",
+  "title": "Optimizing Microservices Placement in the Cloud-to-Edge Continuum: A Comparative Analysis of App and Service Based Approaches",
+  "authors": [
+   "Miguel Mota-Cruz",
+   "João H Santos",
+   "José F Macedo",
+   "Karima Velasquez",
+   "David Perez Abreu"
+  ],
+  "year": 2024,
+  "venue": "arXiv preprint",
+  "url": "https://arxiv.org/abs/2412.01412",
+  "note": "arXiv:2412.01412 (preprint; peer-review status not verified)",
+  "verified_via": "arXiv API record"
+ },
+ {
+  "id": "sigelman2010dapper",
+  "type": "techreport",
+  "title": "Dapper, a Large-Scale Distributed Systems Tracing Infrastructure",
+  "authors": [
+   "Benjamin H. Sigelman",
+   "Luiz André Barroso",
+   "Mike Burrows",
+   "Pat Stephenson",
+   "Manoj Plakal",
+   "Donald Beaver",
+   "Saul Jaspan",
+   "Chandan Shanbhag"
+  ],
+  "year": 2010,
+  "venue": "Google, Inc.",
+  "url": "https://research.google/pubs/dapper-a-large-scale-distributed-systems-tracing-infrastructure/",
+  "verified_via": "Google Research publication page"
+ },
+ {
+  "id": "k8sprobes",
+  "type": "online",
+  "title": "Configure Liveness, Readiness and Startup Probes",
+  "authors": [
+   "{The Kubernetes Authors}"
+  ],
+  "year": 2026,
+  "venue": "Kubernetes Documentation",
+  "url": "https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/",
+  "urldate": "2026-10-25",
+  "verified_via": "Official source (kubernetes/website repository)"
+ },
+ {
+  "id": "k8sresources",
+  "type": "online",
+  "title": "Resource Management for Pods and Containers",
+  "authors": [
+   "{The Kubernetes Authors}"
+  ],
+  "year": 2026,
+  "venue": "Kubernetes Documentation",
+  "url": "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
+  "urldate": "2026-10-25",
+  "verified_via": "Official source (kubernetes/website repository)"
+ },
+ {
+  "id": "otelcontext",
+  "type": "online",
+  "title": "Context propagation",
+  "authors": [
+   "{OpenTelemetry Authors}"
+  ],
+  "year": 2026,
+  "venue": "OpenTelemetry Documentation",
+  "url": "https://opentelemetry.io/docs/concepts/context-propagation/",
+  "urldate": "2026-10-25",
+  "verified_via": "Official source (open-telemetry/opentelemetry.io repository)"
+ },
+ {
+  "id": "w3ctracecontext",
+  "type": "online",
+  "title": "Trace Context",
+  "authors": [
+   "{W3C}"
+  ],
+  "year": 2021,
+  "venue": "W3C Recommendation",
+  "url": "https://www.w3.org/TR/trace-context/",
+  "urldate": "2026-10-25",
+  "verified_via": "W3C TR page, status W3C Recommendation dated 23 November 2021",
+  "note": "W3C Recommendation, 23 November 2021"
+ },
+ {
+  "id": "promhistograms",
+  "type": "online",
+  "title": "Histograms and summaries",
+  "authors": [
+   "{Prometheus Authors}"
+  ],
+  "year": 2026,
+  "venue": "Prometheus Documentation",
+  "url": "https://prometheus.io/docs/practices/histograms/",
+  "urldate": "2026-10-25",
+  "verified_via": "Official documentation page"
+ },
+ {
+  "id": "composespec",
+  "type": "online",
+  "title": "Services top-level elements (Compose file reference)",
+  "authors": [
+   "{Docker Inc.}"
+  ],
+  "year": 2026,
+  "venue": "Docker Documentation",
+  "url": "https://docs.docker.com/reference/compose-file/services/",
+  "urldate": "2026-10-25",
+  "verified_via": "Official documentation page"
+ },
+ {
+  "id": "awsecsexpress",
+  "type": "online",
+  "title": "Amazon ECS Express Mode",
+  "authors": [
+   "{Amazon Web Services}"
+  ],
+  "year": 2026,
+  "venue": "Amazon ECS Developer Guide",
+  "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/express-service-overview.html",
+  "urldate": "2026-10-25",
+  "verified_via": "Official documentation page"
+ },
+ {
+  "id": "awsfargate",
+  "type": "online",
+  "title": "Architect for AWS Fargate for Amazon ECS",
+  "authors": [
+   "{Amazon Web Services}"
+  ],
+  "year": 2026,
+  "venue": "Amazon ECS Developer Guide",
+  "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html",
+  "urldate": "2026-10-25",
+  "verified_via": "Official documentation page"
+ },
+ {
+  "id": "awsapprunnerchange",
+  "type": "online",
+  "title": "AWS App Runner availability change",
+  "authors": [
+   "{Amazon Web Services}"
+  ],
+  "year": 2026,
+  "venue": "AWS App Runner Developer Guide",
+  "url": "https://docs.aws.amazon.com/apprunner/latest/dg/apprunner-availability-change.html",
+  "urldate": "2026-10-25",
+  "verified_via": "Official documentation page"
+ },
+ {
+  "id": "azurecontainerapps",
+  "type": "online",
+  "title": "Azure Container Apps overview",
+  "authors": [
+   "{Microsoft}"
+  ],
+  "year": 2026,
+  "venue": "Microsoft Learn",
+  "url": "https://learn.microsoft.com/azure/container-apps/overview",
+  "urldate": "2026-10-25",
+  "verified_via": "Microsoft Learn documentation search"
+ },
+ {
+  "id": "gcpcloudrun",
+  "type": "online",
+  "title": "What is Cloud Run",
+  "authors": [
+   "{Google Cloud}"
+  ],
+  "year": 2026,
+  "venue": "Google Cloud Documentation",
+  "url": "https://docs.cloud.google.com/run/docs/overview/what-is-cloud-run",
+  "urldate": "2026-10-25",
+  "verified_via": "Official documentation page"
+ },
+ {
+  "id": "toxiproxy",
+  "type": "online",
+  "title": "Toxiproxy: A TCP proxy to simulate network and system conditions for chaos and resiliency testing",
+  "authors": [
+   "{Shopify}"
+  ],
+  "year": 2026,
+  "venue": "GitHub repository",
+  "url": "https://github.com/Shopify/toxiproxy",
+  "urldate": "2026-10-25",
+  "verified_via": "Official repository README"
+ },
+ {
+  "id": "istiofault",
+  "type": "online",
+  "title": "Fault Injection",
+  "authors": [
+   "{Istio Authors}"
+  ],
+  "year": 2026,
+  "venue": "Istio Documentation",
+  "url": "https://istio.io/latest/docs/tasks/traffic-management/fault-injection/",
+  "urldate": "2026-10-25",
+  "verified_via": "Official documentation page"
+ }
+]

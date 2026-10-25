@@ -38,7 +38,8 @@ Three execution contexts are involved. Only the first one can run Docker today.
 | Item | Finding | Status |
 |---|---|---|
 | Project folder `E:\Projects\Cloud_Mini_Project` | Empty, not a Git repository | ok, writable |
-| Docker Desktop | `C:\Program Files\Docker\Docker` exists | **installed but NOT verified running**: I cannot run Windows commands from this session |
+| Docker Desktop | `C:\Program Files\Docker\Docker` exists | installed |
+| Docker client / Compose (reported by Parv, 2026-10-25, PowerShell 7.6.8) | client 29.4.2 (context `desktop-linux`), Compose v5.1.3 | installed. **Engine NOT running**: `docker version` and `docker run hello-world` failed with `failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine`. Fix steps in `docs/testing_on_windows.md` §7. The Compose file will avoid features newer than v5.1.3 |
 | File deletion in the project folder | blocked by default (`rm` → "Operation not permitted") | Syncing uses `tar --overwrite`, which was tested and works |
 
 ### 1c. Linux helper VM on Parv's computer (used only to write files into the folder)
@@ -160,3 +161,7 @@ docker compose ps
 | Missing capabilities not reported as passing | Yes: Windows Docker, GitHub credentials, cloud credentials and GitHub name availability are all listed as unverified/unavailable |
 
 Phase 0 is PARTIAL only because of the Windows Docker check, which needs you. It does **not** block Phase 1 or development, so work continues.
+
+**Update 2026-10-25:** Parv's output confirms the Docker client and Compose are installed on Windows, but the engine was not running. Phase 0 stays PARTIAL until `docker run --rm hello-world` succeeds there.
+
+**Design change from Phase 1 research:** AWS App Runner was dropped as the AWS target because it is no longer open to new customers. The AWS target is now Amazon ECS Express Mode on Fargate (see `docs/architecture.md` §6.3).

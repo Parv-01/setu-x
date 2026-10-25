@@ -1,0 +1,7 @@
+stateDiagram-v2
+  [*] --> CLOSED
+  CLOSED --> OPEN: N consecutive failures (timeout, connect error, 5xx)
+  OPEN --> HALF_OPEN: reset timeout elapsed
+  HALF_OPEN --> CLOSED: probe call succeeds
+  HALF_OPEN --> OPEN: probe call fails
+  note right of OPEN: calls rejected immediately (fail fast) and routed to fallback if configured

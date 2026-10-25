@@ -1,0 +1,254 @@
+[
+ {
+  "id": "mell2011nist",
+  "doi": "10.6028/NIST.SP.800-145",
+  "expect": {
+   "title": "The NIST Definition of Cloud Computing",
+   "first_author": "Mell",
+   "year": 2011
+  }
+ },
+ {
+  "id": "verma2015borg",
+  "doi": "10.1145/2741948.2741964",
+  "expect": {
+   "title": "Large-scale cluster management at Google with Borg",
+   "first_author": "Verma",
+   "year": 2015
+  }
+ },
+ {
+  "id": "dean2013tail",
+  "doi": "10.1145/2408776.2408794",
+  "expect": {
+   "title": "The tail at scale",
+   "first_author": "Dean",
+   "year": 2013
+  }
+ },
+ {
+  "id": "burns2016borg",
+  "doi": "10.1145/2890784",
+  "expect": {
+   "title": "Borg, Omega, and Kubernetes",
+   "first_author": "Burns",
+   "year": 2016
+  }
+ },
+ {
+  "id": "armbrust2010view",
+  "doi": "10.1145/1721654.1721672",
+  "expect": {
+   "title": "A view of cloud computing",
+   "first_author": "Armbrust",
+   "year": 2010
+  }
+ },
+ {
+  "id": "gan2019deathstar",
+  "doi": "10.1145/3297858.3304013",
+  "expect": {
+   "title": "An Open-Source Benchmark Suite for Microservices and Their Hardware-Software Implications for Cloud & Edge Systems",
+   "first_author": "Gan",
+   "year": 2019
+  }
+ },
+ {
+  "id": "ueda2016workload",
+  "doi": "10.1109/IISWC.2016.7581269",
+  "expect": {
+   "title": "Workload characterization for microservices",
+   "first_author": "Ueda",
+   "year": 2016
+  }
+ },
+ {
+  "id": "luo2021alibaba",
+  "doi": "10.1145/3472883.3487003",
+  "expect": {
+   "title": "Characterizing Microservice Dependency and Performance: Alibaba Trace Analysis",
+   "first_author": "Luo",
+   "year": 2021
+  }
+ },
+ {
+  "id": "zhou2021fault",
+  "doi": "10.1109/TSE.2018.2887384",
+  "expect": {
+   "title": "Fault Analysis and Debugging of Microservice Systems: Industrial Survey, Benchmark System, and Empirical Study",
+   "first_author": "Zhou",
+   "year": 2021
+  }
+ },
+ {
+  "id": "leitner2016patterns",
+  "doi": "10.1145/2885497",
+  "expect": {
+   "title": "Patterns in the Chaos",
+   "first_author": "Leitner",
+   "year": 2016
+  }
+ },
+ {
+  "id": "iosup2011variability",
+  "doi": "10.1109/CCGrid.2011.22",
+  "expect": {
+   "title": "On the Performance Variability of Production Cloud Services",
+   "first_author": "Iosup",
+   "year": 2011
+  }
+ },
+ {
+  "id": "schad2010runtime",
+  "doi": "10.14778/1920841.1920902",
+  "expect": {
+   "title": "Runtime measurements in the cloud",
+   "first_author": "Schad",
+   "year": 2010
+  }
+ },
+ {
+  "id": "papadopoulos2021methodological",
+  "doi": "10.1109/TSE.2019.2927908",
+  "expect": {
+   "title": "Methodological Principles for Reproducible Performance Evaluation in Cloud Computing",
+   "first_author": "Papadopoulos",
+   "year": 2021
+  }
+ },
+ {
+  "id": "hoefler2015scientific",
+  "doi": "10.1145/2807591.2807644",
+  "expect": {
+   "title": "Scientific benchmarking of parallel computing systems",
+   "first_author": "Hoefler",
+   "year": 2015
+  }
+ },
+ {
+  "id": "basiri2016chaos",
+  "doi": "10.1109/MS.2016.60",
+  "expect": {
+   "title": "Chaos Engineering",
+   "first_author": "Basiri",
+   "year": 2016
+  }
+ },
+ {
+  "id": "heorhiadi2016gremlin",
+  "doi": "10.1109/ICDCS.2016.11",
+  "expect": {
+   "title": "Gremlin: Systematic Resilience Testing of Microservices",
+   "first_author": "Heorhiadi",
+   "year": 2016
+  }
+ },
+ {
+  "id": "felter2015containers",
+  "doi": "10.1109/ISPASS.2015.7095802",
+  "expect": {
+   "title": "An updated performance comparison of virtual machines and Linux containers",
+   "first_author": "Felter",
+   "year": 2015
+  }
+ },
+ {
+  "id": "dragoni2017microservices",
+  "doi": "10.1007/978-3-319-67425-4_12",
+  "expect": {
+   "title": "Microservices: Yesterday, Today, and Tomorrow",
+   "first_author": "Dragoni",
+   "year": 2017
+  }
+ },
+ {
+  "id": "petcu2013multicloud",
+  "doi": "10.1145/2462326.2462328",
+  "expect": {
+   "title": "Multi-Cloud: expectations and current approaches",
+   "first_author": "Petcu",
+   "year": 2013
+  }
+ },
+ {
+  "id": "grozev2014intercloud",
+  "doi": "10.1002/spe.2168",
+  "expect": {
+   "title": "Inter-Cloud architectures and application brokering: taxonomy and survey",
+   "first_author": "Grozev",
+   "year": 2014
+  }
+ },
+ {
+  "id": "oparamartins2016lockin",
+  "doi": "10.1186/s13677-016-0054-z",
+  "expect": {
+   "title": "Critical analysis of vendor lock-in and its impact on cloud computing migration: a business perspective",
+   "first_author": "Opara-Martins",
+   "year": 2016
+  }
+ },
+ {
+  "id": "brogi2017fog",
+  "doi": "10.1109/JIOT.2017.2701408",
+  "expect": {
+   "title": "QoS-Aware Deployment of IoT Applications Through the Fog",
+   "first_author": "Brogi",
+   "year": 2017
+  }
+ },
+ {
+  "id": "meiklejohn2021filibuster",
+  "doi": "10.1145/3472883.3487005",
+  "expect": {
+   "title": "Service-Level Fault Injection Testing",
+   "first_author": "Meiklejohn",
+   "year": 2021
+  }
+ },
+ {
+  "id": "jurgelionis2011netem",
+  "doi": "10.1109/ICCCN.2011.6005933",
+  "expect": {
+   "title": "An Empirical Study of NetEm Network Emulation Functionalities",
+   "first_author": "Jurgelionis",
+   "year": 2011
+  }
+ },
+ {
+  "id": "corneo2021clouds",
+  "doi": "10.1145/3442381.3449854",
+  "expect": {
+   "title": "Surrounded by the Clouds",
+   "first_author": "Corneo",
+   "year": 2021
+  }
+ },
+ {
+  "id": "becker2022emulation",
+  "doi": "10.1109/IC2E55432.2022.00007",
+  "expect": {
+   "title": "Network Emulation in Large-Scale Virtual Edge Testbeds: A Note of Caution and the Way Forward",
+   "first_author": "Becker",
+   "year": 2022
+  }
+ },
+ {
+  "id": "eismann2020microservices",
+  "doi": "10.1145/3358960.3379124",
+  "expect": {
+   "title": "Microservices: A Performance Tester's Dream or Nightmare?",
+   "first_author": "Eismann",
+   "year": 2020
+  }
+ },
+ {
+  "id": "vonkistowski2018teastore",
+  "doi": "10.1109/MASCOTS.2018.00030",
+  "expect": {
+   "title": "TeaStore: A Micro-Service Reference Application for Benchmarking, Modeling and Resource Management Research",
+   "first_author": "von Kistowski",
+   "year": 2018
+  }
+ }
+]

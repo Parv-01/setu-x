@@ -1,0 +1,28 @@
+sequenceDiagram
+  autonumber
+  participant C as Client / load generator
+  participant G as gateway (local)
+  participant I as inventory-a (aws-simulated)
+  participant J as inventory-b (gcp-simulated)
+  participant P as pricing (azure-simulated)
+  C->>G: POST /api/orders {sku, quantity, tier} + X-Request-ID / traceparent
+  Note over G: validate · assign request_id · start deadline (outer bound)
+  par parallel call mode (sequential mode: inventory, then pricing)
+    G->>G: wait injected delay/2 (local→aws)
+    G->>I: POST /v1/stock (timeout T, ≤ r retries, breaker check)
+    alt healthy
+      I-->>G: 200 {available}
+    else error / timeout / breaker open
+      G->>J: POST /v1/stock (fallback replica, delay local→gcp)
+      J-->>G: 200 {available}
+    end
+    G->>G: wait injected delay/2 (aws→local)
+  and
+    G->>P: POST /v1/quote (timeout T, + injected delay local↔azure)
+    alt healthy
+      P-->>G: 200 {unit_price}
+    else failure
+      G->>G: degraded: list-price fallback, flagged
+    end
+  end
+  G-->>C: 200 confirmed | 200 degraded | 503 unavailable (+ timings, routing decision, resilience events)
