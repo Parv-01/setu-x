@@ -4,6 +4,7 @@
 $script:Lines = [System.Collections.Generic.List[string]]::new()
 $script:Results = [System.Collections.Generic.List[string]]::new()
 $script:Fails = 0
+$script:Skips = 0
 
 function Log([string]$Text) { Write-Host $Text; $script:Lines.Add($Text) }
 
@@ -21,6 +22,13 @@ function Record([string]$Id, [bool]$Ok, [string]$Detail) {
     if (-not $Ok) { $script:Fails++ }
     $script:Results.Add(('{0,-4} {1,-4} {2}' -f $Id, $status, $Detail))
     Log ">>> $Id $status - $Detail"
+}
+
+function Skip([string]$Id, [string]$Why) {
+    # A check that was NOT executed. Never counted as passing; shown separately in the summary.
+    $script:Skips++
+    $script:Results.Add(('{0,-4} {1,-4} {2}' -f $Id, 'SKIP', $Why))
+    Log ">>> $Id SKIP - $Why (not executed)"
 }
 
 function Invoke-Http([string]$Method, [string]$Url, $Body = $null) {
@@ -83,8 +91,9 @@ function Write-Summary([string]$Phase, [string]$LogPath) {
     Log ''
     Log '================ SUMMARY ================'
     foreach ($r in $script:Results) { Log $r }
-    Log "checks: $($script:Results.Count)  failed: $script:Fails"
-    Log ($(if ($script:Fails -eq 0) { "$Phase ACCEPTANCE: PASS" } else { "$Phase ACCEPTANCE: FAIL" }))
+    Log "checks: $($script:Results.Count)  failed: $script:Fails  skipped (not executed): $script:Skips"
+    $verdict = if ($script:Fails -gt 0) { 'FAIL' } elseif ($script:Skips -gt 0) { "INCOMPLETE ($script:Skips check(s) not executed)" } else { 'PASS' }
+    Log "$Phase ACCEPTANCE: $verdict"
     $script:Lines | Set-Content -Path $LogPath -Encoding utf8
     Write-Host "log written to $LogPath"
 }

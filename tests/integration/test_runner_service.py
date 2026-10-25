@@ -116,7 +116,8 @@ async def controller_with(routes, runner_url="http://runner"):
 
 async def test_controller_proxies_runner():
     app, http = await controller_with({"runner": fake_runner()})
-    async with app.router.lifespan_context(app), httpx.AsyncClient(transport=asgi(app), base_url="http://c") as c:
+    async with app.router.lifespan_context(app), httpx.AsyncClient(transport=asgi(app),
+                                                                   base_url="http://controller") as c:
         assert (await c.get("/api/scenarios")).json() == {"scenarios": [{"name": "x"}]}
         assert (await c.post("/api/experiments", json={"scenario": "x"})).json() == {"echo": {"scenario": "x"}}
         f = await c.get("/api/experiments/abc/files/observations.csv")
@@ -128,12 +129,14 @@ async def test_controller_proxies_runner():
 
 async def test_controller_runner_unreachable_or_disabled():
     app, http = await controller_with({})
-    async with app.router.lifespan_context(app), httpx.AsyncClient(transport=asgi(app), base_url="http://c") as c:
+    async with app.router.lifespan_context(app), httpx.AsyncClient(transport=asgi(app),
+                                                                   base_url="http://controller") as c:
         r = await c.get("/api/experiments")
         assert r.status_code == 503 and r.json()["error"]["code"] == "runner_unreachable"
     await http.aclose()
     app, http = await controller_with({}, runner_url="")
-    async with app.router.lifespan_context(app), httpx.AsyncClient(transport=asgi(app), base_url="http://c") as c:
+    async with app.router.lifespan_context(app), httpx.AsyncClient(transport=asgi(app),
+                                                                   base_url="http://controller") as c:
         r = await c.get("/api/scenarios")
         assert r.status_code == 503 and r.json()["error"]["code"] == "runner_disabled"
     await http.aclose()

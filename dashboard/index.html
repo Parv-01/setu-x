@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SETU-X Dashboard</title>
+  <link rel="stylesheet" href="css/app.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <strong>SETU-X</strong>
+      <span class="sub">hybrid-cloud microservices lab · local development dashboard</span>
+    </div>
+    <div class="status-line">
+      <span id="mode-badge" class="badge">mode: …</span>
+      <span id="conn" class="conn">connecting…</span>
+    </div>
+  </header>
+
+  <div id="sim-notice" class="notice" hidden>
+    Environment labels ending in <code>-simulated</code> are labels on this one Docker host, not deployments
+    on AWS, Azure or Google Cloud. Link delays are <em>configured</em> (injected) values, not measured provider latencies.
+  </div>
+
+  <nav class="tabs" aria-label="Sections">
+    <a href="#overview" data-tab="overview">Overview</a>
+    <a href="#control" data-tab="control">Control</a>
+    <a href="#experiments" data-tab="experiments">Experiments</a>
+    <a href="#results" data-tab="results">Results</a>
+    <a href="#compare" data-tab="compare">Compare</a>
+    <a href="#about" data-tab="about">Method &amp; limits</a>
+  </nav>
+
+  <div id="errors" class="errors" aria-live="polite"></div>
+
+  <main>
+    <!-- ============================== OVERVIEW -->
+    <section id="tab-overview" class="tab" hidden>
+      <div class="panel">
+        <div class="panel-head"><h2>Service health</h2><span class="badge live">LIVE · polled every 5 s</span></div>
+        <p class="hint">Readiness of every container, probed by the controller (<code>/health/ready</code>). The probe time is the controller's health-check round trip, not a request latency.</p>
+        <div id="health"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Dependency graph and placement</h2><span class="badge config">CONFIGURED</span></div>
+        <p class="hint">Gateway calls inventory (primary, with a secondary for fallback) and pricing. Boxes are environment <em>labels</em>; edge labels are the configured link delay the gateway injects in simulated mode.</p>
+        <div id="graph" class="graph"></div>
+        <div id="placement-summary" class="kv"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Real-cloud adapters</h2><span class="badge config">CONFIGURATION ONLY</span></div>
+        <div id="adapters"></div>
+      </div>
+    </section>
+
+    <!-- ============================== CONTROL -->
+    <section id="tab-control" class="tab" hidden>
+      <div class="panel">
+        <div class="panel-head"><h2>Placement, routing and resilience</h2><span id="placement-version" class="badge config"></span></div>
+        <p class="hint">Changes are validated by the controller and picked up by the gateway within its poll interval. Instance names and URLs are fixed by <code>configs/placement.yaml</code>. Experiments reset these settings before every run.</p>
+        <form id="placement-form" class="form"></form>
+        <div class="buttons">
+          <button id="placement-apply" type="button" class="primary">Apply placement</button>
+          <button id="placement-reset" type="button">Reset placement and links to files</button>
+        </div>
+        <div id="placement-msg" class="msg"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Link delays</h2><span class="badge config">CONFIGURED, NOT MEASURED</span></div>
+        <p class="hint">Round-trip delay (ms) injected per call between two environments, only when the stack runs with <code>SETU_MODE=simulated</code>. <span id="links-mode-note"></span></p>
+        <form id="links-form" class="form grid-links"></form>
+        <div class="buttons"><button id="links-apply" type="button" class="primary">Apply link delays</button></div>
+        <div id="links-msg" class="msg"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Fault injection</h2><span class="badge warn">BOUNDED · LOCAL DEVELOPMENT ONLY</span></div>
+        <p class="hint">Faults affect the business endpoint of one allow-listed downstream instance, expire on their own (1–300 s), and leave health endpoints up (application-level faults).</p>
+        <form id="fault-form" class="form row">
+          <label>Target <select name="target" id="fault-target"></select></label>
+          <label>Mode <select name="mode">
+            <option value="error">error (HTTP 503)</option>
+            <option value="slow">slow (added delay)</option>
+            <option value="hang">hang (until expiry, max 30 s)</option>
+          </select></label>
+          <label>Duration (s) <input name="duration_s" type="number" min="1" max="300" step="1" value="30" required></label>
+          <label>Probability <input name="probability" type="number" min="0" max="1" step="0.05" value="1"></label>
+          <label>Delay (ms, slow only) <input name="delay_ms" type="number" min="0" max="5000" step="50" value="0"></label>
+          <label>Seed (optional) <input name="seed" type="number" min="0" step="1"></label>
+        </form>
+        <div class="buttons">
+          <button id="fault-inject" type="button" class="danger">Inject fault</button>
+          <button id="fault-clear-all" type="button">Clear all faults</button>
+        </div>
+        <div id="fault-msg" class="msg"></div>
+        <div id="faults"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Send one test order</h2><span class="badge live">LIVE</span></div>
+        <form id="order-form" class="form row">
+          <label>SKU <select name="sku"><option>SKU-001</option><option selected>SKU-002</option><option>SKU-003</option></select></label>
+          <label>Quantity <input name="quantity" type="number" min="1" max="100" value="1"></label>
+          <label>Customer tier <select name="customer_tier"><option>standard</option><option>gold</option></select></label>
+        </form>
+        <div class="buttons"><button id="order-send" type="button" class="primary">Send order</button></div>
+        <div id="order-result"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Routing decisions and resilience events</h2><span class="badge live">LIVE · newest first</span></div>
+        <div class="buttons"><button id="gw-refresh" type="button">Refresh</button></div>
+        <h3>Routing decisions</h3><div id="decisions"></div>
+        <h3>Circuit breakers</h3><div id="breakers"></div>
+        <h3>Resilience events</h3><div id="events"></div>
+      </div>
+    </section>
+
+    <!-- ============================== EXPERIMENTS -->
+    <section id="tab-experiments" class="tab" hidden>
+      <div class="panel">
+        <div class="panel-head"><h2>Run a bounded experiment</h2></div>
+        <form id="exp-form" class="form">
+          <label class="wide">Scenario <select id="scenario-select" name="scenario"></select></label>
+          <div id="scenario-detail" class="scenario-detail"></div>
+          <fieldset>
+            <legend>Overrides (optional, bounded; empty = scenario value)</legend>
+            <div class="row">
+              <label>Rate (req/s, ≤ 100) <input name="rate_rps" type="number" min="0.1" max="100" step="0.1"></label>
+              <label>Warm-up (s, ≤ 60) <input name="warmup_s" type="number" min="0" max="60" step="1"></label>
+              <label>Measurement (s, ≤ 300) <input name="duration_s" type="number" min="1" max="300" step="1"></label>
+              <label>Runs per condition (≤ 20) <input name="runs" type="number" min="1" max="20" step="1"></label>
+              <label class="wide">Label <input name="label" type="text" maxlength="80" placeholder="e.g. laptop on mains power"></label>
+            </div>
+            <div id="override-links" class="row"></div>
+          </fieldset>
+          <p id="estimate" class="hint"></p>
+        </form>
+        <div class="buttons">
+          <button id="exp-start" type="button" class="primary">Start experiment</button>
+          <button id="exp-stop" type="button" class="danger" disabled>Stop</button>
+        </div>
+        <div id="exp-msg" class="msg"></div>
+      </div>
+      <div class="panel" id="live-panel" hidden>
+        <div class="panel-head"><h2>Experiment in progress</h2><span class="badge provisional">LIVE · PROVISIONAL</span></div>
+        <div id="live-progress" class="progress"></div>
+        <p id="live-label" class="hint"></p>
+        <h3>Requests per second by outcome (current run)</h3>
+        <div id="live-counts"></div>
+        <h3>Median latency of successful requests per second (current run)</h3>
+        <div id="live-latency"></div>
+        <h3>Completed runs (provisional)</h3>
+        <div id="live-runs"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Experiment history</h2><span class="badge historical">HISTORICAL · results volume</span></div>
+        <div class="buttons"><button id="history-refresh" type="button">Refresh</button></div>
+        <div id="history"></div>
+      </div>
+    </section>
+
+    <!-- ============================== RESULTS -->
+    <section id="tab-results" class="tab" hidden>
+      <div class="panel">
+        <div class="panel-head"><h2>Experiment results</h2><span class="badge historical">HISTORICAL · from summary.json</span></div>
+        <label class="wide">Experiment <select id="result-select"></select></label>
+        <div id="result-head"></div>
+      </div>
+      <div class="panel" id="result-charts" hidden>
+        <div class="panel-head"><h2>Run-level results by condition</h2><span class="badge measured">MEASURED</span></div>
+        <p class="hint">Each dot is one run (the unit of replication). The bar is the median of the runs; the vertical line is a 95% bootstrap interval over runs (coarse with few runs). Percentiles are never averaged across runs.</p>
+        <label>Metric <select id="metric-select"></select></label>
+        <div id="metric-chart"></div>
+        <h3>Table</h3>
+        <div id="result-table"></div>
+        <h3>Comparisons with the reference condition</h3>
+        <div id="result-comparisons"></div>
+      </div>
+      <div class="panel" id="result-timeline-panel" hidden>
+        <div class="panel-head"><h2>One run over time</h2><span class="badge measured">MEASURED · raw rows</span></div>
+        <p class="hint">Per-second counts from <code>observations.csv</code>, by scheduled send second (0 = start of measurement; negative = warm-up, excluded from results). Shaded: fault window at its actual injection time.</p>
+        <label>Run <select id="run-select"></select></label>
+        <button id="timeline-load" type="button">Load timeline</button>
+        <div id="timeline-counts"></div>
+        <div id="timeline-latency"></div>
+      </div>
+      <div class="panel" id="result-export" hidden>
+        <div class="panel-head"><h2>Export</h2></div>
+        <div id="export-links" class="buttons"></div>
+      </div>
+    </section>
+
+    <!-- ============================== COMPARE -->
+    <section id="tab-compare" class="tab" hidden>
+      <div class="panel">
+        <div class="panel-head"><h2>Compare two experiments</h2><span class="badge historical">HISTORICAL</span></div>
+        <div class="row">
+          <label>Experiment A <select id="cmp-a"></select></label>
+          <label>Experiment B <select id="cmp-b"></select></label>
+          <label>Metric <select id="cmp-metric"></select></label>
+        </div>
+        <div class="buttons"><button id="cmp-run" type="button" class="primary">Compare</button></div>
+        <div id="cmp-warnings"></div>
+        <div id="cmp-chart"></div>
+        <div id="cmp-table"></div>
+      </div>
+    </section>
+
+    <!-- ============================== ABOUT -->
+    <section id="tab-about" class="tab" hidden>
+      <div class="panel prose">
+        <h2>How to read this dashboard</h2>
+        <dl class="legend-dl">
+          <dt><span class="badge live">LIVE</span></dt><dd>Read from the running services just now; changes with every refresh.</dd>
+          <dt><span class="badge provisional">PROVISIONAL</span></dt><dd>Counts from an experiment still running. Not validated and never used as a result.</dd>
+          <dt><span class="badge historical">HISTORICAL</span></dt><dd>Read from the files of a finished experiment (summary.json, observations.csv), with its experiment ID and finish time.</dd>
+          <dt><span class="badge measured">MEASURED</span></dt><dd>Latencies and counts measured by the load generator inside the Compose network.</dd>
+          <dt><span class="badge config">CONFIGURED</span></dt><dd>A setting (link delay, timeout, fault window), not a measurement. Drawn as dashed reference lines or shaded bands.</dd>
+          <dt><span class="badge sim">SIMULATED LABEL</span></dt><dd>An environment label on this Docker host. No cloud resources are involved.</dd>
+        </dl>
+        <h2>Method in brief</h2>
+        <ul>
+          <li>Open-loop load: requests are sent on a fixed schedule whether or not earlier ones have answered; latency is measured from the scheduled send time.</li>
+          <li>The run is the unit of replication. Per-run percentiles are never averaged; conditions are compared on run-level medians with bootstrap intervals over runs.</li>
+          <li>p90/p95/p99 are shown only when a run has at least 100/200/1,000 successful requests.</li>
+          <li>Recovery time is measured from the end of a fault with a 1 s rolling success rate and a 3 s hold; it includes up to about 1 s of window lag.</li>
+        </ul>
+        <h2>Limitations</h2>
+        <ul>
+          <li>All services, the load generator and every "environment" share one host: one CPU pool, kernel and network. Results describe this machine, not a cloud.</li>
+          <li>Simulated link delays are constant configured values: no jitter, loss or bandwidth model.</li>
+          <li>Faults are application-level; health endpoints stay up during them.</li>
+          <li>Failure-detection times differ between Docker platforms (for example, connect errors vs connect timeouts).</li>
+          <li>The control surface (placement, faults, experiments) has no authentication. It is for local development, published on 127.0.0.1 only, and refuses state-changing requests from other web origins.</li>
+        </ul>
+        <p>Full method: <code>docs/methodology.md</code>. Architecture: <code>docs/architecture.md</code>.</p>
+      </div>
+    </section>
+  </main>
+  <footer class="foot">SETU-X · Parv Agarwal · local development control surface (127.0.0.1)</footer>
+</body>
+</html>

@@ -4,10 +4,12 @@ It runs the load generator in the same clock domain as the services. The control
 to the host (127.0.0.1:8090/api/experiments...).
 
 GET  /api/scenarios                         scenario files in configs/scenarios (validated)
-POST /api/experiments {"scenario": "A_baseline", "git_commit": "...", "label": "..."}
+POST /api/experiments {"scenario": "A_baseline", "git_commit": "...", "label": "...",
+                       "overrides": {"rate_rps", "warmup_s", "duration_s", "runs", "links"}}  (all optional, bounded)
                                             start one experiment (409 if one is already running)
 GET  /api/experiments                       experiments in the results volume (newest first)
 GET  /api/experiments/{id}                  status + progress (+ summary when finished)
+GET  /api/experiments/{id}/live             provisional per-second counts of the run in progress
 POST /api/experiments/{id}/stop             stop the running experiment (completed runs are kept)
 GET  /api/experiments/{id}/files/{name}     manifest.json | observations.jsonl | observations.csv |
                                             events.jsonl | summary.json
@@ -19,6 +21,7 @@ per run, <= 2 h total) and fault targets are the allow-listed downstream instanc
 from __future__ import annotations
 
 import asyncio
+import copy
 import json
 import logging
 import re
@@ -29,13 +32,13 @@ from typing import Any
 import httpx
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, JSONResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from setu_x.common.app import create_app, error_body
 from setu_x.common.config import ConfigError, RunnerSettings
 from setu_x.experiments.records import FILES
 from setu_x.experiments.runner import ControlPlane, ExperimentError, ExperimentRunner
-from setu_x.experiments.scenario import load_scenario
+from setu_x.experiments.scenario import load_scenario, parse_scenario
 from setu_x.placement import EnvironmentsConfig, PlacementConfig, load_config_dir
 
 log = logging.getLogger("setu_x.runner")
@@ -44,10 +47,57 @@ ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,96}$")
 MEDIA = {".json": "application/json", ".jsonl": "application/x-ndjson", ".csv": "text/csv"}
 
 
+class Overrides(BaseModel):
+    """Bounded changes to a scenario file (dashboard). They are applied to the file's content and the
+    result is validated by the same Scenario schema, so the scenario bounds still hold."""
+
+    model_config = ConfigDict(extra="forbid")
+    rate_rps: float | None = Field(default=None, gt=0, le=100)
+    warmup_s: float | None = Field(default=None, ge=0, le=60)
+    duration_s: float | None = Field(default=None, gt=0, le=300)
+    runs: int | None = Field(default=None, ge=1, le=20)
+    links: dict[str, int] = Field(default_factory=dict, max_length=20,
+                                  description="link delays (ms) merged into the scenario defaults; a condition "
+                                              "that sets the same link keeps its own value")
+
+    def apply(self, raw: dict) -> dict:
+        out = copy.deepcopy(raw)
+        w = out.setdefault("workload", {})
+        for key in ("rate_rps", "warmup_s", "duration_s"):
+            if getattr(self, key) is not None:
+                w[key] = getattr(self, key)
+        if self.runs is not None:
+            out["runs"] = self.runs
+        if self.links:
+            d = out.setdefault("defaults", {})
+            d["links"] = {**(d.get("links") or {}), **self.links}
+        return out
+
+    def given(self) -> dict:
+        return self.model_dump(exclude_defaults=True)
+
+
 class StartRequest(BaseModel):
     scenario: str = Field(pattern=NAME_RE.pattern, description="scenario file name without .yaml")
+    overrides: Overrides | None = None
     git_commit: str | None = Field(default=None, pattern=r"^[0-9a-f]{7,40}(-dirty)?$")
     label: str = Field(default="", max_length=80, pattern=r"^[A-Za-z0-9 _.,:()/-]*$")
+
+
+def _leading_comment(path: Path) -> str:
+    lines = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.startswith("#"):
+            break
+        lines.append(line.lstrip("#").strip())
+    return "\n".join(lines).strip()
+
+
+def _condition_view(sc, c) -> dict[str, Any]:
+    return {"name": c.name, "description": c.description, "rate_rps": sc.rate_for(c), "call_mode": c.call_mode,
+            "resilience": c.resilience, "instance_env": c.instance_env, "links": c.links,
+            "faults": [{"target": f.target, "mode": f.mode, "at_s": f.at_s, "duration_s": f.duration_s,
+                        "probability": f.probability} for f in c.faults]}
 
 
 def build_app(settings: RunnerSettings, client: httpx.AsyncClient | None = None,
@@ -94,8 +144,12 @@ def build_app(settings: RunnerSettings, client: httpx.AsyncClient | None = None,
                 w = sc.workload
                 out.append({"name": p.stem, "id": sc.id, "title": sc.title, "valid": True,
                             "requires_mode": sc.requires_mode, "hypotheses": sc.hypotheses,
+                            "description": sc.description, "comment": _leading_comment(p),
                             "conditions": [c.name for c in sc.conditions], "runs": sc.runs,
+                            "condition_detail": [_condition_view(sc, c) for c in sc.conditions],
+                            "default_links": sc.defaults.links,
                             "rate_rps": w.rate_rps, "warmup_s": w.warmup_s, "duration_s": w.duration_s,
+                            "arrival": w.arrival,
                             "estimated_s": round(sc.total_runs() * (w.warmup_s + w.duration_s + sc.cooldown_s
                                                                     + 1.5), 1)})
             except ConfigError as exc:
@@ -114,13 +168,16 @@ def build_app(settings: RunnerSettings, client: httpx.AsyncClient | None = None,
             return JSONResponse(status_code=404, content=error_body(
                 "unknown_scenario", f"no scenario '{body.scenario}' in configs/scenarios", rid))
         try:
-            sc, _raw = load_scenario(path, envs, base)
+            sc, raw = load_scenario(path, envs, base)
+            overrides = body.overrides.given() if body.overrides else {}
+            if overrides:
+                sc = parse_scenario(body.overrides.apply(raw), f"{path.name} with overrides {overrides}", envs, base)
         except ConfigError as exc:
             return JSONResponse(status_code=422, content=error_body("invalid_scenario", str(exc), rid))
         control = ControlPlane(state["http"], settings.controller_url, settings.gateway_url)
         runner = ExperimentRunner(sc, path.read_text(encoding="utf-8"), f"configs/scenarios/{path.name}", envs, base,
                                   control, state["load"], results_dir, git_commit=body.git_commit,
-                                  label=body.label)
+                                  label=body.label, overrides=overrides)
         try:
             await runner.preflight()
         except ExperimentError as exc:
@@ -179,6 +236,15 @@ def build_app(settings: RunnerSettings, client: httpx.AsyncClient | None = None,
                 "median_latency_ok_ms", "success_rate", "availability") if m in v["run_level"]}}
                 for k, v in (s.get("conditions") or {}).items()}
         return out
+
+    @app.get("/api/experiments/{exp_id}/live", tags=["experiments"])
+    async def live(exp_id: str, request: Request):
+        cur = state["current"]
+        if cur is None or cur.id != exp_id:
+            return JSONResponse(status_code=404, content=error_body(
+                "not_live", "live data exists only for the experiment running (or last run) in this runner process",
+                request.state.request_id))
+        return {"experiment_id": cur.id, "status": cur.status, "progress": dict(cur.progress), **cur.live.snapshot()}
 
     @app.post("/api/experiments/{exp_id}/stop", tags=["experiments"])
     async def stop(exp_id: str, request: Request):

@@ -2,6 +2,8 @@
 # One image for all SETU-X services; each container runs a different module (see compose.yaml).
 # Base image pinned by digest for reproducibility (python:3.11-slim, multi-arch index digest).
 ARG PYTHON_IMAGE=python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377
+# Browser tests only (optional profile "browser"): Playwright's image provides Chromium for Playwright 1.63.0.
+ARG PLAYWRIGHT_IMAGE=mcr.microsoft.com/playwright/python:v1.63.0-noble@sha256:72bd171a9ffc2b4b59532aaa6210e21014d07093120dc25528870c0b840da1f0
 
 FROM ${PYTHON_IMAGE} AS base
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -28,6 +30,10 @@ RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels \
     pip install --no-index --find-links /wheels setu-x
 # Default configuration baked into the image; compose.yaml mounts ./configs over it (read-only).
 COPY configs ./configs
+# Dashboard (static HTML/CSS/JS served by the controller at /dashboard/)
+COPY dashboard/index.html ./dashboard/index.html
+COPY dashboard/css ./dashboard/css
+COPY dashboard/js ./dashboard/js
 # Experiment results directory (the runner mounts the named volume "setu-results" here; a new named
 # volume copies this ownership, so the non-root user can write to it).
 RUN mkdir -p /app/results && chown 10001:10001 /app/results
@@ -46,3 +52,16 @@ COPY src ./src
 COPY tests ./tests
 USER 10001
 CMD ["pytest", "-p", "no:cacheprovider", "-m", "not e2e"]
+
+# ---- browser-test: Playwright + Chromium driving the dashboard (compose profile "browser") ----------
+# Large image (~3.5 GB). Not needed for the services or the other tests.
+FROM ${PLAYWRIGHT_IMAGE} AS browser-test
+WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_DISABLE_PIP_VERSION_CHECK=1 PIP_NO_CACHE_DIR=1
+COPY requirements/browser.lock ./requirements/browser.lock
+RUN --mount=type=secret,id=pip_ca,required=false \
+    if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi; \
+    pip install --break-system-packages --no-deps -r requirements/browser.lock
+COPY tests/browser ./tests/browser
+USER pwuser
+CMD ["python3", "-m", "pytest", "-p", "no:cacheprovider", "-c", "tests/browser/pytest.ini", "tests/browser"]

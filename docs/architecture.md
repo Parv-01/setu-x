@@ -25,7 +25,7 @@ Status: **Phases 2–4 implemented** (services, placement, routing, controller, 
 | `inventory-a` | Deterministic stock check; bounded fault injection (error / slow / hang) | `aws-simulated` | none (internal) | 2, 4 |
 | `inventory-b` | Second inventory replica for fallback and failure-domain experiments | `gcp-simulated` | none | 3–4 |
 | `pricing` | Deterministic price quote; can be made slow or failing; the gateway then returns a *degraded* order using a flagged list price | `azure-simulated` | none | 2, 4 |
-| `controller` | Source of truth for placement, routing and link-delay config; bounded fault control plane; health aggregation; proxies the runner API to the host; serves the dashboard; hosts the adapter registry | `local` | `127.0.0.1:8090` | 3, 5, 6 |
+| `controller` | Source of truth for placement, routing and link-delay config; bounded fault control plane; health aggregation; proxies the runner API and read-only gateway views to the host; serves the dashboard (`/dashboard/`, strict CSP, origin and host checks); hosts the adapter registry | `local` | `127.0.0.1:8090` | 3, 5, 6 |
 | `runner` | Experiment runner: open-loop load generator, per-run isolation, records (named volume `setu-results`), validation and summary statistics | `local` | none (reached via the controller) | 5 |
 
 **Why the order logic lives in the gateway.** A separate `orders` hop would add a dependency without testing anything that H1–H5 need. If a deeper call graph is needed later (for example a three-level chain for H4), it can be split out without changing the experiment harness.
@@ -237,6 +237,14 @@ Each experiment writes `results/<experiment_id>/` with `manifest.json`, `observa
 ### 8.3 Load generation
 
 The generator is open-loop at a fixed target rate (seeded constant or Poisson arrivals), with a cap on in-flight requests. Requests that cannot be sent because the cap is reached are recorded as `dropped`, not silently skipped. Latency is measured from the scheduled send time; generator lag is recorded per request. Defaults: 5 s warm-up, then 30 s measurement, 3 runs per condition, randomized run order. Scenarios are bounded (≤ 100 req/s, ≤ 300 s per run, ≤ 2 h in total), and before each run the platform is reset and the gateway is synced and reseeded (`methodology.md` §6).
+
+## 8.4 Dashboard (Phase 6)
+
+A static page (`dashboard/`) served by the controller; details in [`dashboard.md`](dashboard.md).
+- **No build step or external assets.** It needs no build step and loads no external assets. The Content-Security-Policy allows same-origin scripts only.
+- **Read-only.** It reads results only from the runner's files (`summary.json`, `manifest.json`, `observations.csv`) and never computes or stores reported results itself.
+- **Value labels.** Every value is labelled LIVE, PROVISIONAL, HISTORICAL, MEASURED, CONFIGURED or SIMULATED LABEL.
+- **Browser-request protections.** The controller refuses state-changing requests from other web origins and requests with a foreign Host header (DNS rebinding). It is a local-development control surface without authentication, published on 127.0.0.1 only.
 
 ## 9. Observability
 

@@ -20,6 +20,7 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import json
+import math
 import os
 import platform
 import secrets
@@ -35,7 +36,7 @@ import httpx
 
 from setu_x import __version__
 from setu_x.experiments.loadgen import generate, plan_requests
-from setu_x.experiments.metrics import run_metrics
+from setu_x.experiments.metrics import percentile, run_metrics
 from setu_x.experiments.records import RecordWriter, validate_records, write_json
 from setu_x.experiments.scenario import Scenario, links_for, placement_for
 from setu_x.experiments.schedule import arrival_offsets, run_order, run_seed
@@ -165,6 +166,62 @@ class ControlPlane:
         return list(reversed(g.get("events", []))), list(reversed(c.get("events", []))), warnings
 
 
+class LiveView:
+    """Provisional per-second counts while a run is in progress (dashboard "live" panel).
+
+    Not validated and never used for results: summary.json is computed from the files on disk.
+    """
+
+    LABEL = ("LIVE, provisional: per-second counts from the run in progress, attributed to the scheduled send "
+             "second. Not validated; results come only from summary.json after the experiment.")
+
+    def __init__(self) -> None:
+        self.run: dict[str, Any] | None = None
+        self.buckets: dict[int, dict[str, Any]] = {}
+        self.completed: list[dict[str, Any]] = []
+
+    def start_run(self, run_id: str, condition: str, warmup_s: float, duration_s: float,
+                  faults: list[dict[str, Any]]) -> None:
+        self.run = {"run_id": run_id, "condition": condition, "warmup_s": warmup_s, "duration_s": duration_s,
+                    "faults": faults}
+        self.buckets = {}
+
+    def add(self, row: dict[str, Any]) -> None:
+        sec = math.floor(float(row["measure_offset_s"]))
+        b = self.buckets.setdefault(sec, {"sent": 0, "ok": 0, "degraded": 0, "failed": 0, "dropped": 0, "lat": []})
+        outcome = row["outcome"]
+        if outcome == "dropped":
+            b["dropped"] += 1
+            return
+        b["sent"] += 1
+        if outcome in ("confirmed", "rejected"):
+            b["ok"] += 1
+            b["lat"].append(float(row["latency_ms"]))
+        elif outcome == "degraded":
+            b["degraded"] += 1
+        else:
+            b["failed"] += 1
+
+    def finish_run(self, rows: list[dict[str, Any]], duration_s: float) -> None:
+        if self.run is None:
+            return
+        m = run_metrics(rows, duration_s)
+        self.completed.append({"run_id": self.run["run_id"], "condition": self.run["condition"],
+                               "success_rate": m["success_rate"], "availability": m["availability"],
+                               "median_latency_ok_ms": m["latency_ok_ms"]["p50"], "measure_rows": m["measure_rows"]})
+
+    def snapshot(self) -> dict[str, Any]:
+        seconds = []
+        for sec in sorted(self.buckets):
+            b = self.buckets[sec]
+            lat = b["lat"]
+            seconds.append({"t": sec, "sent": b["sent"], "ok": b["ok"], "degraded": b["degraded"],
+                            "failed": b["failed"], "dropped": b["dropped"],
+                            "p50_ms": round(percentile(lat, 50), 3) if lat else None,
+                            "max_ms": round(max(lat), 3) if lat else None})
+        return {"label": self.LABEL, "run": self.run, "seconds": seconds, "completed_runs": list(self.completed)}
+
+
 class ExperimentRunner:
     def __init__(
         self,
@@ -180,6 +237,7 @@ class ExperimentRunner:
         experiment_id: str | None = None,
         git_commit: str | None = None,
         label: str = "",
+        overrides: dict[str, Any] | None = None,
         clock: Callable[[], float] = time.perf_counter,
     ) -> None:
         self.scenario = scenario
@@ -202,6 +260,8 @@ class ExperimentRunner:
                                          "phase": None, "completed_requests": 0, "scheduled_requests": 0}
         self.manifest: dict[str, Any] = {}
         self.summary: dict[str, Any] | None = None
+        self.overrides = overrides or {}
+        self.live = LiveView()
 
     # -------------------------------------------------------------------------------- helpers
     def describe(self) -> dict[str, Any]:
@@ -245,6 +305,9 @@ class ExperimentRunner:
             "scenario_id": s.id, "scenario_file": self.scenario_file,
             "scenario_sha256": hashlib.sha256(self.scenario_text.encode("utf-8")).hexdigest(),
             "scenario_text": self.scenario_text, "scenario": s.model_dump(),
+            "overrides": self.overrides,
+            "overrides_note": ("the scenario file was run with these bounded overrides (dashboard/API); "
+                               "'scenario' above is the effective, validated scenario") if self.overrides else None,
             "git_commit": self.git_commit, "setu_x_version": __version__,
             "python": sys.version.split()[0], "packages": _package_versions(),
             "platform": platform.platform(), "host_cpu_count_visible": os.cpu_count(),
@@ -317,11 +380,15 @@ class ExperimentRunner:
         def progress(done: int) -> None:
             self.progress["completed_requests"] = done
 
+        self.live.start_run(run_id, cond.name, w.warmup_s, w.duration_s,
+                            [{"target": f.target, "mode": f.mode, "at_s": f.at_s, "duration_s": f.duration_s}
+                             for f in cond.faults])
+
         started_utc = utc_now()
         try:
             rows = await generate(self.load_client, self.control.gateway + "/api/orders", plan, start=start,
                                   max_in_flight=w.max_in_flight, timeout_s=w.request_timeout_s, base_row=base_row,
-                                  clock=self.clock, on_progress=progress)
+                                  clock=self.clock, on_progress=progress, on_row=self.live.add)
         finally:
             for t in fault_tasks:
                 t.cancel()
@@ -340,6 +407,7 @@ class ExperimentRunner:
         failed_faults = [f for f in fault_log if not f.get("ok")]
         if failed_faults:
             warnings.append(f"run {run_id}: {len(failed_faults)} fault injection(s) failed")
+        self.live.finish_run(rows, w.duration_s)
         writer.write_rows(rows)
         writer.write_events([{"run_id": run_id, "source": "gateway", **e} for e in gw_events]
                             + [{"run_id": run_id, "source": "controller", **e} for e in ctl_events]

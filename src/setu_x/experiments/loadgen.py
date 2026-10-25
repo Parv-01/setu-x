@@ -53,6 +53,7 @@ async def generate(
     base_row: dict[str, Any],
     clock: Callable[[], float] = time.perf_counter,
     on_progress: Callable[[int], None] | None = None,
+    on_row: Callable[[dict[str, Any]], None] | None = None,
 ) -> list[dict[str, Any]]:
     """Send `plan` open-loop. `start` is a clock() value (the run's t=0). Returns one row per plan item."""
     rows: list[dict[str, Any] | None] = [None] * len(plan)
@@ -94,6 +95,8 @@ async def generate(
             service_latency_ms=round(max(0.0, (t_done - t_send) * 1000), 3),
             http_status=status, outcome=outcome, error_type=error_type, **details_from_body(status, body))
         done += 1
+        if on_row:
+            on_row(rows[i])
         if on_progress:
             on_progress(done)
 
@@ -106,6 +109,8 @@ async def generate(
             if in_flight >= max_in_flight:
                 rows[i] = row(p, t_send_utc=None, outcome="dropped", error_type="generator_in_flight_cap")
                 done += 1
+                if on_row:
+                    on_row(rows[i])
                 continue
             in_flight += 1
             tasks.append(asyncio.create_task(one(i, p, scheduled)))

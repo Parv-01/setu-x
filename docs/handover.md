@@ -2,8 +2,8 @@
 
 Resume from this file if work is interrupted. Updated at every phase boundary.
 
-**Last updated:** 2026-10-25 (end of Phase 5)
-**Current phase:** Phase 5 complete in the Linux build workspace (Windows run pending). Next: Phase 6, dashboard.
+**Last updated:** 2026-10-25 (Phase 6 in progress)
+**Current phase:** Phase 6 (dashboard) implemented; acceptance pending. Phase 5: Windows 14/15, D3 check fixed, re-run pending.
 
 ## Completed
 

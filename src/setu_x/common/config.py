@@ -44,6 +44,9 @@ class ControllerSettings(ServiceSettings):
     gateway_url: str = Field(default="http://gateway:8000", pattern=r"^https?://[^\s]+$")
     runner_url: str = Field(default="http://runner:8000", pattern=r"^(https?://[^\s]+)?$",
                             description="experiment runner; empty string disables the /api/experiments proxy")
+    dashboard_dir: str = Field(default="dashboard", min_length=1)
+    allowed_hosts: str = Field(default="127.0.0.1,localhost,::1,controller", min_length=1,
+                               description="comma-separated Host header names accepted (DNS-rebinding defence)")
 
 
 class RunnerSettings(ServiceSettings):

@@ -12,8 +12,20 @@ GET  /api/faults           active fault on every allow-listed instance
 DELETE /api/faults/{name}  clear one; DELETE /api/faults clears all
 GET  /api/events           controller event log (placement/link changes, faults), newest first
 *    /api/experiments...   proxied to the internal experiment runner (Phase 5): GET/POST
-     /api/experiments, GET /api/experiments/{id}, POST /api/experiments/{id}/stop,
-     GET /api/experiments/{id}/files/{name}, GET /api/scenarios
+     /api/experiments, GET /api/experiments/{id}, GET /api/experiments/{id}/live,
+     POST /api/experiments/{id}/stop, GET /api/experiments/{id}/files/{name}, GET /api/scenarios
+GET  /api/gateway/...      read-only gateway views for the dashboard (routing decisions, resilience
+                           events and breakers, current placement, dependency health)
+POST /api/gateway/orders   one test order through the gateway (dashboard "send test order")
+GET  /                     redirects to the dashboard (/dashboard/, Phase 6)
+
+Browser-facing protections (Phase 6; the controller has no authentication and is a local-development
+control surface published on 127.0.0.1 only):
+  * Host header must be one of SETU_ALLOWED_HOSTS (defence against DNS rebinding).
+  * State-changing requests (POST/PUT/DELETE/PATCH) that carry an Origin header are refused unless the
+    origin is the controller itself (same origin) or http://127.0.0.1, http://localhost or http://[::1]
+    (any port), so another website open in the same browser cannot drive the control plane.
+  * The dashboard is served with a strict Content-Security-Policy (same-origin scripts only).
 
 Safety rule for PUT: instance names and URLs are fixed by configs/placement.yaml. The API can
 change env labels, roles, weights, enabled flags, routing policy, call mode and resilience
@@ -26,11 +38,14 @@ import logging
 import re
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
+from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 import httpx
 from fastapi import FastAPI, Query, Request
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse, RedirectResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import ValidationError
 from starlette.background import BackgroundTask
 
@@ -122,7 +137,8 @@ def build_app(
         adapters["local-docker"].extra_endpoints = [
             ServiceEndpoint("gateway", "gateway", settings.env if settings.env in envs.environments else "local",
                             settings.gateway_url, False, "primary", True)
-        ]
+        ] + ([ServiceEndpoint("runner", "runner", "local", settings.runner_url, False, "primary", True)]
+             if settings.runner_url else [])
         state.update(http=http, adapters=adapters, adapter_errors=adapter_errors)
         for name, err in adapter_errors.items():
             log.warning("adapter_config_invalid", extra={"adapter": name, "error": err})
@@ -136,6 +152,7 @@ def build_app(
     app = create_app(settings, title="SETU-X controller", readiness=readiness, lifespan=lifespan)
     app.state.store = store
     app.state.events = events
+    install_browser_protections(app, settings)
 
     def provider_adapter_info(provider: str) -> dict[str, Any] | None:
         if provider in state.get("adapter_errors", {}):
@@ -307,6 +324,60 @@ def build_app(
         return JSONResponse(status_code=404, content=error_body("not_found", "unknown experiment or file",
                                                                 request.state.request_id))
 
+    @app.get("/api/experiments/{exp_id}/live", tags=["experiments"])
+    async def experiment_live(exp_id: str, request: Request):
+        if not id_re.match(exp_id):
+            return bad_id(request)
+        return await to_runner(request, "GET", f"/api/experiments/{exp_id}/live")
+
+    # ------------------------------------------------------------------ gateway views for the dashboard
+    gateway_url = settings.gateway_url.rstrip("/")
+    gateway_views = {
+        "routing/decisions": "/api/routing/decisions",
+        "resilience/events": "/api/resilience/events",
+        "resilience/breakers": "/api/resilience/breakers",
+        "placement/current": "/api/placement/current",
+        "dependencies": "/health/dependencies",
+    }
+
+    async def to_gateway(request: Request, method: str, path: str):
+        rid = request.state.request_id
+        body = await request.body() if method == "POST" else None
+        try:
+            r = await state["http"].request(method, gateway_url + path, content=body,
+                                            params=dict(request.query_params), timeout=10.0,
+                                            headers={"content-type": "application/json", "X-Request-ID": rid})
+        except httpx.HTTPError as exc:
+            return JSONResponse(status_code=503, content=error_body(
+                "gateway_unreachable", f"gateway not reachable ({type(exc).__name__})", rid))
+        try:
+            return JSONResponse(status_code=r.status_code, content=r.json())
+        except ValueError:
+            return JSONResponse(status_code=502, content=error_body("gateway_bad_response", "non-JSON reply", rid))
+
+    @app.get("/api/gateway/{view:path}", tags=["gateway views"])
+    async def gateway_view(view: str, request: Request):
+        if view not in gateway_views:
+            return JSONResponse(status_code=404, content=error_body(
+                "not_found", f"gateway view must be one of {sorted(gateway_views)}", request.state.request_id))
+        return await to_gateway(request, "GET", gateway_views[view])
+
+    @app.post("/api/gateway/orders", tags=["gateway views"])
+    async def gateway_test_order(request: Request):
+        return await to_gateway(request, "POST", "/api/orders")
+
+    # ------------------------------------------------------------------ dashboard (static files)
+    dash = Path(settings.dashboard_dir)
+    if (dash / "index.html").is_file():
+        app.mount("/dashboard", StaticFiles(directory=dash, html=True), name="dashboard")
+
+    @app.get("/", include_in_schema=False)
+    async def root(request: Request):
+        if not (dash / "index.html").is_file():
+            return JSONResponse(status_code=503, content=error_body(
+                "dashboard_missing", f"dashboard files not found in {dash}", request.state.request_id))
+        return RedirectResponse("/dashboard/", status_code=307)
+
     @app.get("/api/scenarios", tags=["experiments"])
     async def scenarios(request: Request):
         return await to_runner(request, "GET", "/api/scenarios")
@@ -350,3 +421,46 @@ def build_app(
         return {"services": rows, "placement_version": store.version}
 
     return app
+
+
+LOCAL_ORIGIN_HOSTS = {"127.0.0.1", "localhost", "[::1]", "::1"}
+UNSAFE_METHODS = {"POST", "PUT", "DELETE", "PATCH"}
+DASHBOARD_CSP = ("default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; "
+                 "connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; "
+                 "form-action 'self'; frame-ancestors 'none'")
+
+
+def _hostname(host: str) -> str:
+    """Host header without the port: 'a:80' -> 'a', '[::1]:8090' -> '::1', '::1' -> '::1'."""
+    if host.startswith("["):
+        return host[1:host.find("]")] if "]" in host else host
+    if host.count(":") == 1:
+        return host.split(":", 1)[0]
+    return host
+
+
+def install_browser_protections(app: FastAPI, settings: ControllerSettings) -> None:
+    allowed_hosts = {h.strip().lower() for h in settings.allowed_hosts.split(",") if h.strip()}
+
+    @app.middleware("http")
+    async def browser_guard(request: Request, call_next):
+        host = (request.headers.get("host") or "").lower()
+        if _hostname(host) not in allowed_hosts:
+            return JSONResponse(status_code=400, content=error_body(
+                "invalid_host", f"Host '{host}' is not allowed (SETU_ALLOWED_HOSTS)", None))
+        origin = request.headers.get("origin")
+        if request.method in UNSAFE_METHODS and origin is not None:
+            parts = urlsplit(origin)
+            same_origin = parts.netloc.lower() == host
+            local = (parts.hostname or "") in LOCAL_ORIGIN_HOSTS
+            if parts.scheme not in ("http", "https") or not (same_origin or local):
+                return JSONResponse(status_code=403, content=error_body(
+                    "forbidden_origin", f"state-changing requests from origin '{origin}' are refused", None))
+        response = await call_next(request)
+        if request.url.path.startswith("/dashboard"):
+            response.headers["Content-Security-Policy"] = DASHBOARD_CSP
+            response.headers["X-Content-Type-Options"] = "nosniff"
+            response.headers["Referrer-Policy"] = "no-referrer"
+            response.headers["X-Frame-Options"] = "DENY"
+            response.headers["Cache-Control"] = "no-cache"
+        return response

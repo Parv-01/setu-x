@@ -131,6 +131,31 @@ pwsh -ExecutionPolicy Bypass -File scripts\phase5_acceptance.ps1
 
 Log: `docs\evidence\phase5_acceptance_windows.log`. Please send it to me. The smoke results land in `results\` (not committed; smoke runs are harness checks, not experiments).
 
+## 1f. Phase 6 acceptance: dashboard (available now)
+
+```powershell
+pwsh -ExecutionPolicy Bypass -File scripts\phase6_acceptance.ps1
+```
+15 checks (E1–E15), about 8–10 minutes. **The first run downloads a ~3.5 GB browser-test image** (Playwright + Chromium) used by E11 and E13:
+- Build, health, tests, e2e and lint.
+- The dashboard is served with a strict Content-Security-Policy, and its assets load.
+- Requests from another website (`Origin`) and with a foreign `Host` header are refused.
+- Every API the dashboard uses answers. Experiment overrides are bounded.
+- **E11/E13:** 12 tests drive the dashboard in Chromium, first in local mode, then in simulated mode:
+  - every button sends the right request and changes the backend;
+  - errors are shown with their reason;
+  - empty data shows an empty state;
+  - one experiment runs end to end from the dashboard;
+  - two experiments are compared.
+- **E12:** the experiment started from the dashboard left validated records.
+- No external URLs in the dashboard; clean shutdown.
+
+`-SkipBrowser` avoids the download, but then E11–E13 are recorded as **SKIP (not executed)** and the verdict is INCOMPLETE, not PASS.
+
+Log: `docs\evidence\phase6_acceptance_windows.log`. Please send it to me.
+
+**Please also look at the dashboard yourself** (2 minutes): `docker compose up -d`, open http://127.0.0.1:8090/, and follow "Run one experiment from the dashboard" in `docs\dashboard.md`. If something looks wrong or confusing, a screenshot helps. These screenshots of your own machine are also the best candidates for the final slides (Phase 10).
+
 ## 2. Start, inspect and stop the stack (Phase 2, available now)
 
 ```powershell
@@ -143,7 +168,7 @@ docker compose down              # stop and remove containers (images stay cache
 
 In VS Code you can see the same thing in the **Container Tools** side bar. Right-click a container for **View Logs** or **Attach Shell**.
 
-## 3. Manual smoke test in the browser (API available now; dashboard in Phase 6)
+## 3. Manual smoke test in the browser (dashboard available since Phase 6: http://127.0.0.1:8090/)
 
 | What | URL | Expected |
 |---|---|---|
@@ -197,7 +222,7 @@ pwsh -File scripts\run_experiment.ps1 -Scenario F_placement -DockerStats
 Remove-Item Env:SETU_MODE; docker compose up -d                   # back to local mode
 ```
 
-Ctrl+C asks the runner to stop; completed runs are kept and summarised. `GET http://127.0.0.1:8090/api/scenarios` lists the scenarios with their estimated duration. The method is described in `docs\methodology.md`. The dashboard **Start** button arrives in Phase 6.
+Ctrl+C asks the runner to stop; completed runs are kept and summarised. `GET http://127.0.0.1:8090/api/scenarios` lists the scenarios with their estimated duration. The method is described in `docs\methodology.md`. The same can be done from the dashboard (**Experiments** tab); runs started there record the commit as "not recorded", so use the script for the Phase 8 experiments.
 
 ## 6. "Is everything working and complete?" One command (Phase 7)
 

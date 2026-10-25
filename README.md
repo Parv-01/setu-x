@@ -10,7 +10,7 @@ SETU-X is a local-first experimental platform. It shows how a small containerize
 
 **Author:** Parv Agarwal, Junior Research Associate (Technical), AI NLP ML Research Laboratory, IIT Patna. Independent mini-project, not an officially endorsed IIT Patna project.
 
-**Status:** Phase 5 of 11: experiment harness (open-loop load generator in its own `runner` container, per-run isolation, raw records, validation, run-level statistics) and scenario files for Experiments A–G. No experiment results yet (Phase 8). Six services: gateway, controller, inventory-a, inventory-b, pricing, runner. Real AWS/Azure/GCP integration is **not implemented** (adapters validate configuration only; see [`docs/cloud_setup.md`](docs/cloud_setup.md)). Progress: [`docs/handover.md`](docs/handover.md).
+**Status:** Phase 6 of 11: dashboard at http://127.0.0.1:8090/. It covers health, dependency graph, placement/link/fault controls, bounded experiments with a live view, results charts, comparison and export, plus browser tests. Experiment harness from Phase 5. No experiment results yet (Phase 8). Six services: gateway, controller, inventory-a, inventory-b, pricing, runner. Real AWS/Azure/GCP integration is **not implemented** (adapters validate configuration only; see [`docs/cloud_setup.md`](docs/cloud_setup.md)). Progress: [`docs/handover.md`](docs/handover.md).
 
 ## Quick start (Docker only)
 
@@ -27,7 +27,7 @@ docker compose logs gateway        # structured JSON logs
 docker compose down                # stop
 ```
 
-Interactive API docs: gateway http://127.0.0.1:8080/docs · controller http://127.0.0.1:8090/docs
+**Dashboard: http://127.0.0.1:8090/** (guide: [`docs/dashboard.md`](docs/dashboard.md)). Interactive API docs: gateway http://127.0.0.1:8080/docs · controller http://127.0.0.1:8090/docs
 
 Useful endpoints: `GET :8090/api/environments`, `GET :8090/api/adapters`, `GET :8090/api/services`, `GET|PUT :8090/api/placement`, `PUT :8090/api/links`, `POST|GET|DELETE :8090/api/faults`, `GET :8090/api/events`, `GET :8080/api/routing/decisions`, `GET :8080/api/resilience/events`, `GET :8080/api/resilience/breakers`, `POST :8080/api/resilience/reset`, `GET :8090/api/scenarios`, `GET|POST :8090/api/experiments`.
 
@@ -49,6 +49,9 @@ pwsh -ExecutionPolicy Bypass -File scripts/phase2_acceptance.ps1   # same checks
 pwsh -ExecutionPolicy Bypass -File scripts/phase3_acceptance.ps1   # Phase 3: placement, routing, adapters (any OS with pwsh 7)
 pwsh -ExecutionPolicy Bypass -File scripts/phase4_acceptance.ps1   # Phase 4: injection, retries, breaker, fallback, simulated delay
 pwsh -ExecutionPolicy Bypass -File scripts/phase5_acceptance.ps1   # Phase 5: experiment runner, records, validation, statistics
+pwsh -ExecutionPolicy Bypass -File scripts/phase6_acceptance.ps1   # Phase 6: dashboard, incl. real-browser tests (local + simulated)
+docker compose --profile browser run --rm browser-tests             # dashboard browser tests only (stack up; ~3.5 GB image)
+node --test dashboard/tests/*.test.mjs                               # dashboard JS helpers (Node 18+, optional)
 ```
 
 ## Documentation
@@ -56,6 +59,7 @@ pwsh -ExecutionPolicy Bypass -File scripts/phase5_acceptance.ps1   # Phase 5: ex
 - Research question and hypotheses: [`docs/research_questions.md`](docs/research_questions.md)
 - Architecture: [`docs/architecture.md`](docs/architecture.md)
 - Measurement and statistical method: [`docs/methodology.md`](docs/methodology.md)
+- Dashboard guide: [`docs/dashboard.md`](docs/dashboard.md)
 - Literature review: [`docs/literature_review.md`](docs/literature_review.md), bibliography [`docs/references.bib`](docs/references.bib)
 - Implementation plan: [`docs/implementation_plan.md`](docs/implementation_plan.md)
 - Real-cloud status and plan: [`docs/cloud_setup.md`](docs/cloud_setup.md)
