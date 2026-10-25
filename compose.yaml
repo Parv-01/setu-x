@@ -1,4 +1,4 @@
-# SETU-X local stack (Phase 3: gateway, controller, inventory-a, inventory-b, pricing).
+# SETU-X local stack (Phase 4: gateway, controller, inventory-a, inventory-b, pricing).
 # Start:  docker compose up --build -d      Stop: docker compose down
 # Tests:  docker compose --profile test run --rm tests
 # Compatible with Docker Compose v5.1.3 and later.
@@ -11,7 +11,7 @@
 name: setu-x
 
 x-service: &service
-  image: setu-x:0.3.0
+  image: setu-x:0.4.0
   build:
     context: .
     target: runtime
@@ -89,6 +89,7 @@ services:
       SETU_CONFIG_DIR: /app/configs
       SETU_CONTROLLER_URL: http://controller:8000
       SETU_POLL_INTERVAL_MS: ${SETU_POLL_INTERVAL_MS:-2000}
+      SETU_RANDOM_SEED: ${SETU_RANDOM_SEED:-}
     volumes:
       - ./configs:/app/configs:ro
     ports:
@@ -104,7 +105,7 @@ services:
         condition: service_healthy
 
   tests:
-    image: setu-x-test:0.3.0
+    image: setu-x-test:0.4.0
     build:
       context: .
       target: test

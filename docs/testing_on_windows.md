@@ -74,6 +74,46 @@ To validate your own edits to `configs\*.yaml` before starting anything:
 docker compose --profile test run --rm --no-deps tests python -m setu_x.config_check configs
 ```
 
+## 1d. Phase 4 acceptance (available now)
+
+```powershell
+pwsh -ExecutionPolicy Bypass -File scripts\phase4_acceptance.ps1
+```
+15 checks (C1–C15):
+- Build, health and the full test suite.
+- Fault limits enforced.
+- An error fault on inventory-a triggers fallback to inventory-b.
+- The same fault with fallback off gives a fast 503.
+- Bounded retries under a 50% transient fault: inventory-a receives exactly as many requests as the gateway attempted.
+- A hang is cut at the 0.8 s timeout.
+- The circuit breaker opens after 3 failures, stops calls to inventory-a, and recovers.
+- A really stopped container is handled by fallback.
+- **Simulated mode:** the gateway is restarted with `SETU_MODE=simulated` and the injected 40/55 ms link delay is checked.
+- Events are recorded, and the stack shuts down cleanly.
+
+Log: `docs\evidence\phase4_acceptance_windows.log`. Please send it to me.
+
+The script takes about 2–3 minutes. It sets `SETU_MODE` for its own session only and restores local mode at the end.
+
+**Note:** `scripts\phase2_acceptance.ps1` and `.sh` are a Phase 2 snapshot. Since Phase 4, fallback is on by default, so their checks A9/A10 (expecting a 503 when inventory-a is stopped or paused) now get a 200 from inventory-b. That is the intended new behaviour. Phase 4 checks C8 and C10 cover the 503 path with fallback turned off.
+
+**Trying faults by hand** (stack running):
+```powershell
+# make inventory-a fail every request for 30 s, then watch orders fall back to inventory-b
+Invoke-RestMethod -Method Post http://127.0.0.1:8090/api/faults -ContentType 'application/json' `
+  -Body '{"target":"inventory-a","mode":"error","duration_s":30}'
+Invoke-RestMethod -Method Post http://127.0.0.1:8080/api/orders -ContentType 'application/json' `
+  -Body '{"sku":"SKU-002","quantity":1}' | Select-Object -ExpandProperty inventory
+Invoke-RestMethod http://127.0.0.1:8080/api/resilience/events     # retries, fallbacks, breaker transitions
+Invoke-RestMethod -Method Delete http://127.0.0.1:8090/api/faults   # clear all faults
+
+# stop a container for 20 s (real process failure)
+pwsh -File scripts\fault_container.ps1 -Service inventory-a -Seconds 20
+
+# simulated network delay: restart only the gateway in simulated mode
+$env:SETU_MODE='simulated'; docker compose up -d --no-deps --wait gateway
+```
+
 ## 2. Start, inspect and stop the stack (Phase 2, available now)
 
 ```powershell

@@ -6,12 +6,13 @@ POST /v1/quote {"sku": "SKU-001", "quantity": 2, "customer_tier": "gold"}
 """
 from __future__ import annotations
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from pydantic import BaseModel, Field
 
 from setu_x.common.app import create_app
 from setu_x.common.config import ServiceSettings
 from setu_x.domain import SKU_PATTERN, Tier, quote
+from setu_x.faults import install_fault_injection
 
 
 class QuoteRequest(BaseModel):
@@ -35,8 +36,9 @@ class QuoteResponse(BaseModel):
 
 def build_app(settings: ServiceSettings) -> FastAPI:
     app = create_app(settings, title="SETU-X pricing")
+    fault_guard = install_fault_injection(app, settings.instance)
 
-    @app.post("/v1/quote", response_model=QuoteResponse, tags=["pricing"])
+    @app.post("/v1/quote", response_model=QuoteResponse, tags=["pricing"], dependencies=[Depends(fault_guard)])
     async def get_quote(body: QuoteRequest, request: Request) -> QuoteResponse:
         q = quote(body.sku, body.quantity, body.customer_tier)
         return QuoteResponse(

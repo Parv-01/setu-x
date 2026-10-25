@@ -1,7 +1,7 @@
 # SETU-X Architecture
 
 SETU-X · Parv Agarwal, Junior Research Associate (Technical), AI NLP ML Research Laboratory, IIT Patna
-Status: **Phases 2–3 implemented** (services, placement, routing, controller, adapter boundary). Sections for Phases 4–6 are still design. Each section names the phase that implements it and the test that verifies it. Citation keys refer to `docs/references.bib`.
+Status: **Phases 2–4 implemented** (services, placement, routing, controller, adapter boundary, delay and fault injection, resilience policies). Sections for Phases 5–6 are still design. Each section names the phase that implements it and the test that verifies it. Citation keys refer to `docs/references.bib`.
 
 ---
 
@@ -102,22 +102,27 @@ Runtime placement changes (`PUT /api/placement`) are held in the controller's me
 
 **Environment labels in each mode.** In `local` mode, labels are still reported (and marked `simulated: true`), but no link delay is injected. In `simulated` mode, the configured link delays are injected (Phase 4). Every order response lists `simulated_environments` and carries a `simulation_notice` whenever a simulated label was involved.
 
-## 5. Delay and fault injection
+## 5. Delay and fault injection (implemented in Phase 4)
 
 | Mechanism | Where | What it models | Bounds | Labelled as |
 |---|---|---|---|---|
-| Link delay | Gateway's HTTP client wrapper: sleeps RTT/2 before sending and RTT/2 after receiving, for the (caller env, callee env) pair | Network RTT between environments | 0–2,000 ms per link | `injected_delay_ms` (exported per request) |
-| Service fault `error` | Target service middleware returns 503 with probability *p* | Failing dependency | *p* ∈ [0,1]; duration ≤ 300 s | fault event in results |
-| Service fault `slow` | Target service adds *x* ms of server-side processing time | Overloaded dependency | *x* ≤ 5,000 ms; duration ≤ 300 s | fault event |
-| Service fault `hang` | Target service holds the request until the fault window or 30 s elapses (whichever is first) | Unresponsive dependency (exercises timeouts) | duration ≤ 120 s | fault event |
-| Container stop | `scripts/fault_container.sh stop inventory-a --for 20` on the host (uses `docker compose stop/start`) | Process or instance failure | duration ≤ 300 s; allow-listed names | fault event written by the script |
+| Link delay | Gateway HTTP client (`gateway/client.py`): when `SETU_MODE=simulated`, sleeps RTT/2 before sending and RTT/2 after receiving, for the (gateway env, instance env) pair. Both halves count against the per-attempt timeout | Network RTT between environments | 0–2,000 ms per link; matrix changeable at runtime via `PUT /api/links` (validated, complete matrix) | `injected_delay_ms` per dependency; `resilience.injected_delay_ms_critical_path` (max for parallel calls, sum for sequential) |
+| Service fault `error` | Route dependency on `/v1/*` in inventory/pricing (`faults.py`) | Failing dependency | status 500/502/503/504; probability *p* ∈ [0,1] with optional seed; duration 1–300 s | `injected_fault` error envelope; fault events |
+| Service fault `slow` | same | Overloaded dependency | `delay_ms` 1–5,000; duration 1–300 s | fault events |
+| Service fault `hang` | same; holds until the fault expires or 30 s pass, then 503 | Unresponsive dependency (exercises timeouts) | duration 1–300 s, hang ≤ 30 s per request | fault events |
+| Container stop | `scripts/fault_container.ps1 -Service inventory-a -Seconds 20` on the host (`docker compose stop/start`), prints UTC stop/start/healthy times | Process or instance failure | 1–300 s; allow-listed services | JSON line from the script |
+
+Faults are implemented as a FastAPI route dependency, not middleware, so injected responses still carry `X-Request-ID`/`traceparent` and appear in access logs. Health endpoints are not affected (application-level fault). To model a dead process, stop the container.
+
+**Control API (controller, 127.0.0.1:8090):** `POST /api/faults {target, mode, duration_s, probability?, delay_ms?, error_status?, seed?}`, `GET /api/faults`, `DELETE /api/faults/{target}`, `DELETE /api/faults`. Every call is validated against the same `FaultSpec` model, and recorded in `GET /api/events`.
 
 **Safety.**
-- Fault targets are an allow-list (`inventory-a`, `inventory-b`, `pricing`).
-- Every fault has a mandatory duration and auto-expires.
-- `/admin/*` endpoints exist only on the internal Compose network (no published ports). The only control surface is the controller on `127.0.0.1:8090`, and it is documented as local-development only.
+- Fault targets are an allow-list built from `placement.yaml` (`inventory-a`, `inventory-b`, `pricing`); the gateway and controller cannot be targeted.
+- Every fault has a mandatory duration (≤ 300 s) and auto-expires.
+- A new fault replaces the previous one on that instance.
+- `/admin/fault` on the services exists only on the internal Compose network (no published ports). The controller on `127.0.0.1:8090` is the only control surface, and it is local-development only (no authentication).
 
-**Why not `tc netem` or Toxiproxy.** `netem` needs `NET_ADMIN`, which the brief excludes, and even kernel emulation deviates from its settings [jurgelionis2011netem; becker2022emulation]. Toxiproxy [toxiproxy] would add a proxy hop per link and a second control plane. The in-process wrapper keeps the injected amount exact and exportable. Its limitation is that it models no jitter, loss or bandwidth constraints. *Phase 4 validation test: with injected RTT d, measured per-call latency ≥ d and the excess is reported.*
+**Why not `tc netem` or Toxiproxy.** `netem` needs `NET_ADMIN`, which the brief excludes, and even kernel emulation deviates from its settings [jurgelionis2011netem; becker2022emulation]. Toxiproxy [toxiproxy] would add a proxy hop per link and a second control plane. The in-process wrapper keeps the injected amount exact and exportable. Its limitation is that it models no jitter, loss or bandwidth constraints. *Validated:* in simulated mode, a parallel order measured ≥ 55 ms total with 40/55 ms injected, and a runtime change to 150 ms gave ≥ 150 ms (Phase 4 acceptance C13; `test_resilience_flow.py`).
 
 ## 6. Execution modes and the provider adapter boundary
 
@@ -187,20 +192,22 @@ Mode 3 is off unless `SETU_MODE=cloud` **and** `SETU_ALLOW_CLOUD_OPERATIONS=yes`
 
 Credentials come only from the provider's standard credential chain, never from the repository.
 
-## 7. Resilience policy semantics (Phase 4)
+## 7. Resilience policy semantics (implemented in Phase 4)
 
 ![Circuit breaker states](figures/breaker.png)
 
-*Figure 4. Circuit breaker, one instance per (gateway, downstream instance). Source: `figures/breaker.mmd`.*
+*Figure 4. Circuit breaker, one instance per downstream instance, kept in the gateway. Source: `figures/breaker.mmd`.*
 
-- **Failure** means: timeout, connection error, or HTTP 5xx. A 4xx is not a dependency failure.
-- **Timeout:** per attempt, `min(timeout_ms, remaining outer deadline)`.
-- **Retries:** at most `retries` (capped at 3). Backoff before attempt *k* is `uniform(0, min(max_ms, base_ms·2^k))` ("full jitter"). No retry is attempted if the remaining deadline is shorter than the backoff. This bounds request amplification to at most 1 + `retries` calls per replica per order.
-- **Breaker:** after `consecutive_failures` failures it goes CLOSED → OPEN. After `reset_timeout_ms` it goes OPEN → HALF_OPEN, and one probe call is allowed. The probe's success or failure decides CLOSED or OPEN. Every transition is logged with a timestamp and exported.
-- **Fallback (inventory):** policy `primary-fallback` calls the secondary replica when the primary fails or its breaker is open. Each decision is recorded as `{instance, env, reason}`, for example `"primary breaker open"`.
+Code: `setu_x/resilience.py` (backoff, breaker, event log) and `setu_x/services/gateway/resilient.py` (the call loop). All settings come from `placement.yaml` → `resilience` and can be changed at runtime through `PUT /api/placement`.
+
+- **Failure** means: timeout, connection error, transport error, HTTP 5xx, or a malformed response. A 4xx is not a dependency failure: it means the gateway built a bad request. It is neither retried nor sent to another instance.
+- **Timeout:** per attempt, `min(timeout_ms, remaining outer deadline)`, enforced by both httpx and an asyncio timeout. Injected link delay counts against it.
+- **Retries:** at most `retries` (capped at 3), only for retryable failures (timeout, connection, transport, 5xx). Backoff before retry *k* (k = 1..retries) is `uniform(0, min(max_ms, base_ms·2^(k-1)))` ("full jitter"). The random generator can be seeded with `SETU_RANDOM_SEED`. A retry is skipped (event `retry_skipped`) if the remaining outer deadline is shorter than the backoff. Calls per service per order ≤ (1 + retries) × candidates. *Verified:* a scripted always-failing dependency received exactly 3 calls with retries = 2 (`test_retry_amplification_is_bounded`), and with a real p = 0.5 fault, inventory-a received exactly as many requests as the gateway reported attempts (acceptance C9).
+- **Breaker:** each attempt is recorded. After `consecutive_failures` failures in a row it goes CLOSED → OPEN. After `reset_timeout_ms` the next call is the single HALF_OPEN probe; other calls are rejected while the probe is in flight. The probe's success or failure decides CLOSED or OPEN. A granted probe that never produced an outcome (deadline passed, request cancelled) is released by its owner only. Breakers reset when the placement or link matrix changes. Every transition is an event with a UTC timestamp (`GET /api/resilience/events?type=breaker_transition`); states are at `GET /api/resilience/breakers`.
+- **Fallback:** if `resilience.fallback` is true, the gateway tries the routing decision's candidates in order (for `primary-fallback`: primary, then secondaries) when an instance fails or its breaker is open. The response shows the routed instance, the instance that actually served (`served_instance`), `fallback_used`, and a per-instance `tried` list (outcome and attempts). Pricing has a single instance, so its failure still leads to a `degraded` order.
 - **Degraded pricing:** a deterministic list price is used and flagged. The analysis counts it as `degraded`, never as `confirmed`.
 
-None of these mechanisms guarantees availability. They change *which* failures the client sees and how fast.
+None of these mechanisms guarantees availability. They change *which* failures the client sees and how fast. **Recovery time depends on traffic:** a breaker only leaves OPEN when a request arrives after the reset timeout, so recovery measured with sparse traffic (as in the Phase 4 acceptance) differs from recovery under continuous load (Phase 5).
 
 ## 8. Measurement model (Phase 5)
 

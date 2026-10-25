@@ -5,6 +5,9 @@ outer deadline). The bound is enforced twice: by httpx's own timeouts and by an 
 timeout around the whole exchange (httpx read timeouts apply per read, so a dependency that
 trickles bytes slowly could otherwise exceed the budget).
 
+Injected link delay (rtt_ms) is reported separately in `injected_delay_ms`, so analyses can
+separate configured delay from measured overhead.
+
 Error classification (used in responses, logs and later in experiment exports):
     connect_error      connection refused / DNS failure (e.g. container stopped)
     timeout            no complete response within the bound
@@ -35,6 +38,7 @@ class CallResult:
     elapsed_ms: float = 0.0
     served_by: str | None = None
     attempts: int = 0
+    injected_delay_ms: float = 0.0
     details: dict[str, Any] = field(default_factory=dict)
 
     def summary(self) -> dict[str, Any]:
@@ -46,6 +50,7 @@ class CallResult:
             "elapsed_ms": round(self.elapsed_ms, 3),
             "served_by": self.served_by,
             "attempts": self.attempts,
+            "injected_delay_ms": round(self.injected_delay_ms, 3),
         }
 
 
@@ -67,6 +72,7 @@ async def call_json(
     timeout_ms: int,
     connect_timeout_ms: int,
     deadline: Deadline,
+    rtt_ms: int = 0,
 ) -> CallResult:
     result = CallResult(dependency=dependency, url=url, ok=False)
     budget_s = min(timeout_ms / 1000.0, deadline.remaining_s())
@@ -78,7 +84,16 @@ async def call_json(
     result.attempts = 1
     try:
         async with asyncio.timeout(budget_s):
+            # Simulated link delay (SETU_MODE=simulated): half the configured round trip before the
+            # request and half after the response, both inside the same time budget, so a slow
+            # "network" counts against the timeout exactly like a real one would.
+            if rtt_ms:
+                await asyncio.sleep(rtt_ms / 2000.0)
+                result.injected_delay_ms += rtt_ms / 2.0
             resp = await client.post(url, json=payload, headers=headers, timeout=timeout)
+            if rtt_ms:
+                await asyncio.sleep(rtt_ms / 2000.0)
+                result.injected_delay_ms += rtt_ms / 2.0
         result.status_code = resp.status_code
         result.served_by = resp.headers.get("x-served-by")
         if resp.status_code >= 500:

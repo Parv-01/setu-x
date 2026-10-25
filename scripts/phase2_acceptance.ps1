@@ -104,8 +104,8 @@ Record 'A4' ($bad.Count -eq 0) ($(if ($bad) { "unhealthy: $($bad -join ',')" } e
 Log '=== A5 health endpoints return documented responses'
 $live = Get-Json "$Gw/health/live"; $ready = Get-Json "$Gw/health/ready"
 $probe = "import urllib.request;print(urllib.request.urlopen('http://{0}:8000/health/ready',timeout=2).read().decode())"
-$inv = (docker compose exec -T gateway python -c ($probe -f 'inventory-a') 2>&1 | Out-String) | ConvertFrom-Json -ErrorAction SilentlyContinue
-$pri = (docker compose exec -T gateway python -c ($probe -f 'pricing') 2>&1 | Out-String) | ConvertFrom-Json -ErrorAction SilentlyContinue
+$inv = (docker compose exec -T gateway python -c ($probe -f 'inventory-a') 2>&1 | Out-String) | ConvertFrom-Json -DateKind String -ErrorAction SilentlyContinue
+$pri = (docker compose exec -T gateway python -c ($probe -f 'pricing') 2>&1 | Out-String) | ConvertFrom-Json -DateKind String -ErrorAction SilentlyContinue
 Log ("gateway live:  " + ($live | ConvertTo-Json -Compress)); Log ("gateway ready: " + ($ready | ConvertTo-Json -Compress -Depth 4))
 Log ("inventory-a ready: " + ($inv | ConvertTo-Json -Compress -Depth 4)); Log ("pricing ready: " + ($pri | ConvertTo-Json -Compress -Depth 4))
 $ok = $live.status -eq 'alive' -and $ready.status -eq 'ready' -and $ready.checks.http_client -eq 'ok' -and `
@@ -114,7 +114,7 @@ Record 'A5' $ok 'live/ready bodies match documented shape for all services'
 
 Log '=== A6 request through the gateway produces the expected result'
 $o = Send-Order; Log "HTTP $($o.Code) in $(Fmt $o.Seconds)s: $($o.Body)"
-$j = $o.Body | ConvertFrom-Json -ErrorAction SilentlyContinue
+$j = $o.Body | ConvertFrom-Json -DateKind String -ErrorAction SilentlyContinue
 $ok = $o.Code -eq 200 -and $j.status -eq 'confirmed' -and $j.inventory.available -eq 8 -and $j.pricing.total_cents -eq 11000 -and $j.pricing.price_source -eq 'pricing-service'
 Record 'A6' $ok 'confirmed; available=8, total_cents=11000 (golden values)'
 
@@ -127,7 +127,7 @@ Record 'A8' ((Run 'docker compose --profile test run --rm tests pytest -p no:cac
 Log '=== A9 stopped dependency -> bounded 503, then recovery'
 Run 'docker compose stop inventory-a' | Out-Null
 $o = Send-Order; Log "inventory stopped: HTTP $($o.Code) in $(Fmt $o.Seconds)s: $($o.Body)"
-$j = $o.Body | ConvertFrom-Json -ErrorAction SilentlyContinue
+$j = $o.Body | ConvertFrom-Json -DateKind String -ErrorAction SilentlyContinue
 $ok9 = $o.Code -eq 503 -and $j.error.code -eq 'dependency_unavailable' -and $o.Seconds -lt 3.5
 Run 'docker compose start inventory-a' | Out-Null; Wait-Healthy 'inventory-a' | Out-Null
 $o2 = Send-Order; Log "after restart: HTTP $($o2.Code) in $(Fmt $o2.Seconds)s"
@@ -144,7 +144,7 @@ Log '=== A11 pricing stopped -> degraded order with flagged list price'
 Run 'docker compose stop pricing' | Out-Null
 $o = Send-Order; Log "pricing stopped: HTTP $($o.Code) in $(Fmt $o.Seconds)s: $($o.Body)"
 Run 'docker compose start pricing' | Out-Null; Wait-Healthy 'pricing' | Out-Null
-$j = $o.Body | ConvertFrom-Json -ErrorAction SilentlyContinue
+$j = $o.Body | ConvertFrom-Json -DateKind String -ErrorAction SilentlyContinue
 Record 'A11' ($o.Code -eq 200 -and $j.status -eq 'degraded' -and $j.pricing.price_source -eq 'fallback-list-price') "degraded with fallback-list-price in $(Fmt $o.Seconds)s"
 
 Log '=== A12 container hardening and limits (read back from docker inspect)'

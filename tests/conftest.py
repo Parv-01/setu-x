@@ -112,6 +112,33 @@ def failing_app(status: int = 500) -> FastAPI:
     return app
 
 
+class Scripted:
+    """A dependency whose /v1/* responses follow a script, counting every call.
+
+    `behaviour(n)` gets the 1-based call number and returns None (answer correctly) or an HTTP status
+    to fail with. `kind` selects the success body shape ("inventory" or "pricing").
+    """
+
+    def __init__(self, behaviour, kind: str = "inventory", instance: str = "inventory-a",
+                 env: str = "aws-simulated") -> None:
+        self.calls = 0
+        self.behaviour = behaviour
+        app = FastAPI()
+
+        @app.post("/v1/{path:path}")
+        async def handle(path: str):
+            self.calls += 1
+            status = self.behaviour(self.calls)
+            if status is not None:
+                return JSONResponse(status_code=status, content={"error": "scripted"})
+            if kind == "inventory":
+                return {"available": 8, "in_stock": True, "instance": instance, "env": env}
+            return {"unit_price_cents": 5500, "discount_pct": 0, "total_cents": 11000, "currency": "DEMO",
+                    "instance": instance, "env": env}
+
+        self.app = app
+
+
 def default_routes() -> dict[str, FastAPI]:
     return {
         "inventory-a": inventory_app("inventory-a", "aws-simulated"),
@@ -129,7 +156,7 @@ def make_gateway():
 
     @asynccontextmanager
     async def _make(routes: dict[str, FastAPI] | None = None, config=None, controller_url: str = "",
-                    **overrides: Any) -> AsyncIterator:
+                    mode: str = "local", seed: int | None = 7, **overrides: Any) -> AsyncIterator:
         if routes is None:
             routes = default_routes()
         if config is None:
@@ -137,8 +164,8 @@ def make_gateway():
             config = build_config(call_mode=overrides.get("call_mode"), resilience=res)
         router = HostRouter({host: asgi(app) for host, app in routes.items()})
         downstream = httpx.AsyncClient(transport=router)
-        settings = GatewaySettings(service_name="gateway", instance="gateway", env="local",
-                                   controller_url=controller_url, config_dir=str(CONFIG_DIR))
+        settings = GatewaySettings(service_name="gateway", instance="gateway", env="local", mode=mode,
+                                   controller_url=controller_url, config_dir=str(CONFIG_DIR), random_seed=seed)
         app = build_gateway(settings, client=downstream, config=config)
         async with app.router.lifespan_context(app):
             async with httpx.AsyncClient(transport=asgi(app), base_url="http://gateway") as client:

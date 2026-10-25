@@ -95,3 +95,16 @@ def test_round_robin_via_controller_then_reset(gw, ctl):
     finally:
         reset = ctl.post("/api/placement/reset").json()
         assert _wait_for_version(gw, reset["version"])
+
+
+def test_fault_via_controller_triggers_fallback_then_clears(gw, ctl):
+    r = ctl.post("/api/faults", json={"target": "inventory-a", "mode": "error", "duration_s": 30})
+    assert r.status_code == 200
+    try:
+        body = gw.post("/api/orders", json={"sku": "SKU-002", "quantity": 1}).json()
+        assert body["status"] == "confirmed" and body["inventory"]["instance"] == "inventory-b"
+        assert body["dependencies"][0]["fallback_used"] is True
+    finally:
+        assert ctl.delete("/api/faults/inventory-a").json()["cleared"] is True
+    body = gw.post("/api/orders", json={"sku": "SKU-002", "quantity": 1}).json()
+    assert body["inventory"]["instance"] == "inventory-a" and body["dependencies"][0]["fallback_used"] is False

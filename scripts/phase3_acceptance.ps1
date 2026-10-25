@@ -92,10 +92,10 @@ Record 'B8' $ok 'confirmed via inventory-a (primary); simulated_environments + n
 
 Log '=== B9 placement API rejects invalid changes and keeps the current version'
 $cur = (Invoke-Http 'GET' "$Ctl/api/placement").Json
-$p = $cur.placement | ConvertTo-Json -Depth 20 | ConvertFrom-Json -Depth 20
+$p = $cur.placement | ConvertTo-Json -Depth 20 | ConvertFrom-Json -Depth 20 -DateKind String
 $p.services.inventory.instances[0].env = 'mars-simulated'
 $r1 = Invoke-Http 'PUT' "$Ctl/api/placement" $p; Log "unknown env -> HTTP $($r1.Code): $($r1.Json.error.message)"
-$p = $cur.placement | ConvertTo-Json -Depth 20 | ConvertFrom-Json -Depth 20
+$p = $cur.placement | ConvertTo-Json -Depth 20 | ConvertFrom-Json -Depth 20 -DateKind String
 $p.services.pricing.instances[0].url = 'http://evil.example:8000'
 $r2 = Invoke-Http 'PUT' "$Ctl/api/placement" $p; Log "new URL -> HTTP $($r2.Code): $($r2.Json.error.message)"
 $after = (Invoke-Http 'GET' "$Ctl/api/placement").Json.version
@@ -104,7 +104,7 @@ $ok = $r1.Code -eq 422 -and $r1.Json.error.message -like "*services.inventory.in
 Record 'B9' $ok "both rejected with 422 naming the problem; version still $after"
 
 Log '=== B10 round-robin routing via the controller'
-$p = $cur.placement | ConvertTo-Json -Depth 20 | ConvertFrom-Json -Depth 20
+$p = $cur.placement | ConvertTo-Json -Depth 20 | ConvertFrom-Json -Depth 20 -DateKind String
 $p.services.inventory.routing = 'round-robin'
 $r = Put-Placement $p; Log "PUT round-robin -> HTTP $($r.Code), version $($r.Json.version); gateway now on version $(Gateway-Version)"
 $served = Served 4; Log "served: $($served -join ', ')"
@@ -115,7 +115,7 @@ $ok = $r.Code -eq 200 -and ($served -join ',') -in 'inventory-a,inventory-b,inve
 Record 'B10' $ok "alternating: $($served -join ',')"
 
 Log '=== B11 weighted routing 3:1'
-$p = $cur.placement | ConvertTo-Json -Depth 20 | ConvertFrom-Json -Depth 20
+$p = $cur.placement | ConvertTo-Json -Depth 20 | ConvertFrom-Json -Depth 20 -DateKind String
 $p.services.inventory.routing = 'weighted'; $p.services.inventory.instances[0].weight = 3; $p.services.inventory.instances[1].weight = 1
 $r = Put-Placement $p
 $served = Served 8
@@ -125,7 +125,7 @@ $ok = $r.Code -eq 200 -and @($served | Where-Object { $_ -eq 'inventory-a' }).Co
 Record 'B11' $ok "8 orders -> $($counts -join ', ') (expected 6/2)"
 
 Log '=== B12 disabled primary routes to secondary; reset restores primary'
-$p = $cur.placement | ConvertTo-Json -Depth 20 | ConvertFrom-Json -Depth 20
+$p = $cur.placement | ConvertTo-Json -Depth 20 | ConvertFrom-Json -Depth 20 -DateKind String
 $p.services.inventory.instances[0].enabled = $false
 $r = Put-Placement $p
 $o = Order; $reason = $o.Json.routing[0].reason; Log "served by $($o.Json.inventory.instance): $reason"

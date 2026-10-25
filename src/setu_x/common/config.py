@@ -35,6 +35,8 @@ class GatewaySettings(ServiceSettings):
     controller_url: str = Field(default="http://controller:8000", pattern=r"^(https?://[^\s]+)?$",
                                 description="empty string disables controller sync (file config only)")
     poll_interval_ms: int = Field(default=2000, ge=200, le=60_000)
+    random_seed: int | None = Field(default=None, ge=0, le=2**32 - 1,
+                                    description="seed for retry backoff jitter (reproducible experiments)")
 
 
 class ControllerSettings(ServiceSettings):

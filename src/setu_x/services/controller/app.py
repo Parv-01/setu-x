@@ -4,8 +4,13 @@ GET  /api/environments     environments, simulated flags, RTT matrix, mode, per-
 GET  /api/adapters         every adapter: integration status, per-operation support, reasons
 GET  /api/placement        current placement {version, sha256, source, updated_at, placement}
 PUT  /api/placement        replace placement after validation (422 envelope on any problem)
-POST /api/placement/reset  restore placement.yaml
+POST /api/placement/reset  restore placement.yaml AND the link matrix from environments.yaml
+PUT  /api/links            change inter-environment link delays at runtime (partial update, validated)
 GET  /api/services         health of the gateway and every placed instance (via the local adapter)
+POST /api/faults           inject a bounded fault into an allow-listed instance (proxied to /admin/fault)
+GET  /api/faults           active fault on every allow-listed instance
+DELETE /api/faults/{name}  clear one; DELETE /api/faults clears all
+GET  /api/events           controller event log (placement/link changes, faults), newest first
 
 Safety rule for PUT: instance names and URLs are fixed by configs/placement.yaml. The API can
 change env labels, roles, weights, enabled flags, routing policy, call mode and resilience
@@ -20,14 +25,17 @@ from datetime import UTC, datetime
 from typing import Any
 
 import httpx
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Query, Request
 from fastapi.responses import JSONResponse
+from pydantic import ValidationError
 
 from setu_x.adapters import build_adapters
 from setu_x.adapters.base import ServiceEndpoint
 from setu_x.common.app import create_app, error_body
 from setu_x.common.config import ConfigError, ControllerSettings
-from setu_x.placement import EnvironmentsConfig, PlacementConfig, load_config_dir, parse_placement
+from setu_x.faults import FaultSpec
+from setu_x.placement import EnvironmentsConfig, PlacementConfig, load_config_dir, parse_environments, parse_placement
+from setu_x.resilience import EventLog
 
 log = logging.getLogger("setu_x.controller")
 
@@ -41,13 +49,34 @@ class PlacementStore:
         self.envs = envs
         self.file_placement = file_placement
         self.current = file_placement
+        self.file_links = dict(envs.link_rtt_ms)
+        self.links = dict(envs.link_rtt_ms)
+        self.links_source = "file"
         self.version = 1
         self.source = "file"
         self.updated_at = _now()
 
     def snapshot(self) -> dict[str, Any]:
         return {"version": self.version, "sha256": self.current.fingerprint(), "source": self.source,
-                "updated_at": self.updated_at, "placement": self.current.model_dump()}
+                "updated_at": self.updated_at, "placement": self.current.model_dump(),
+                "link_rtt_ms": dict(self.links), "links_source": self.links_source,
+                "link_rtt_note": "configured (injected) delays, not measured provider latencies; "
+                                 "applied only when the gateway runs with SETU_MODE=simulated"}
+
+    def update_links(self, changes: Any) -> None:
+        if not isinstance(changes, dict) or not changes:
+            raise ConfigError("request body: expected {\"link_rtt_ms\": {\"<env-a>--<env-b>\": <ms>, ...}}")
+        merged = dict(self.links)
+        canonical = {frozenset(k.split("--")): k for k in merged}
+        for key, value in changes.items():
+            existing = canonical.get(frozenset(str(key).split("--")))
+            merged[existing or key] = value
+        # validate the complete matrix with the same rules as environments.yaml
+        parse_environments({"environments": self.envs.model_dump()["environments"], "link_rtt_ms": merged},
+                           "request body link_rtt_ms")
+        self.links, self.links_source = merged, "api"
+        self.version += 1
+        self.updated_at = _now()
 
     def replace(self, data: Any) -> PlacementConfig:
         candidate = parse_placement(data, self.envs, "request body")
@@ -62,6 +91,7 @@ class PlacementStore:
 
     def reset(self) -> None:
         self.current, self.source = self.file_placement, "file"
+        self.links, self.links_source = dict(self.file_links), "file"
         self.version += 1
         self.updated_at = _now()
 
@@ -76,6 +106,9 @@ def build_app(
     store = PlacementStore(envs, file_placement)
     owns_client = client is None
     state: dict[str, Any] = {}
+    events = EventLog(maxlen=1000)
+    # Fault-injection targets: downstream instances from placement.yaml only (never gateway/controller).
+    fault_targets = {name: url for _svc, name, url in file_placement.identity()}
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -97,6 +130,7 @@ def build_app(
 
     app = create_app(settings, title="SETU-X controller", readiness=readiness, lifespan=lifespan)
     app.state.store = store
+    app.state.events = events
 
     def provider_adapter_info(provider: str) -> dict[str, Any] | None:
         if provider in state.get("adapter_errors", {}):
@@ -145,6 +179,19 @@ def build_app(
                 "invalid_placement", str(exc), request.state.request_id, {"current_version": store.version}))
         state["adapters"]["local-docker"].update(envs, store.current)
         log.info("placement_updated", extra={"version": store.version, "sha256": store.current.fingerprint()})
+        events.add("placement_updated", version=store.version, sha256=store.current.fingerprint())
+        return store.snapshot()
+
+    @app.put("/api/links", tags=["placement"])
+    async def put_links(request: Request):
+        try:
+            data = await request.json()
+            store.update_links(data.get("link_rtt_ms") if isinstance(data, dict) else None)
+        except ValueError as exc:  # JSON decode errors and ConfigError are both ValueError
+            msg = str(exc) if isinstance(exc, ConfigError) else "request body must be JSON"
+            return JSONResponse(status_code=422, content=error_body(
+                "invalid_links", msg, request.state.request_id, {"current_version": store.version}))
+        events.add("links_updated", version=store.version, link_rtt_ms=store.links)
         return store.snapshot()
 
     @app.post("/api/placement/reset", tags=["placement"])
@@ -152,7 +199,73 @@ def build_app(
         store.reset()
         state["adapters"]["local-docker"].update(envs, store.current)
         log.info("placement_reset", extra={"version": store.version})
+        events.add("placement_reset", version=store.version)
         return store.snapshot()
+
+    # ------------------------------------------------------------------ fault injection proxy
+    @app.post("/api/faults", tags=["faults"])
+    async def inject_fault(request: Request):
+        rid = request.state.request_id
+        try:
+            data = await request.json()
+        except ValueError:
+            return JSONResponse(status_code=422, content=error_body("invalid_fault", "request body must be JSON", rid))
+        if not isinstance(data, dict):
+            return JSONResponse(status_code=422, content=error_body("invalid_fault", "expected a JSON object", rid))
+        target = data.pop("target", None)
+        if target not in fault_targets:
+            return JSONResponse(status_code=422, content=error_body(
+                "invalid_fault", f"target must be one of {sorted(fault_targets)} (got {target!r})", rid))
+        try:
+            spec = FaultSpec.model_validate(data)
+        except ValidationError as exc:
+            details = [{"loc": list(e.get("loc", ())), "msg": e.get("msg")} for e in exc.errors()]
+            return JSONResponse(status_code=422,
+                                content=error_body("invalid_fault", "invalid fault spec", rid, details))
+        try:
+            r = await state["http"].post(fault_targets[target] + "/admin/fault", json=spec.model_dump(), timeout=2.0)
+            r.raise_for_status()
+        except httpx.HTTPError as exc:
+            events.add("fault_inject_failed", target=target, error=type(exc).__name__)
+            return JSONResponse(status_code=502, content=error_body(
+                "target_unreachable", f"could not reach {target} ({type(exc).__name__})", rid))
+        events.add("fault_injected", target=target, **spec.model_dump())
+        return {"target": target, **r.json()}
+
+    @app.get("/api/faults", tags=["faults"])
+    async def list_faults() -> dict:
+        async def one(name: str, url: str) -> dict:
+            try:
+                r = await state["http"].get(url + "/admin/fault", timeout=1.0)
+                return {"target": name, "reachable": True, "active": r.json().get("active")}
+            except (httpx.HTTPError, ValueError) as exc:
+                return {"target": name, "reachable": False, "error": type(exc).__name__}
+
+        return {"faults": list(await asyncio.gather(*(one(n, u) for n, u in sorted(fault_targets.items()))))}
+
+    async def _clear(name: str) -> dict:
+        try:
+            r = await state["http"].delete(fault_targets[name] + "/admin/fault", timeout=2.0)
+            r.raise_for_status()
+            events.add("fault_cleared", target=name)
+            return {"target": name, "cleared": True}
+        except httpx.HTTPError as exc:
+            return {"target": name, "cleared": False, "error": type(exc).__name__}
+
+    @app.delete("/api/faults/{name}", tags=["faults"])
+    async def clear_fault(name: str, request: Request):
+        if name not in fault_targets:
+            return JSONResponse(status_code=404, content=error_body(
+                "unknown_target", f"target must be one of {sorted(fault_targets)}", request.state.request_id))
+        return await _clear(name)
+
+    @app.delete("/api/faults", tags=["faults"])
+    async def clear_all_faults() -> dict:
+        return {"results": list(await asyncio.gather(*(_clear(n) for n in sorted(fault_targets))))}
+
+    @app.get("/api/events", tags=["events"])
+    async def get_events(limit: int = Query(default=100, ge=1, le=1000)) -> dict:
+        return {"events": events.recent(limit)}
 
     @app.get("/api/services", tags=["health"])
     async def services() -> dict:

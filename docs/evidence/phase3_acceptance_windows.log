@@ -1,0 +1,612 @@
+SETU-X Phase 3 acceptance (PowerShell)
+date_utc: 2026-10-25T09:20:54Z
+git_commit: c5b9121 (uncommitted files outside docs/evidence: 0)
+powershell: 7.6.8 on windows
+docker: client 29.4.2 / server 29.4.2
+compose: 5.1.3
+
+=== B1 docker compose config
+$ docker compose config --quiet
+>>> B1 PASS - compose configuration valid
+=== B2 build images
+$ docker compose --profile test build
+ Image setu-x-test:0.3.0 Building 
+ Image setu-x:0.3.0 Building 
+ Image setu-x:0.3.0 Building 
+ Image setu-x:0.3.0 Building 
+ Image setu-x:0.3.0 Building 
+ Image setu-x:0.3.0 Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 2.95kB done
+#1 DONE 0.0s
+
+#2 [gateway internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.97kB 0.0s done
+#2 DONE 0.0s
+
+#3 [pricing] resolve image config for docker-image://docker.io/docker/dockerfile:1
+#3 DONE 2.4s
+
+#4 [controller] docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#4 resolve docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e 0.0s done
+#4 CACHED
+
+#5 [gateway internal] load metadata for docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377
+#5 DONE 1.5s
+
+#6 [tests internal] load .dockerignore
+#6 transferring context: 158B 0.0s done
+#6 DONE 0.0s
+
+#7 [pricing internal] load build context
+#7 transferring context: 96.45kB 0.0s done
+#7 DONE 0.0s
+
+#8 [gateway base 1/2] FROM docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377
+#8 resolve docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377 0.0s done
+#8 DONE 0.0s
+
+#9 [inventory-a base 2/2] WORKDIR /app
+#9 CACHED
+
+#10 [tests internal] load build context
+#10 transferring context: 163.76kB 0.0s done
+#10 DONE 0.0s
+
+#11 [tests builder 1/4] COPY pyproject.toml README.md ./
+#11 DONE 0.0s
+
+#12 [tests builder 2/4] COPY requirements ./requirements
+#12 DONE 0.1s
+
+#8 [inventory-b base 1/2] FROM docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377
+#8 resolve docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377 0.0s done
+#8 DONE 0.0s
+
+#7 [inventory-b internal] load build context
+#7 transferring context: 96.45kB 0.0s done
+#7 DONE 0.0s
+
+#9 [inventory-b base 2/2] WORKDIR /app
+#9 CACHED
+
+#11 [inventory-b builder 1/4] COPY pyproject.toml README.md ./
+#11 DONE 0.0s
+
+#13 [controller builder 3/4] COPY src ./src
+#13 DONE 0.1s
+
+#14 [pricing builder 4/4] RUN --mount=type=secret,id=pip_ca,required=false     if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi;     pip wheel --wheel-dir /wheels --constraint requirements/dev.lock ".[dev]"
+#14 1.954 Processing /app
+#14 1.957   Installing build dependencies: started
+#14 3.984   Installing build dependencies: finished with status 'done'
+#14 3.985   Getting requirements to build wheel: started
+#14 4.377   Getting requirements to build wheel: finished with status 'done'
+#14 4.378   Preparing metadata (pyproject.toml): started
+#14 4.766   Preparing metadata (pyproject.toml): finished with status 'done'
+#14 4.926 Collecting fastapi==0.162.0 (from setu-x==0.3.0)
+#14 4.984   Downloading fastapi-0.162.0-py3-none-any.whl.metadata (26 kB)
+#14 5.054 Collecting uvicorn==0.54.0 (from setu-x==0.3.0)
+#14 5.069   Downloading uvicorn-0.54.0-py3-none-any.whl.metadata (6.6 kB)
+#14 5.112 Collecting httpx==0.28.1 (from setu-x==0.3.0)
+#14 5.127   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+#14 5.258 Collecting pydantic==2.14.1 (from setu-x==0.3.0)
+#14 5.273   Downloading pydantic-2.14.1-py3-none-any.whl.metadata (133 kB)
+#14 5.292      ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 133.0/133.0 kB 7.5 MB/s eta 0:00:00
+#14 5.340 Collecting pyyaml==6.0.3 (from setu-x==0.3.0)
+#14 5.355   Downloading pyyaml-6.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+#14 5.436 Collecting starlette>=0.46.0 (from fastapi==0.162.0->setu-x==0.3.0)
+#14 5.452   Downloading starlette-1.10.0-py3-none-any.whl.metadata (6.6 kB)
+#14 5.511 Collecting typing-extensions>=4.8.0 (from fastapi==0.162.0->setu-x==0.3.0)
+#14 5.528   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#14 5.551 Collecting typing-inspection>=0.4.2 (from fastapi==0.162.0->setu-x==0.3.0)
+#14 5.565   Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+#14 5.600 Collecting annotated-doc>=0.0.2 (from fastapi==0.162.0->setu-x==0.3.0)
+#14 5.615   Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+#14 5.666 Collecting opentelemetry-api>=1.44.0 (from fastapi==0.162.0->setu-x==0.3.0)
+#14 5.681   Downloading opentelemetry_api-1.45.1-py3-none-any.whl.metadata (1.4 kB)
+#14 5.738 Collecting anyio (from httpx==0.28.1->setu-x==0.3.0)
+#14 5.752   Downloading anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
+#14 5.789 Collecting certifi (from httpx==0.28.1->setu-x==0.3.0)
+#14 5.804   Downloading certifi-2026.10.23-py3-none-any.whl.metadata (2.5 kB)
+#14 5.842 Collecting httpcore==1.* (from httpx==0.28.1->setu-x==0.3.0)
+#14 5.859   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+#14 5.906 Collecting idna (from httpx==0.28.1->setu-x==0.3.0)
+#14 5.922   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+#14 5.971 Collecting annotated-types>=0.6.0 (from pydantic==2.14.1->setu-x==0.3.0)
+#14 5.987   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+#14 6.721 Collecting pydantic-core==2.50.1 (from pydantic==2.14.1->setu-x==0.3.0)
+#14 6.735   Downloading pydantic_core-2.50.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.5 kB)
+#14 6.781 Collecting click>=7.0 (from uvicorn==0.54.0->setu-x==0.3.0)
+#14 6.796   Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+#14 6.826 Collecting h11>=0.8 (from uvicorn==0.54.0->setu-x==0.3.0)
+#14 6.844   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+#14 6.910 Collecting pytest==9.1.1 (from setu-x==0.3.0)
+#14 6.925   Downloading pytest-9.1.1-py3-none-any.whl.metadata (7.6 kB)
+#14 6.966 Collecting pytest-asyncio==1.4.0 (from setu-x==0.3.0)
+#14 6.981   Downloading pytest_asyncio-1.4.0-py3-none-any.whl.metadata (4.1 kB)
+#14 7.379 Collecting ruff==0.17.2 (from setu-x==0.3.0)
+#14 7.393   Downloading ruff-0.17.2-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (20 kB)
+#14 7.423 Collecting iniconfig>=1.0.1 (from pytest==9.1.1->setu-x==0.3.0)
+#14 7.439   Downloading iniconfig-2.3.1-py3-none-any.whl.metadata (2.8 kB)
+#14 7.486 Collecting packaging>=22 (from pytest==9.1.1->setu-x==0.3.0)
+#14 7.503   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+#14 7.555 Collecting pluggy<2,>=1.5 (from pytest==9.1.1->setu-x==0.3.0)
+#14 7.571   Downloading pluggy-1.7.0-py3-none-any.whl.metadata (5.0 kB)
+#14 7.614 Collecting pygments>=2.7.2 (from pytest==9.1.1->setu-x==0.3.0)
+#14 7.629   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
+#14 7.721 Downloading fastapi-0.162.0-py3-none-any.whl (148 kB)
+#14 7.730    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 148.9/148.9 kB 18.0 MB/s eta 0:00:00
+#14 7.746 Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+#14 7.755    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 73.5/73.5 kB 11.6 MB/s eta 0:00:00
+#14 7.773 Downloading pydantic-2.14.1-py3-none-any.whl (488 kB)
+#14 7.821    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 488.1/488.1 kB 11.8 MB/s eta 0:00:00
+#14 7.844 Downloading pyyaml-6.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (806 kB)
+#14 7.934    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 806.6/806.6 kB 9.8 MB/s eta 0:00:00
+#14 7.949 Downloading uvicorn-0.54.0-py3-none-any.whl (87 kB)
+#14 7.958    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 87.4/87.4 kB 16.5 MB/s eta 0:00:00
+#14 7.973 Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+#14 7.984    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 78.8/78.8 kB 10.8 MB/s eta 0:00:00
+#14 8.003 Downloading pydantic_core-2.50.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.2 MB)
+#14 8.160    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 2.2/2.2 MB 14.1 MB/s eta 0:00:00
+#14 8.175 Downloading pytest-9.1.1-py3-none-any.whl (386 kB)
+#14 8.208    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 386.5/386.5 kB 15.3 MB/s eta 0:00:00
+#14 8.223 Downloading pytest_asyncio-1.4.0-py3-none-any.whl (16 kB)
+#14 8.244 Downloading ruff-0.17.2-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (10.5 MB)
+#14 8.932    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 10.5/10.5 MB 15.7 MB/s eta 0:00:00
+#14 8.946 Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+#14 8.961 Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+#14 8.980 Downloading click-8.5.0-py3-none-any.whl (125 kB)
+#14 8.999    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 125.3/125.3 kB 9.9 MB/s eta 0:00:00
+#14 9.014 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#14 9.037 Downloading iniconfig-2.3.1-py3-none-any.whl (7.6 kB)
+#14 9.055 Downloading opentelemetry_api-1.45.1-py3-none-any.whl (60 kB)
+#14 9.064    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 60.3/60.3 kB 15.8 MB/s eta 0:00:00
+#14 9.082 Downloading packaging-26.3-py3-none-any.whl (129 kB)
+#14 9.100    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 130.0/130.0 kB 9.3 MB/s eta 0:00:00
+#14 9.118 Downloading pluggy-1.7.0-py3-none-any.whl (27 kB)
+#14 9.141 Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
+#14 9.232    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 1.3/1.3 MB 14.2 MB/s eta 0:00:00
+#14 9.247 Downloading starlette-1.10.0-py3-none-any.whl (80 kB)
+#14 9.259    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 80.6/80.6 kB 8.9 MB/s eta 0:00:00
+#14 9.277 Downloading anyio-4.15.1-py3-none-any.whl (132 kB)
+#14 9.295    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 132.1/132.1 kB 9.1 MB/s eta 0:00:00
+#14 9.312 Downloading idna-3.20-py3-none-any.whl (69 kB)
+#14 9.323    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 69.6/69.6 kB 10.0 MB/s eta 0:00:00
+#14 9.342 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#14 9.351    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 45.6/45.6 kB 6.1 MB/s eta 0:00:00
+#14 9.371 Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+#14 9.389 Downloading certifi-2026.10.23-py3-none-any.whl (135 kB)
+#14 9.408    ΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöüΓöü 135.1/135.1 kB 10.0 MB/s eta 0:00:00
+#14 9.443 Saved /wheels/fastapi-0.162.0-py3-none-any.whl
+#14 9.443 Saved /wheels/httpx-0.28.1-py3-none-any.whl
+#14 9.445 Saved /wheels/pydantic-2.14.1-py3-none-any.whl
+#14 9.447 Saved /wheels/pyyaml-6.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+#14 9.448 Saved /wheels/uvicorn-0.54.0-py3-none-any.whl
+#14 9.448 Saved /wheels/httpcore-1.0.9-py3-none-any.whl
+#14 9.452 Saved /wheels/pydantic_core-2.50.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+#14 9.452 Saved /wheels/pytest-9.1.1-py3-none-any.whl
+#14 9.453 Saved /wheels/pytest_asyncio-1.4.0-py3-none-any.whl
+#14 9.466 Saved /wheels/ruff-0.17.2-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+#14 9.467 Saved /wheels/annotated_doc-0.0.5-py3-none-any.whl
+#14 9.467 Saved /wheels/annotated_types-0.8.0-py3-none-any.whl
+#14 9.467 Saved /wheels/click-8.5.0-py3-none-any.whl
+#14 9.468 Saved /wheels/h11-0.16.0-py3-none-any.whl
+#14 9.468 Saved /wheels/iniconfig-2.3.1-py3-none-any.whl
+#14 9.469 Saved /wheels/opentelemetry_api-1.45.1-py3-none-any.whl
+#14 9.469 Saved /wheels/packaging-26.3-py3-none-any.whl
+#14 9.469 Saved /wheels/pluggy-1.7.0-py3-none-any.whl
+#14 9.473 Saved /wheels/pygments-2.21.0-py3-none-any.whl
+#14 9.473 Saved /wheels/starlette-1.10.0-py3-none-any.whl
+#14 9.474 Saved /wheels/anyio-4.15.1-py3-none-any.whl
+#14 9.474 Saved /wheels/idna-3.20-py3-none-any.whl
+#14 9.476 Saved /wheels/typing_extensions-4.16.0-py3-none-any.whl
+#14 9.476 Saved /wheels/typing_inspection-0.4.4-py3-none-any.whl
+#14 9.478 Saved /wheels/certifi-2026.10.23-py3-none-any.whl
+#14 9.555 Building wheels for collected packages: setu-x
+#14 9.557   Building wheel for setu-x (pyproject.toml): started
+#14 10.00   Building wheel for setu-x (pyproject.toml): finished with status 'done'
+#14 10.00   Created wheel for setu-x: filename=setu_x-0.3.0-py3-none-any.whl size=38168 sha256=1d8d829b814f3fe6fddaa4d867d1e53909fdffa0004a44c8cac4b4e6045c502e
+#14 10.00   Stored in directory: /tmp/pip-ephem-wheel-cache-9zewjktt/wheels/57/0f/98/bb57b2b57b95807699b822a35c022f139d38a02c27922f27ce
+#14 10.00 Successfully built setu-x
+#14 DONE 10.4s
+
+#14 [pricing builder 4/4] RUN --mount=type=secret,id=pip_ca,required=false     if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi;     pip wheel --wheel-dir /wheels --constraint requirements/dev.lock ".[dev]"
+#14 DONE 10.4s
+
+#15 [gateway runtime 1/3] RUN useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin setu
+#15 CACHED
+
+#16 [controller runtime 2/3] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels setu-x
+#16 1.175 Looking in links: /wheels
+#16 1.184 Processing /wheels/setu_x-0.3.0-py3-none-any.whl
+#16 1.194 Processing /wheels/fastapi-0.162.0-py3-none-any.whl (from setu-x)
+#16 1.199 Processing /wheels/uvicorn-0.54.0-py3-none-any.whl (from setu-x)
+#16 1.204 Processing /wheels/httpx-0.28.1-py3-none-any.whl (from setu-x)
+#16 1.208 Processing /wheels/pydantic-2.14.1-py3-none-any.whl (from setu-x)
+#16 1.214 Processing /wheels/pyyaml-6.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (from setu-x)
+#16 1.238 Processing /wheels/starlette-1.10.0-py3-none-any.whl (from fastapi==0.162.0->setu-x)
+#16 1.242 Processing /wheels/typing_extensions-4.16.0-py3-none-any.whl (from fastapi==0.162.0->setu-x)
+#16 1.247 Processing /wheels/typing_inspection-0.4.4-py3-none-any.whl (from fastapi==0.162.0->setu-x)
+#16 1.250 Processing /wheels/annotated_doc-0.0.5-py3-none-any.whl (from fastapi==0.162.0->setu-x)
+#16 1.256 Processing /wheels/opentelemetry_api-1.45.1-py3-none-any.whl (from fastapi==0.162.0->setu-x)
+#16 1.265 Processing /wheels/anyio-4.15.1-py3-none-any.whl (from httpx==0.28.1->setu-x)
+#16 1.269 Processing /wheels/certifi-2026.10.23-py3-none-any.whl (from httpx==0.28.1->setu-x)
+#16 1.273 Processing /wheels/httpcore-1.0.9-py3-none-any.whl (from httpx==0.28.1->setu-x)
+#16 1.278 Processing /wheels/idna-3.20-py3-none-any.whl (from httpx==0.28.1->setu-x)
+#16 1.286 Processing /wheels/annotated_types-0.8.0-py3-none-any.whl (from pydantic==2.14.1->setu-x)
+#16 1.290 Processing /wheels/pydantic_core-2.50.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (from pydantic==2.14.1->setu-x)
+#16 1.303 Processing /wheels/click-8.5.0-py3-none-any.whl (from uvicorn==0.54.0->setu-x)
+#16 1.307 Processing /wheels/h11-0.16.0-py3-none-any.whl (from uvicorn==0.54.0->setu-x)
+#16 1.422 Installing collected packages: typing-extensions, pyyaml, idna, h11, click, certifi, annotated-types, annotated-doc, uvicorn, typing-inspection, pydantic-core, opentelemetry-api, httpcore, anyio, starlette, pydantic, httpx, fastapi, setu-x
+#16 2.399 Successfully installed annotated-doc-0.0.5 annotated-types-0.8.0 anyio-4.15.1 certifi-2026.10.23 click-8.5.0 fastapi-0.162.0 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.20 opentelemetry-api-1.45.1 pydantic-2.14.1 pydantic-core-2.50.1 pyyaml-6.0.3 setu-x-0.3.0 starlette-1.10.0 typing-extensions-4.16.0 typing-inspection-0.4.4 uvicorn-0.54.0
+#16 2.399 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+#16 DONE 2.5s
+
+#17 [inventory-a runtime 3/3] COPY configs ./configs
+#17 DONE 0.0s
+
+#17 [gateway runtime 3/3] COPY configs ./configs
+#17 DONE 0.0s
+
+#18 [tests builder 1/4] COPY pyproject.toml README.md ./
+#18 CACHED
+
+#19 [tests builder 2/4] COPY requirements ./requirements
+#19 CACHED
+
+#20 [tests runtime 2/3] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels setu-x
+#20 CACHED
+
+#21 [tests builder 3/4] COPY src ./src
+#21 CACHED
+
+#22 [tests builder 4/4] RUN --mount=type=secret,id=pip_ca,required=false     if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi;     pip wheel --wheel-dir /wheels --constraint requirements/dev.lock ".[dev]"
+#22 CACHED
+
+#23 [tests runtime 3/3] COPY configs ./configs
+#23 CACHED
+
+#24 [inventory-a] exporting to image
+#24 exporting layers
+#24 exporting layers 0.8s done
+#24 exporting manifest sha256:cceda28071e3a8bd022e2be740efd0be26558c9bb9a0d3c70aff3fe7d7cc10f1 0.0s done
+#24 exporting config sha256:0772b09805735efedd17f84fdb1dea1eef820523b2b93d9003b8db978d111ee7 0.1s done
+#24 exporting attestation manifest sha256:f93b8205454ec89c97d6366699e2a16d733dce11310d8defa99b77048f84990e
+#24 exporting attestation manifest sha256:f93b8205454ec89c97d6366699e2a16d733dce11310d8defa99b77048f84990e 0.1s done
+#24 exporting manifest list sha256:1ceb397631f785f50f8557dfea6bc5af8c0887e472acd2b9b65cef5988b7e39a 0.1s done
+#24 naming to docker.io/library/setu-x:0.3.0 done
+#24 unpacking to docker.io/library/setu-x:0.3.0
+#24 unpacking to docker.io/library/setu-x:0.3.0 0.4s done
+#24 DONE 1.5s
+
+#25 [gateway] exporting to image
+#25 exporting layers 0.8s done
+#25 exporting manifest sha256:9454d3a0fa0802247d96e141c063ff441e905ae2a4151a6a343b898cfabf81d9 0.0s done
+#25 exporting config sha256:4632821444b0c9589d41366a7fe7698b8d6d10aa9c20c485e993b9780d7fd0f7 0.1s done
+#25 exporting attestation manifest sha256:1b46476815fa3686703377ab8126f62092bbdbf3eaed0c5805e7ad440c3a40d8 0.1s done
+#25 exporting manifest list sha256:4d5e666f74ea1e61f2b02dadb86d5fbb2b3e8e4d8122043446e22a14eeba1f98 0.1s done
+#25 naming to docker.io/library/setu-x:0.3.0 0.0s done
+#25 unpacking to docker.io/library/setu-x:0.3.0 0.4s done
+#25 DONE 1.5s
+
+#26 [inventory-b] exporting to image
+#26 exporting layers 0.8s done
+#26 exporting manifest sha256:3c6670854019ed40ff205446f32fa1ff3c89f9b44c1340753baa2a94609ef9fb 0.1s done
+#26 exporting config sha256:29b8252e5a7da37f09366fe252fa9994bb31d4a5d67be2ed80482bc7f3696ed6 0.1s done
+#26 exporting attestation manifest sha256:2eed0cc562094f905333481a03aedfeaf0139948c9c02122993d622d43249086 0.1s done
+#26 exporting manifest list sha256:2882afbe9511cd9eb5ac904c2b30459dde70c7243f83adedb55e29e9ff9b9cf9 0.0s done
+#26 naming to docker.io/library/setu-x:0.3.0 0.0s done
+#26 unpacking to docker.io/library/setu-x:0.3.0 0.4s done
+#26 DONE 1.5s
+
+#27 [pricing] exporting to image
+#27 exporting layers 0.8s done
+#27 exporting manifest sha256:f3743e7bf6e3bcbed5aa9b0727d1d2df9da026afcc0fb0fe5d4c9785a99ef4df 0.1s done
+#27 exporting config sha256:be8e5c63d35420b68d314a95b937ac4d6cd5032196eadf945b1b7edb3b8bd1ea 0.1s done
+#27 exporting attestation manifest sha256:dbb7ee519fcabd209d584d3d814da616e68c8a168b4a242558d0d62626e99722 0.1s done
+#27 exporting manifest list sha256:412fa8240645607597d4a6790f36fc3d2c18ae5ebf6c5e739030fcef22e79619 0.0s done
+#27 naming to docker.io/library/setu-x:0.3.0 done
+#27 unpacking to docker.io/library/setu-x:0.3.0 0.4s done
+#27 DONE 1.5s
+
+#28 [controller] exporting to image
+#28 exporting layers 0.8s done
+#28 exporting manifest sha256:d36b7ca60e40f1112991fdaa7118bdc0711d11d96b472cd08207523fce70a974 0.0s done
+#28 exporting config sha256:ab4e8fc725d3590695e36efbd23a2fea5b6f92fe0ccd2b07c31e390beab29459 0.1s done
+#28 exporting attestation manifest sha256:aa6a1ab52b9597f04ba14c8473e820fdfa696854bfd3b0a92b390c7c8b7db431 0.1s done
+#28 exporting manifest list sha256:a1b37bbfe6ac7fe0ff31ec135fbdf157a93bd5ac0995fdd7e29797fde15be120 0.1s done
+#28 naming to docker.io/library/setu-x:0.3.0 0.0s done
+#28 unpacking to docker.io/library/setu-x:0.3.0 0.4s done
+#28 DONE 1.5s
+
+#29 [tests test 1/3] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels "setu-x[dev]"
+#29 1.340 Looking in links: /wheels
+#29 1.341 Requirement already satisfied: setu-x[dev] in /usr/local/lib/python3.11/site-packages (0.3.0)
+#29 1.351 Requirement already satisfied: fastapi==0.162.0 in /usr/local/lib/python3.11/site-packages (from setu-x[dev]) (0.162.0)
+#29 1.352 Requirement already satisfied: uvicorn==0.54.0 in /usr/local/lib/python3.11/site-packages (from setu-x[dev]) (0.54.0)
+#29 1.354 Requirement already satisfied: httpx==0.28.1 in /usr/local/lib/python3.11/site-packages (from setu-x[dev]) (0.28.1)
+#29 1.357 Requirement already satisfied: pydantic==2.14.1 in /usr/local/lib/python3.11/site-packages (from setu-x[dev]) (2.14.1)
+#29 1.358 Requirement already satisfied: pyyaml==6.0.3 in /usr/local/lib/python3.11/site-packages (from setu-x[dev]) (6.0.3)
+#29 1.367 Processing /wheels/pytest-9.1.1-py3-none-any.whl (from setu-x[dev])
+#29 1.376 Processing /wheels/pytest_asyncio-1.4.0-py3-none-any.whl (from setu-x[dev])
+#29 1.382 Processing /wheels/ruff-0.17.2-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (from setu-x[dev])
+#29 1.416 Requirement already satisfied: starlette>=0.46.0 in /usr/local/lib/python3.11/site-packages (from fastapi==0.162.0->setu-x[dev]) (1.10.0)
+#29 1.419 Requirement already satisfied: typing-extensions>=4.8.0 in /usr/local/lib/python3.11/site-packages (from fastapi==0.162.0->setu-x[dev]) (4.16.0)
+#29 1.420 Requirement already satisfied: typing-inspection>=0.4.2 in /usr/local/lib/python3.11/site-packages (from fastapi==0.162.0->setu-x[dev]) (0.4.4)
+#29 1.420 Requirement already satisfied: annotated-doc>=0.0.2 in /usr/local/lib/python3.11/site-packages (from fastapi==0.162.0->setu-x[dev]) (0.0.5)
+#29 1.421 Requirement already satisfied: opentelemetry-api>=1.44.0 in /usr/local/lib/python3.11/site-packages (from fastapi==0.162.0->setu-x[dev]) (1.45.1)
+#29 1.427 Requirement already satisfied: anyio in /usr/local/lib/python3.11/site-packages (from httpx==0.28.1->setu-x[dev]) (4.15.1)
+#29 1.428 Requirement already satisfied: certifi in /usr/local/lib/python3.11/site-packages (from httpx==0.28.1->setu-x[dev]) (2026.10.23)
+#29 1.429 Requirement already satisfied: httpcore==1.* in /usr/local/lib/python3.11/site-packages (from httpx==0.28.1->setu-x[dev]) (1.0.9)
+#29 1.430 Requirement already satisfied: idna in /usr/local/lib/python3.11/site-packages (from httpx==0.28.1->setu-x[dev]) (3.20)
+#29 1.434 Requirement already satisfied: annotated-types>=0.6.0 in /usr/local/lib/python3.11/site-packages (from pydantic==2.14.1->setu-x[dev]) (0.8.0)
+#29 1.435 Requirement already satisfied: pydantic-core==2.50.1 in /usr/local/lib/python3.11/site-packages (from pydantic==2.14.1->setu-x[dev]) (2.50.1)
+#29 1.446 Processing /wheels/iniconfig-2.3.1-py3-none-any.whl (from pytest==9.1.1->setu-x[dev])
+#29 1.447 Requirement already satisfied: packaging>=22 in /usr/local/lib/python3.11/site-packages (from pytest==9.1.1->setu-x[dev]) (26.3)
+#29 1.451 Processing /wheels/pluggy-1.7.0-py3-none-any.whl (from pytest==9.1.1->setu-x[dev])
+#29 1.456 Processing /wheels/pygments-2.21.0-py3-none-any.whl (from pytest==9.1.1->setu-x[dev])
+#29 1.472 Requirement already satisfied: click>=7.0 in /usr/local/lib/python3.11/site-packages (from uvicorn==0.54.0->setu-x[dev]) (8.5.0)
+#29 1.473 Requirement already satisfied: h11>=0.8 in /usr/local/lib/python3.11/site-packages (from uvicorn==0.54.0->setu-x[dev]) (0.16.0)
+#29 1.644 Installing collected packages: ruff, pygments, pluggy, iniconfig, pytest, pytest-asyncio
+#29 ...
+
+#30 [inventory-b] resolving provenance for metadata file
+#30 DONE 0.0s
+
+#31 [pricing] resolving provenance for metadata file
+#31 DONE 0.1s
+
+#32 [controller] resolving provenance for metadata file
+#32 DONE 0.1s
+
+#33 [inventory-a] resolving provenance for metadata file
+#33 DONE 0.2s
+
+#34 [gateway] resolving provenance for metadata file
+#34 DONE 0.2s
+
+#29 [tests test 1/3] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels "setu-x[dev]"
+#29 2.490 Successfully installed iniconfig-2.3.1 pluggy-1.7.0 pygments-2.21.0 pytest-9.1.1 pytest-asyncio-1.4.0 ruff-0.17.2
+#29 2.491 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+#29 DONE 2.6s
+
+#35 [tests test 2/3] COPY pyproject.toml compose.yaml ./
+#35 DONE 0.1s
+
+#36 [tests test 3/3] COPY tests ./tests
+#36 DONE 0.1s
+
+#37 [tests] exporting to image
+#37 exporting layers 1.3s done
+#37 exporting manifest sha256:48883972c6223040c9445819855412e4f332ea415603f37d16e68b419e8af746 0.0s done
+#37 exporting config sha256:39865372253067c91b661e744d1828f2b8152b7b424364e6acdc422c9fc09e49 0.0s done
+#37 exporting attestation manifest sha256:731424c8b8eac9baa0e3545f119e5b757214269843ba1a44bfa2d95a4c0d29cd 0.0s done
+#37 exporting manifest list sha256:2dc5c77d56f6a9c0d819809d619d9dd59a6c53fa78d4ada9bd268d67cc87609d
+#37 exporting manifest list sha256:2dc5c77d56f6a9c0d819809d619d9dd59a6c53fa78d4ada9bd268d67cc87609d 0.0s done
+#37 naming to docker.io/library/setu-x-test:0.3.0 done
+#37 unpacking to docker.io/library/setu-x-test:0.3.0
+#37 unpacking to docker.io/library/setu-x-test:0.3.0 0.3s done
+#37 DONE 1.8s
+
+#38 [tests] resolving provenance for metadata file
+#38 DONE 0.0s
+ Image setu-x:0.3.0 Built 
+ Image setu-x-test:0.3.0 Built 
+ Image setu-x:0.3.0 Built 
+ Image setu-x:0.3.0 Built 
+ Image setu-x:0.3.0 Built 
+ Image setu-x:0.3.0 Built
+>>> B2 PASS - images built
+=== B3 config validation: shipped config valid, deliberately broken config rejected
+$ docker compose --profile test run --rm --no-deps tests python -m setu_x.config_check configs
+ Network setu-x_default Creating 
+ Network setu-x_default Created 
+ Container setu-x-tests-run-f6a3b08ed1d6 Creating 
+ Container setu-x-tests-run-f6a3b08ed1d6 Created 
+VALID configs: 4 environments (3 simulated: aws-simulated, azure-simulated, gcp-simulated); call_mode=parallel
+  inventory: routing=primary-fallback; inventory-a@aws-simulated[primary], inventory-b@gcp-simulated[secondary]
+  pricing: routing=primary-fallback; pricing@azure-simulated[primary]
+ Container setu-x-tests-run-cf483dc147d6 Creating 
+ Container setu-x-tests-run-cf483dc147d6 Created 
+INVALID tests/fixtures/bad_config/placement.yaml: services.inventory.instances.1.env: unknown environment 'gcp-simualted' (known: aws-simulated, azure-simulated, gcp-simulated, local)
+>>> B3 PASS - valid config exit 0; broken config exit 1 with field path in message
+=== B4 start stack and check all 5 services healthy
+$ docker compose up -d --wait --wait-timeout 120
+ Network setu-x_default Creating 
+ Network setu-x_default Created 
+ Container setu-x-inventory-b-1 Creating 
+ Container setu-x-pricing-1 Creating 
+ Container setu-x-inventory-a-1 Creating 
+ Container setu-x-controller-1 Creating 
+ Container setu-x-pricing-1 Created 
+ Container setu-x-inventory-b-1 Created 
+ Container setu-x-inventory-a-1 Created 
+ Container setu-x-controller-1 Created 
+ Container setu-x-gateway-1 Creating 
+ Container setu-x-gateway-1 Created 
+ Container setu-x-inventory-b-1 Starting 
+ Container setu-x-inventory-a-1 Starting 
+ Container setu-x-controller-1 Starting 
+ Container setu-x-pricing-1 Starting 
+ Container setu-x-inventory-b-1 Started 
+ Container setu-x-inventory-a-1 Started 
+ Container setu-x-pricing-1 Started 
+ Container setu-x-controller-1 Started 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-gateway-1 Starting 
+ Container setu-x-gateway-1 Started 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-gateway-1 Healthy
+$ docker compose ps
+NAME                   IMAGE          COMMAND                  SERVICE       CREATED          STATUS                    PORTS
+setu-x-controller-1    setu-x:0.3.0   "python -m setu_x.seΓÇª"   controller    12 seconds ago   Up 11 seconds (healthy)   127.0.0.1:8090->8000/tcp
+setu-x-gateway-1       setu-x:0.3.0   "python -m setu_x.seΓÇª"   gateway       12 seconds ago   Up 6 seconds (healthy)    127.0.0.1:8080->8000/tcp
+setu-x-inventory-a-1   setu-x:0.3.0   "python -m setu_x.seΓÇª"   inventory-a   12 seconds ago   Up 11 seconds (healthy)   8000/tcp
+setu-x-inventory-b-1   setu-x:0.3.0   "python -m setu_x.seΓÇª"   inventory-b   12 seconds ago   Up 11 seconds (healthy)   8000/tcp
+setu-x-pricing-1       setu-x:0.3.0   "python -m setu_x.seΓÇª"   pricing       12 seconds ago   Up 11 seconds (healthy)   8000/tcp
+>>> B4 PASS - inventory-a, inventory-b, pricing, controller, gateway healthy
+=== B5 automated tests (unit + contract + integration) in the test container
+$ docker compose --profile test run --rm tests
+ Container setu-x-tests-run-181b3c88a162 Creating 
+ Container setu-x-tests-run-181b3c88a162 Created 
+============================= test session starts ==============================
+platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
+rootdir: /app
+configfile: pyproject.toml
+testpaths: tests
+plugins: asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 196 items / 7 deselected / 189 selected
+
+tests/contract/test_adapter_contract.py ................................ [ 16%]
+......................                                                   [ 28%]
+tests/integration/test_controller.py ........                            [ 32%]
+tests/integration/test_gateway_flow.py .............                     [ 39%]
+tests/integration/test_gateway_routing.py ......                         [ 42%]
+tests/integration/test_services.py ......                                [ 46%]
+tests/unit/test_client.py ........                                       [ 50%]
+tests/unit/test_config.py .........                                      [ 55%]
+tests/unit/test_domain.py ................................               [ 71%]
+tests/unit/test_ids.py ....                                              [ 74%]
+tests/unit/test_placement_config.py .................................... [ 93%]
+.....                                                                    [ 95%]
+tests/unit/test_routing.py ........                                      [100%]
+
+====================== 189 passed, 7 deselected in 2.16s =======================
+>>> B5 PASS - unit + contract + integration tests passed
+=== B6 end-to-end tests against the running stack
+$ docker compose --profile test run --rm tests pytest -p no:cacheprovider -m e2e
+ Container setu-x-tests-run-3d4e5f0b8255 Creating 
+ Container setu-x-tests-run-3d4e5f0b8255 Created 
+============================= test session starts ==============================
+platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
+rootdir: /app
+configfile: pyproject.toml
+testpaths: tests
+plugins: asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 196 items / 189 deselected / 7 selected
+
+tests/end_to_end/test_stack.py .......                                   [100%]
+
+====================== 7 passed, 189 deselected in 3.34s =======================
+>>> B6 PASS - e2e tests passed
+=== B7 simulated environments labelled; adapters report honest statuses
+env local            provider=local  simulated=False real_adapter=
+env aws-simulated    provider=aws    simulated=True real_adapter=not_configured
+env azure-simulated  provider=azure  simulated=True real_adapter=not_configured
+env gcp-simulated    provider=gcp    simulated=True real_adapter=not_configured
+adapter local-docker  status=local           implemented=discover_environments,service_status,health_check,discover_endpoints
+adapter aws           status=not_configured  implemented=
+adapter azure         status=not_configured  implemented=
+adapter gcp           status=not_configured  implemented=
+>>> B7 PASS - aws/azure/gcp envs simulated; adapters local + not_configured; none connected/deployed/verified
+=== B8 order response marks simulated environments
+HTTP 200: {"order_id":"ord-5fd7484abf3645d4","request_id":"5fd7484abf3645d49c0a70c9c685842a","trace_id":"3ca6944ab942fcbae6053fab4c35078b","status":"confirmed","sku":"SKU-001","quantity":2,"customer_tier":"standard","inventory":{"available":8,"in_stock":true,"instance":"inventory-a","env":"aws-simulated","simulated":true,"reported_by":"inventory-a@aws-simulated"},"pricing":{"unit_price_cents":5500,"discount_pct":0,"total_cents":11000,"currency":"DEMO","price_source":"pricing-service","instance":"pricing","env":"azure-simulated","simulated":true},"timings_ms":{"total":3.621,"inventory":3.47,"pricing":2.857},"dependencies":[{"name":"inventory","ok":true,"status_code":200,"error_type":null,"elapsed_ms":3.47,"served_by":"inventory-a@aws-simulated","attempts":1,"instance":"inventory-a","env":"aws-simulated","simulated":true},{"name":"pricing","ok":true,"status_code":200,"error_type":null,"elapsed_ms":2.857,"served_by":"pricing@azure-simulated","attempts":1,"instance":"pricing","env":"azure-simulated","simulated":true}],"routing":[{"seq":13,"ts":"2026-10-25T09:21:45.377+00:00","service":"inventory","policy":"primary-fallback","instance":"inventory-a","env":"aws-simulated","simulated":true,"url":"http://inventory-a:8000","reason":"primary instance","candidates":["inventory-a","inventory-b"],"placement_version":3},{"seq":14,"ts":"2026-10-25T09:21:45.377+00:00","service":"pricing","policy":"primary-fallback","instance":"pricing","env":"azure-simulated","simulated":true,"url":"http://pricing:8000","reason":"primary instance","candidates":["pricing"],"placement_version":3}],"call_mode":"parallel","environment_mode":"local","placement":{"version":3,"source":"controller","sha256":"77867e92fa4d3d941bbeaeee73fdf186343c6e67cfd6bca2e97c50bd0740c35e"},"simulated_environments":["aws-simulated","azure-simulated"],"simulation_notice":"Environment labels ending in '-simulated' are logical labels on one Docker host, not deployments on that cloud provider."}
+>>> B8 PASS - confirmed via inventory-a (primary); simulated_environments + notice present
+=== B9 placement API rejects invalid changes and keeps the current version
+unknown env -> HTTP 422: request body: services.inventory.instances.0.env: unknown environment 'mars-simulated' (known: aws-simulated, azure-simulated, gcp-simulated, local)
+new URL -> HTTP 422: request body: instance names and URLs must match configs/placement.yaml (allowed: inventory:inventory-a=http://inventory-a:8000, inventory:inventory-b=http://inventory-b:8000, pricing:pricing=http://pricing:8000)
+>>> B9 PASS - both rejected with 422 naming the problem; version still 3
+=== B10 round-robin routing via the controller
+PUT round-robin -> HTTP 200, version 4; gateway now on version 4
+served: inventory-a, inventory-b, inventory-a, inventory-b
+latest decision reasons: round-robin position 2 of 2 enabled | round-robin position 1 of 2 enabled
+>>> B10 PASS - alternating: inventory-a,inventory-b,inventory-a,inventory-b
+=== B11 weighted routing 3:1
+served: inventory-a, inventory-a, inventory-b, inventory-a, inventory-a, inventory-a, inventory-b, inventory-a
+>>> B11 PASS - 8 orders -> inventory-a=6, inventory-b=2 (expected 6/2)
+=== B12 disabled primary routes to secondary; reset restores primary
+served by inventory-b: primary 'inventory-a' disabled; first enabled secondary
+after reset served by inventory-a (gateway placement version 7)
+>>> B12 PASS - disabled primary -> inventory-b with reason; reset -> inventory-a
+=== B13 controller down: gateway keeps serving on the last valid placement
+$ docker compose stop controller
+ Container setu-x-controller-1 Stopping 
+ Container setu-x-controller-1 Stopped
+controller stopped: order HTTP 200; info: {"placement_source":"controller","placement_version":7,"placement_sha256":"77867e92fa4d3d941bbeaeee73fdf186343c6e67cfd6bca2e97c50bd0740c35e","placement_applied_at":"2026-10-25T14:51:52.721+05:30","controller_url":"http://controller:8000","controller_reachable":false,"last_sync_at":"2026-10-25T14:51:52.72+05:30","last_error":"ConnectTimeout: "}
+$ docker compose start controller
+ Container setu-x-controller-1 Starting 
+ Container setu-x-controller-1 Started
+>>> B13 PASS - order HTTP 200 while controller down; gateway reported controller_reachable=false, then true after restart
+=== B14 container hardening for all 5 services (docker inspect)
+inventory-a: user=10001 ro=True capdrop=ALL nanocpus=500000000 mem=268435456 secopt=no-new-privileges:true privileged=False mounts=
+inventory-b: user=10001 ro=True capdrop=ALL nanocpus=500000000 mem=268435456 secopt=no-new-privileges:true privileged=False mounts=
+pricing: user=10001 ro=True capdrop=ALL nanocpus=500000000 mem=268435456 secopt=no-new-privileges:true privileged=False mounts=
+controller: user=10001 ro=True capdrop=ALL nanocpus=500000000 mem=268435456 secopt=no-new-privileges:true privileged=False mounts=/app/configs:ro
+gateway: user=10001 ro=True capdrop=ALL nanocpus=500000000 mem=268435456 secopt=no-new-privileges:true privileged=False mounts=/app/configs:ro
+gateway port: 127.0.0.1:8080
+controller port: 127.0.0.1:8090
+>>> B14 PASS - non-root, read-only rootfs + read-only config mounts, cap_drop ALL, no-new-privileges, limits, ports on 127.0.0.1
+=== B15 graceful stop (exit 0) and clean down
+$ docker compose stop
+ Container setu-x-gateway-1 Stopping 
+ Container setu-x-gateway-1 Stopped 
+ Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-controller-1 Stopping 
+ Container setu-x-inventory-b-1 Stopping 
+ Container setu-x-pricing-1 Stopping 
+ Container setu-x-inventory-b-1 Stopped 
+ Container setu-x-controller-1 Stopped 
+ Container setu-x-inventory-a-1 Stopped 
+ Container setu-x-pricing-1 Stopped
+exit codes: controller=0 gateway=0 inventory-a=0 inventory-b=0 pricing=0
+$ docker compose down
+ Container setu-x-gateway-1 Stopping 
+ Container setu-x-gateway-1 Stopped 
+ Container setu-x-gateway-1 Removing 
+ Container setu-x-gateway-1 Removed 
+ Container setu-x-pricing-1 Stopping 
+ Container setu-x-inventory-b-1 Stopping 
+ Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-controller-1 Stopping 
+ Container setu-x-pricing-1 Stopped 
+ Container setu-x-pricing-1 Removing 
+ Container setu-x-inventory-b-1 Stopped 
+ Container setu-x-inventory-b-1 Removing 
+ Container setu-x-controller-1 Stopped 
+ Container setu-x-controller-1 Removing 
+ Container setu-x-inventory-a-1 Stopped 
+ Container setu-x-inventory-a-1 Removing 
+ Container setu-x-pricing-1 Removed 
+ Container setu-x-inventory-a-1 Removed 
+ Container setu-x-controller-1 Removed 
+ Container setu-x-inventory-b-1 Removed 
+ Network setu-x_default Removing 
+ Network setu-x_default Removed
+>>> B15 PASS - all 5 exited 0; 0 containers left after down
+
+================ SUMMARY ================
+B1   PASS compose configuration valid
+B2   PASS images built
+B3   PASS valid config exit 0; broken config exit 1 with field path in message
+B4   PASS inventory-a, inventory-b, pricing, controller, gateway healthy
+B5   PASS unit + contract + integration tests passed
+B6   PASS e2e tests passed
+B7   PASS aws/azure/gcp envs simulated; adapters local + not_configured; none connected/deployed/verified
+B8   PASS confirmed via inventory-a (primary); simulated_environments + notice present
+B9   PASS both rejected with 422 naming the problem; version still 3
+B10  PASS alternating: inventory-a,inventory-b,inventory-a,inventory-b
+B11  PASS 8 orders -> inventory-a=6, inventory-b=2 (expected 6/2)
+B12  PASS disabled primary -> inventory-b with reason; reset -> inventory-a
+B13  PASS order HTTP 200 while controller down; gateway reported controller_reachable=false, then true after restart
+B14  PASS non-root, read-only rootfs + read-only config mounts, cap_drop ALL, no-new-privileges, limits, ports on 127.0.0.1
+B15  PASS all 5 exited 0; 0 containers left after down
+checks: 15  failed: 0
+PHASE 3 ACCEPTANCE: PASS

@@ -10,7 +10,7 @@ SETU-X is a local-first experimental platform. It shows how a small containerize
 
 **Author:** Parv Agarwal, Junior Research Associate (Technical), AI NLP ML Research Laboratory, IIT Patna. Independent mini-project, not an officially endorsed IIT Patna project.
 
-**Status:** Phase 3 of 11: placement, routing and the provider-adapter boundary. Five services: gateway, controller, inventory-a, inventory-b, pricing. Real AWS/Azure/GCP integration is **not implemented** (adapters validate configuration only; see [`docs/cloud_setup.md`](docs/cloud_setup.md)). Progress: [`docs/handover.md`](docs/handover.md).
+**Status:** Phase 4 of 11: latency and failure injection, timeouts, bounded retries, circuit breakers, fallback. Five services: gateway, controller, inventory-a, inventory-b, pricing. Real AWS/Azure/GCP integration is **not implemented** (adapters validate configuration only; see [`docs/cloud_setup.md`](docs/cloud_setup.md)). Progress: [`docs/handover.md`](docs/handover.md).
 
 ## Quick start (Docker only)
 
@@ -29,7 +29,9 @@ docker compose down                # stop
 
 Interactive API docs: gateway http://127.0.0.1:8080/docs · controller http://127.0.0.1:8090/docs
 
-Useful endpoints: `GET :8090/api/environments`, `GET :8090/api/adapters`, `GET :8090/api/services`, `GET|PUT :8090/api/placement`, `GET :8080/api/routing/decisions`.
+Useful endpoints: `GET :8090/api/environments`, `GET :8090/api/adapters`, `GET :8090/api/services`, `GET|PUT :8090/api/placement`, `PUT :8090/api/links`, `POST|GET|DELETE :8090/api/faults`, `GET :8090/api/events`, `GET :8080/api/routing/decisions`, `GET :8080/api/resilience/events`, `GET :8080/api/resilience/breakers`.
+
+Simulated network delay: start the stack with `SETU_MODE=simulated` (e.g. in `.env`); the gateway then injects the configured link delays and reports them separately as `injected_delay_ms`. Container-level faults: `pwsh -File scripts/fault_container.ps1 -Service inventory-a -Seconds 20`.
 
 Configuration: [`configs/environments.yaml`](configs/environments.yaml) (environments and illustrative link delays) and [`configs/placement.yaml`](configs/placement.yaml) (instances, routing policy, timeouts). Validate with `docker compose --profile test run --rm --no-deps tests python -m setu_x.config_check configs`.
 
@@ -40,9 +42,10 @@ On Windows PowerShell, use `Invoke-RestMethod` (see [`docs/testing_on_windows.md
 ```bash
 docker compose --profile test run --rm tests                 # unit + integration (no running stack needed)
 docker compose --profile test run --rm tests pytest -p no:cacheprovider -m e2e   # end-to-end (stack up)
-bash scripts/phase2_acceptance.sh                            # full Phase 2 acceptance run (Linux/macOS/Git Bash)
+bash scripts/phase2_acceptance.sh                            # Phase 2 snapshot (A9/A10 predate fallback; see docs/testing_on_windows.md)
 pwsh -ExecutionPolicy Bypass -File scripts/phase2_acceptance.ps1   # same checks in PowerShell 7 (Windows)
 pwsh -ExecutionPolicy Bypass -File scripts/phase3_acceptance.ps1   # Phase 3: placement, routing, adapters (any OS with pwsh 7)
+pwsh -ExecutionPolicy Bypass -File scripts/phase4_acceptance.ps1   # Phase 4: injection, retries, breaker, fallback, simulated delay
 ```
 
 ## Documentation

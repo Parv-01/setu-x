@@ -54,7 +54,7 @@ async def test_invalid_order_is_422_envelope(make_gateway):
 
 
 async def test_inventory_down_gives_bounded_503(make_gateway):
-    async with make_gateway(routes={"pricing": pricing_app()}) as (client, _):  # inventory not routed
+    async with make_gateway(routes={"pricing": pricing_app()}, fallback=False) as (client, _):  # inventory down
         t0 = time.perf_counter()
         r = await client.post("/api/orders", json=ORDER)
         elapsed = time.perf_counter() - t0
@@ -66,7 +66,7 @@ async def test_inventory_down_gives_bounded_503(make_gateway):
 
 async def test_inventory_hang_is_cut_by_timeout(make_gateway):
     routes = {"inventory-a": hanging_app(30), "pricing": pricing_app()}
-    async with make_gateway(routes=routes, timeout_ms=200, outer_deadline_ms=1000) as (client, _):
+    async with make_gateway(routes=routes, timeout_ms=200, outer_deadline_ms=1000, fallback=False) as (client, _):
         t0 = time.perf_counter()
         r = await client.post("/api/orders", json=ORDER)
         elapsed = time.perf_counter() - t0

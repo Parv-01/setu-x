@@ -5,12 +5,13 @@ POST /v1/stock {"sku": "SKU-001", "quantity": 2}
 """
 from __future__ import annotations
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from pydantic import BaseModel, Field
 
 from setu_x.common.app import create_app
 from setu_x.common.config import ServiceSettings
 from setu_x.domain import SKU_PATTERN, stock_for
+from setu_x.faults import install_fault_injection
 
 
 class StockRequest(BaseModel):
@@ -30,8 +31,9 @@ class StockResponse(BaseModel):
 
 def build_app(settings: ServiceSettings) -> FastAPI:
     app = create_app(settings, title="SETU-X inventory")
+    fault_guard = install_fault_injection(app, settings.instance)
 
-    @app.post("/v1/stock", response_model=StockResponse, tags=["inventory"])
+    @app.post("/v1/stock", response_model=StockResponse, tags=["inventory"], dependencies=[Depends(fault_guard)])
     async def check_stock(body: StockRequest, request: Request) -> StockResponse:
         available = stock_for(body.sku)
         return StockResponse(

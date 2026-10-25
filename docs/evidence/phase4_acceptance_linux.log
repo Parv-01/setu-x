@@ -1,0 +1,229 @@
+SETU-X Phase 4 acceptance (PowerShell)
+date_utc: 2026-10-25T09:35:14Z
+git_commit: c5b9121 (uncommitted files outside docs/evidence: 27)
+powershell: 7.6.8 on linux
+docker: client 29.9.2 / server 29.9.2
+compose: 5.6.1
+
+=== C1 docker compose config
+$ docker compose config --quiet
+>>> C1 PASS - compose configuration valid
+=== C2 build images
+$ true
+>>> C2 PASS - images built
+=== C3 start stack (local mode) and check all 5 services healthy
+$ docker compose up -d --wait --wait-timeout 120
+ Network setu-x_default Creating 
+ Network setu-x_default Creating 
+ Network setu-x_default Created 
+ Network setu-x_default Created 
+ Container setu-x-inventory-b-1 Creating 
+ Container setu-x-controller-1 Creating 
+ Container setu-x-pricing-1 Creating 
+ Container setu-x-inventory-a-1 Creating 
+ Container setu-x-inventory-b-1 Created 
+ Container setu-x-controller-1 Created 
+ Container setu-x-pricing-1 Created 
+ Container setu-x-inventory-a-1 Created 
+ Container setu-x-gateway-1 Creating 
+ Container setu-x-gateway-1 Created 
+ Container setu-x-pricing-1 Starting 
+ Container setu-x-controller-1 Starting 
+ Container setu-x-inventory-a-1 Starting 
+ Container setu-x-inventory-b-1 Starting 
+ Container setu-x-pricing-1 Started 
+ Container setu-x-controller-1 Started 
+ Container setu-x-inventory-a-1 Started 
+ Container setu-x-inventory-b-1 Started 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-gateway-1 Starting 
+ Container setu-x-gateway-1 Started 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-gateway-1 Healthy
+>>> C3 PASS - all 5 services healthy
+=== C4 automated tests (unit + contract + integration)
+$ docker compose --profile test run --rm tests
+ Container setu-x-tests-run-1b9667b1580e Creating 
+ Container setu-x-tests-run-1b9667b1580e Created 
+============================= test session starts ==============================
+platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
+rootdir: /app
+configfile: pyproject.toml
+testpaths: tests
+plugins: asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 244 items / 8 deselected / 236 selected
+
+tests/contract/test_adapter_contract.py ................................ [ 13%]
+......................                                                   [ 22%]
+tests/integration/test_controller.py ........                            [ 26%]
+tests/integration/test_fault_injection.py .......                        [ 29%]
+tests/integration/test_gateway_flow.py .............                     [ 34%]
+tests/integration/test_gateway_routing.py ......                         [ 37%]
+tests/integration/test_resilience_flow.py ..............                 [ 43%]
+tests/integration/test_services.py ......                                [ 45%]
+tests/unit/test_client.py ........                                       [ 49%]
+tests/unit/test_config.py .........                                      [ 52%]
+tests/unit/test_domain.py ................................               [ 66%]
+tests/unit/test_faults.py ..............                                 [ 72%]
+tests/unit/test_ids.py ....                                              [ 74%]
+tests/unit/test_placement_config.py .................................... [ 89%]
+.....                                                                    [ 91%]
+tests/unit/test_resilience.py ............                               [ 96%]
+tests/unit/test_routing.py ........                                      [100%]
+
+====================== 236 passed, 8 deselected in 6.04s =======================
+>>> C4 PASS - unit + contract + integration tests passed
+=== C5 end-to-end tests
+$ docker compose --profile test run --rm tests pytest -p no:cacheprovider -m e2e
+ Container setu-x-tests-run-07da799d934a Creating 
+ Container setu-x-tests-run-07da799d934a Created 
+============================= test session starts ==============================
+platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
+rootdir: /app
+configfile: pyproject.toml
+testpaths: tests
+plugins: asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 244 items / 236 deselected / 8 selected
+
+tests/end_to_end/test_stack.py ........                                  [100%]
+
+====================== 8 passed, 236 deselected in 2.93s =======================
+>>> C5 PASS - e2e tests passed
+=== C6 fault injection only within allowed limits
+HTTP 422: invalid fault spec {"loc":["duration_s"],"msg":"Input should be less than or equal to 300"}
+HTTP 422: target must be one of ['inventory-a', 'inventory-b', 'pricing'] (got 'gateway') null
+HTTP 422: invalid fault spec {"loc":["probability"],"msg":"Input should be less than or equal to 1"}
+HTTP 422: invalid fault spec {"loc":[],"msg":"Value error, mode 'slow' requires delay_ms > 0"}
+>>> C6 PASS - duration>300, non-allow-listed target, probability>1, slow without delay: all 422; no fault active
+=== C7 error fault on primary -> fallback to secondary (fallback on by default)
+served: inventory-b, inventory-b, inventory-b, inventory-b, inventory-b; fallback_used: True,True,True,True,True
+latencies (s): 0.013, 0.010, 0.010, 0.009, 0.009
+>>> C7 PASS - 5/5 orders HTTP 200 served by inventory-b with fallback_used=true
+=== C8 same fault with fallback disabled -> bounded 503
+HTTP 503 in 0.013s: inventory unavailable (http_5xx)
+>>> C8 PASS - 503 dependency_unavailable in 0.013s
+=== C9 bounded retries under a transient fault (p=0.5, seed 42, retries=2, no fallback)
+success: 34/40; attempts per order max=3 total=65; requests that reached inventory-a: 65
+>>> C9 PASS - attempts per order <= 1+retries (max 3); inventory-a saw exactly 65 requests = gateway attempts; 34/40 succeeded
+=== C10 unresponsive dependency (hang): cut by timeout; with fallback -> served by secondary
+fallback on : HTTP 200 via inventory-b in 0.861s; tried=[{"instance":"inventory-a","outcome":"timeout","attempts":1},{"instance":"inventory-b","outcome":"ok","attempts":1}]
+fallback off: HTTP 503 in 0.806s: inventory unavailable (timeout)
+>>> C10 PASS - with fallback 200 in 0.861s; without 503 timeout in 0.806s (timeout 0.8s)
+=== C11 circuit breaker: opens, stops calls to the failing instance, recovers (recovery time measured)
+8 orders served by: inventory-b, inventory-b, inventory-b, inventory-b, inventory-b, inventory-b, inventory-b, inventory-b
+inventory-a requests during fault: 3 (threshold 3); breaker rejections: 5; breaker state: open
+recovery: inventory-a served again 0.021s after the fault expired; transitions: closed->open, open->half_open, half_open->closed
+>>> C11 PASS - breaker opened after 3 failures; inventory-a then received 0 further requests; recovered after 0.021s (reset timeout 3 s)
+=== C12 real container failure (stop) with fallback; container fault script
+ Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-inventory-a-1 Stopped 
+2026-10-25T09:36:01.457Z stopped inventory-a for 60 s
+{"type":"container_fault","service":"inventory-a","planned_seconds":60,"stopped_at":"2026-10-25T09:36:01.457Z"}
+inventory-a stopped: HTTP 200 via inventory-b in 0.033s; tried=[{"instance":"inventory-a","outcome":"connect_error","attempts":1},{"instance":"inventory-b","outcome":"ok","attempts":1}]
+$ docker compose start inventory-a
+ Container setu-x-inventory-a-1 Starting 
+ Container setu-x-inventory-a-1 Started
+ Container setu-x-pricing-1 Stopping 
+ Container setu-x-pricing-1 Stopped 
+2026-10-25T09:36:12.829Z stopped pricing for 2 s
+ Container setu-x-pricing-1 Starting 
+ Container setu-x-pricing-1 Started 
+2026-10-25T09:36:15.266Z started pricing
+2026-10-25T09:36:21.082Z pricing health: healthy
+{"type":"container_fault","service":"pricing","planned_seconds":2,"stopped_at":"2026-10-25T09:36:12.829Z","started_at":"2026-10-25T09:36:15.266Z","healthy_at":"2026-10-25T09:36:21.082Z"}
+>>> C12 PASS - stopped primary -> 200 via inventory-b in 0.033s; back to inventory-a after restart; fault_container.ps1 full cycle exit 0
+=== C13 simulated mode: configured link delay injected and reported separately
+$ docker compose up -d --no-deps --wait --wait-timeout 60 gateway
+ Container setu-x-gateway-1 Recreate 
+ Container setu-x-gateway-1 Recreated 
+ Container setu-x-gateway-1 Starting 
+ Container setu-x-gateway-1 Started 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-gateway-1 Healthy
+simulated: HTTP 200 total=65.154 ms; injected inventory=40 pricing=55 critical_path=55
+after PUT local--aws-simulated=150: total=154.061 ms; injected inventory=150
+>>> C13 PASS - injected 40/55 ms (critical path 55, measured total 65.154 ms); runtime change to 150 ms applied (total 154.061 ms)
+$ docker compose up -d --no-deps --wait --wait-timeout 60 gateway
+ Container setu-x-gateway-1 Recreate 
+ Container setu-x-gateway-1 Recreated 
+ Container setu-x-gateway-1 Starting 
+ Container setu-x-gateway-1 Started 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-gateway-1 Healthy
+=== C14 resilience and fault events are observable
+gateway event types (since gateway restart): 
+controller event types: fault_cleared, fault_injected, links_updated, placement_reset, placement_updated
+>>> C14 PASS - controller recorded fault_injected, fault_cleared, placement_updated, links_updated (gateway events shown in C9-C11 output)
+=== C15 hardening unchanged, graceful stop and clean down
+$ docker compose stop
+ Container setu-x-gateway-1 Stopping 
+ Container setu-x-gateway-1 Stopped 
+ Container setu-x-inventory-b-1 Stopping 
+ Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-pricing-1 Stopping 
+ Container setu-x-controller-1 Stopping 
+ Container setu-x-inventory-b-1 Stopped 
+ Container setu-x-pricing-1 Stopped 
+ Container setu-x-controller-1 Stopped 
+ Container setu-x-inventory-a-1 Stopped
+exit codes: controller=0 gateway=0 inventory-a=0 inventory-b=0 pricing=0
+$ docker compose down
+ Container setu-x-gateway-1 Stopping 
+ Container setu-x-gateway-1 Stopped 
+ Container setu-x-gateway-1 Removing 
+ Container setu-x-gateway-1 Removed 
+ Container setu-x-pricing-1 Stopping 
+ Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-inventory-b-1 Stopping 
+ Container setu-x-controller-1 Stopping 
+ Container setu-x-inventory-b-1 Stopped 
+ Container setu-x-inventory-b-1 Removing 
+ Container setu-x-controller-1 Stopped 
+ Container setu-x-controller-1 Removing 
+ Container setu-x-pricing-1 Stopped 
+ Container setu-x-pricing-1 Removing 
+ Container setu-x-inventory-a-1 Stopped 
+ Container setu-x-inventory-a-1 Removing 
+ Container setu-x-controller-1 Removed 
+ Container setu-x-inventory-a-1 Removed 
+ Container setu-x-inventory-b-1 Removed 
+ Container setu-x-pricing-1 Removed 
+ Network setu-x_default Removing 
+ Network setu-x_default Removed
+>>> C15 PASS - hardening intact; all 5 exited 0; 0 containers left
+
+================ SUMMARY ================
+C1   PASS compose configuration valid
+C2   PASS images built
+C3   PASS all 5 services healthy
+C4   PASS unit + contract + integration tests passed
+C5   PASS e2e tests passed
+C6   PASS duration>300, non-allow-listed target, probability>1, slow without delay: all 422; no fault active
+C7   PASS 5/5 orders HTTP 200 served by inventory-b with fallback_used=true
+C8   PASS 503 dependency_unavailable in 0.013s
+C9   PASS attempts per order <= 1+retries (max 3); inventory-a saw exactly 65 requests = gateway attempts; 34/40 succeeded
+C10  PASS with fallback 200 in 0.861s; without 503 timeout in 0.806s (timeout 0.8s)
+C11  PASS breaker opened after 3 failures; inventory-a then received 0 further requests; recovered after 0.021s (reset timeout 3 s)
+C12  PASS stopped primary -> 200 via inventory-b in 0.033s; back to inventory-a after restart; fault_container.ps1 full cycle exit 0
+C13  PASS injected 40/55 ms (critical path 55, measured total 65.154 ms); runtime change to 150 ms applied (total 154.061 ms)
+C14  PASS controller recorded fault_injected, fault_cleared, placement_updated, links_updated (gateway events shown in C9-C11 output)
+C15  PASS hardening intact; all 5 exited 0; 0 containers left
+checks: 15  failed: 0
+PHASE 4 ACCEPTANCE: PASS

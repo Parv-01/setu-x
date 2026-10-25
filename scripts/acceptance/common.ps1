@@ -34,7 +34,7 @@ function Invoke-Http([string]$Method, [string]$Url, $Body = $null) {
         }
         $r = Invoke-WebRequest @p
         $sw.Stop()
-        $json = $null; try { $json = $r.Content | ConvertFrom-Json -Depth 50 } catch { }
+        $json = $null; try { $json = $r.Content | ConvertFrom-Json -Depth 50 -DateKind String } catch { }
         return [pscustomobject]@{ Code = [int]$r.StatusCode; Body = [string]$r.Content; Json = $json; Seconds = $sw.Elapsed.TotalSeconds }
     } catch {
         $sw.Stop()

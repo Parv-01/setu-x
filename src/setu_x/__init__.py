@@ -5,4 +5,4 @@ Author: Parv Agarwal, Junior Research Associate (Technical),
 AI NLP ML Research Laboratory, IIT Patna.
 """
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"
