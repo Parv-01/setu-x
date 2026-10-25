@@ -109,7 +109,9 @@
       <div class="panel">
         <div class="panel-head"><h2>Routing decisions and resilience events</h2><span class="badge live">LIVE · newest first</span></div>
         <div class="buttons"><button id="gw-refresh" type="button">Refresh</button></div>
-        <h3>Routing decisions</h3><div id="decisions"></div>
+        <h3>Routing decisions</h3>
+        <p class="hint">The routing policy's first choice for each call. When that instance fails and fallback is on, the switch to the next candidate appears under resilience events.</p>
+        <div id="decisions"></div>
         <h3>Circuit breakers</h3><div id="breakers"></div>
         <h3>Resilience events</h3><div id="events"></div>
       </div>

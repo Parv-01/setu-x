@@ -1,0 +1,376 @@
+SETU-X Phase 5 acceptance (PowerShell)
+date_utc: 2026-10-25T12:57:32Z
+git_commit: 0afc449 (uncommitted files outside docs/evidence: 0)
+powershell: 7.6.8 on linux
+docker: client 29.9.2 / server 29.9.2
+compose: 5.6.1
+
+=== D1 docker compose config
+$ docker compose config --quiet
+>>> D1 PASS - compose configuration valid
+=== D2 build images
+$ true
+>>> D2 PASS - images built
+=== D3 start stack (local mode): 6 services healthy, runner not published to the host
+$ docker compose up -d --wait --wait-timeout 150
+ Network setu-x_default Creating 
+ Network setu-x_default Creating 
+ Network setu-x_default Created 
+ Network setu-x_default Created 
+ Container setu-x-inventory-a-1 Creating 
+ Container setu-x-pricing-1 Creating 
+ Container setu-x-controller-1 Creating 
+ Container setu-x-inventory-b-1 Creating 
+ Container setu-x-inventory-b-1 Created 
+ Container setu-x-pricing-1 Created 
+ Container setu-x-inventory-a-1 Created 
+ Container setu-x-controller-1 Created 
+ Container setu-x-gateway-1 Creating 
+ Container setu-x-gateway-1 Created 
+ Container setu-x-runner-1 Creating 
+ Container setu-x-runner-1 Created 
+ Container setu-x-controller-1 Starting 
+ Container setu-x-inventory-a-1 Starting 
+ Container setu-x-inventory-b-1 Starting 
+ Container setu-x-pricing-1 Starting 
+ Container setu-x-controller-1 Started 
+ Container setu-x-inventory-a-1 Started 
+ Container setu-x-inventory-b-1 Started 
+ Container setu-x-pricing-1 Started 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-gateway-1 Starting 
+ Container setu-x-gateway-1 Started 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-gateway-1 Healthy 
+ Container setu-x-runner-1 Starting 
+ Container setu-x-runner-1 Started 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-runner-1 Waiting 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-gateway-1 Healthy 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-runner-1 Healthy
+runner NetworkSettings.Ports: {"8000/tcp":null}
+runner HostConfig.PortBindings: {}
+docker compose port runner 8000 (info only): ':0'
+>>> D3 PASS - all 6 services healthy; runner has no host port binding
+=== D4 automated tests (unit + contract + integration)
+$ docker compose --profile test run --rm tests
+ Container setu-x-tests-run-519288550056 Creating 
+ Container setu-x-tests-run-519288550056 Created 
+============================= test session starts ==============================
+platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
+rootdir: /app
+configfile: pyproject.toml
+testpaths: tests
+plugins: asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 346 items / 10 deselected / 1 skipped / 336 selected
+
+tests/contract/test_adapter_contract.py ................................ [  9%]
+......................                                                   [ 16%]
+tests/integration/test_controller.py ........                            [ 18%]
+tests/integration/test_dashboard_backend.py ...............              [ 22%]
+tests/integration/test_experiment_runner.py ........                     [ 25%]
+tests/integration/test_fault_injection.py .......                        [ 27%]
+tests/integration/test_gateway_flow.py .............                     [ 31%]
+tests/integration/test_gateway_routing.py ......                         [ 33%]
+tests/integration/test_loadgen.py .....                                  [ 34%]
+tests/integration/test_resilience_flow.py ..............                 [ 38%]
+tests/integration/test_runner_service.py .....                           [ 40%]
+tests/integration/test_services.py ......                                [ 41%]
+tests/unit/test_client.py ........                                       [ 44%]
+tests/unit/test_config.py .........                                      [ 47%]
+tests/unit/test_domain.py ................................               [ 56%]
+tests/unit/test_experiment_metrics.py ............                       [ 60%]
+tests/unit/test_experiment_records.py .............                      [ 63%]
+tests/unit/test_experiment_scenario.py ................................. [ 73%]
+..                                                                       [ 74%]
+tests/unit/test_experiment_statistics.py .......                         [ 76%]
+tests/unit/test_faults.py ..............                                 [ 80%]
+tests/unit/test_ids.py ....                                              [ 81%]
+tests/unit/test_placement_config.py .................................... [ 92%]
+.....                                                                    [ 94%]
+tests/unit/test_resilience.py ............                               [ 97%]
+tests/unit/test_routing.py ........                                      [100%]
+
+=========================== short test summary info ============================
+SKIPPED [1] tests/browser/test_dashboard.py:22: could not import 'playwright.sync_api': No module named 'playwright'
+================ 336 passed, 1 skipped, 10 deselected in 50.60s ================
+>>> D4 PASS - unit + contract + integration tests passed
+=== D5 end-to-end tests (includes a smoke experiment through the controller)
+$ docker compose --profile test run --rm tests pytest -p no:cacheprovider -m e2e
+ Container setu-x-tests-run-031bb4b4d594 Creating 
+ Container setu-x-tests-run-031bb4b4d594 Created 
+============================= test session starts ==============================
+platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
+rootdir: /app
+configfile: pyproject.toml
+testpaths: tests
+plugins: asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 346 items / 336 deselected / 1 skipped / 10 selected
+
+tests/end_to_end/test_stack.py ..........                                [100%]
+
+=========================== short test summary info ============================
+SKIPPED [1] tests/browser/test_dashboard.py:22: could not import 'playwright.sync_api': No module named 'playwright'
+================ 10 passed, 1 skipped, 336 deselected in 42.18s ================
+>>> D5 PASS - e2e tests passed
+=== D6 lint
+$ docker compose --profile test run --rm tests ruff check --no-cache src tests
+ Container setu-x-tests-run-36675982b1da Creating 
+ Container setu-x-tests-run-36675982b1da Created 
+All checks passed!
+>>> D6 PASS - ruff clean
+=== D7 scenario catalogue valid
+A_baseline             valid=True mode=local conditions=parallel runs=5 est=337.5s 
+B_network_delay        valid=True mode=simulated conditions=seq-d0,seq-d25,seq-d50,seq-d100,par-d0,par-d25,par-d50,par-d100 runs=3 est=900s 
+C_service_failure      valid=True mode=local conditions=error,hang runs=3 est=285s 
+D_policies_hang        valid=True mode=local conditions=none,timeout,timeout-retry,timeout-retry-breaker runs=3 est=450s 
+D_retries_transient    valid=True mode=local conditions=retries-0,retries-1,retries-2 runs=3 est=337.5s 
+E_scaling              valid=True mode=local conditions=rps-05,rps-10,rps-20,rps-40,rps-80 runs=3 est=562.5s 
+F_placement            valid=True mode=simulated conditions=distributed,pricing-local,inventory-local,both-local runs=3 est=450s 
+G_hybrid_fallback      valid=True mode=simulated conditions=no-fallback,fallback,fallback-breaker runs=3 est=427.5s 
+smoke                  valid=True mode=local conditions=healthy,error-fault runs=2 est=44s 
+smoke_simulated        valid=True mode=simulated conditions=d0,d100 runs=2 est=32s 
+>>> D7 PASS - 10 scenario files, all valid
+=== D8 experiment API is bounded
+HTTP 404: unknown_scenario no scenario 'does-not-exist' in configs/scenarios
+HTTP 422: invalid_request request validation failed
+HTTP 409: preflight_failed scenario 'smoke-simulated' requires SETU_MODE=simulated, but the stack runs gateway=local, controller=local. Restart it with SETU_MODE=simulated (docker compose up -d) and try again.
+HTTP 404: not_found Not Found
+>>> D8 PASS - unknown scenario 404; path-like name 422; simulated scenario on a local stack refused (409); file path traversal 404
+=== D9 smoke experiment via scripts/run_experiment.ps1
+experiment 20261025T125928Z-smoke-42dcb2 started (4 runs)
+[running] run 1/4 healthy load 9/90
+[running] run 1/4 healthy load 19/90
+[running] run 1/4 healthy load 28/90
+[running] run 1/4 healthy load 39/90
+[running] run 1/4 healthy load 49/90
+[running] run 1/4 healthy load 59/90
+[running] run 1/4 healthy load 70/90
+[running] run 1/4 healthy load 80/90
+[running] run 1/4 healthy cooldown 90/90
+[running] run 2/4 error-fault load 3/90
+[running] run 2/4 error-fault load 13/90
+[running] run 2/4 error-fault load 24/90
+[running] run 2/4 error-fault load 34/90
+[running] run 2/4 error-fault load 44/90
+[running] run 2/4 error-fault load 54/90
+[running] run 2/4 error-fault load 64/90
+[running] run 2/4 error-fault load 74/90
+[running] run 2/4 error-fault load 84/90
+[running] run 2/4 error-fault cooldown 90/90
+[running] run 3/4 healthy load 8/90
+[running] run 3/4 healthy load 18/90
+[running] run 3/4 healthy load 28/90
+[running] run 3/4 healthy load 38/90
+[running] run 3/4 healthy load 48/90
+[running] run 3/4 healthy load 58/90
+[running] run 3/4 healthy load 68/90
+[running] run 3/4 healthy load 78/90
+[running] run 3/4 healthy load 89/90
+[running] run 4/4 error-fault load 1/90
+[running] run 4/4 error-fault load 11/90
+[running] run 4/4 error-fault load 22/90
+[running] run 4/4 error-fault load 32/90
+[running] run 4/4 error-fault load 42/90
+[running] run 4/4 error-fault load 52/90
+[running] run 4/4 error-fault load 62/90
+[running] run 4/4 error-fault load 73/90
+[running] run 4/4 error-fault load 83/90
+[completed] run 4/4 error-fault done 90/90
+
+status: completed   validation: ok   rows: 360
+  healthy                  runs=2 median(per-run p50 latency_ok)=11.1655 ms  median(success)=1
+  error-fault              runs=2 median(per-run p50 latency_ok)=9.8875 ms  median(success)=0.7375
+records: results/20261025T125928Z-smoke-42dcb2
+>>> D9 PASS - exit 0; files: events.jsonl, manifest.json, observations.csv, observations.jsonl, summary.json
+=== D10 independent recomputation from observations.csv
+healthy-r0       measure_rows csv=80 summary=80  ok csv=80 summary=80  p50 csv=10.784 summary=10.784  success csv=1 summary=1
+error-fault-r0   measure_rows csv=80 summary=80  ok csv=59 summary=59  p50 csv=10.039 summary=10.039  success csv=0.7375 summary=0.7375
+healthy-r1       measure_rows csv=80 summary=80  ok csv=80 summary=80  p50 csv=11.547 summary=11.547  success csv=1 summary=1
+error-fault-r1   measure_rows csv=80 summary=80  ok csv=59 summary=59  p50 csv=9.736 summary=9.736  success csv=0.7375 summary=0.7375
+>>> D10 PASS - rows=360 scheduled=360; per-run counts, success rates and type-7 medians match summary.json; p95/p99 withheld (n<200); runner validation ok=True
+=== D11 per-run isolation and clean platform afterwards
+healthy-r0       placement v14 sha 8a0b9e3ef877  gateway_reset v14 seed=11000033  order=11000033
+error-fault-r0   placement v16 sha 8a0b9e3ef877  gateway_reset v16 seed=11010040  order=11010040
+healthy-r1       placement v18 sha 8a0b9e3ef877  gateway_reset v18 seed=11000134  order=11000134
+error-fault-r1   placement v20 sha 8a0b9e3ef877  gateway_reset v20 seed=11010141  order=11010141
+>>> D11 PASS - every run synced the gateway to its own placement version before load; distinct seeds per run; afterwards placement source=file, active faults=0
+=== D12 scheduled fault confined to its window; recovery measured
+error-fault-r0: fault injected at 2.001 s (scheduled 2, late 0.94 ms) for 2 s; unavailable=21 (outside window: 0); impacted=True recovery_s=1.099
+error-fault-r1: fault injected at 2.001 s (scheduled 2, late 0.592 ms) for 2 s; unavailable=21 (outside window: 0); impacted=True recovery_s=1.099
+>>> D12 PASS - failures only inside the actual fault window (+/-0.15 s), ~20 per fault run, healthy runs 100%; controller fault_injected events in events.jsonl: 2
+=== D13 one experiment at a time; stop keeps completed runs
+first HTTP 202; second HTTP 409 experiment_running; stop HTTP 200 -> stopped; runs completed 1/4; validation ok=True
+>>> D13 PASS - second start refused while running; stopped experiment keeps and validates its completed runs
+=== D14 simulated mode: injected 100 ms delay is measured
+$ docker compose up -d --wait --wait-timeout 150
+ Network setu-x_default Creating 
+ Network setu-x_default Creating 
+ Network setu-x_default Created 
+ Network setu-x_default Created 
+ Container setu-x-inventory-a-1 Creating 
+ Container setu-x-controller-1 Creating 
+ Container setu-x-inventory-b-1 Creating 
+ Container setu-x-pricing-1 Creating 
+ Container setu-x-inventory-b-1 Created 
+ Container setu-x-controller-1 Created 
+ Container setu-x-inventory-a-1 Created 
+ Container setu-x-pricing-1 Created 
+ Container setu-x-gateway-1 Creating 
+ Container setu-x-gateway-1 Created 
+ Container setu-x-runner-1 Creating 
+ Container setu-x-runner-1 Created 
+ Container setu-x-inventory-a-1 Starting 
+ Container setu-x-inventory-b-1 Starting 
+ Container setu-x-controller-1 Starting 
+ Container setu-x-pricing-1 Starting 
+ Container setu-x-inventory-a-1 Started 
+ Container setu-x-inventory-b-1 Started 
+ Container setu-x-controller-1 Started 
+ Container setu-x-pricing-1 Started 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-gateway-1 Starting 
+ Container setu-x-gateway-1 Started 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-gateway-1 Healthy 
+ Container setu-x-runner-1 Starting 
+ Container setu-x-runner-1 Started 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-runner-1 Waiting 
+ Container setu-x-gateway-1 Healthy 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-runner-1 Healthy
+experiment 20261025T130037Z-smoke-simulated-4a0647 started (4 runs)
+[running] run 1/4 d0 load 8/60
+[running] run 1/4 d0 load 19/60
+[running] run 1/4 d0 load 28/60
+[running] run 1/4 d0 load 39/60
+[running] run 1/4 d0 load 49/60
+[running] run 1/4 d0 load 59/60
+[running] run 2/4 d100 load 2/60
+[running] run 2/4 d100 load 12/60
+[running] run 2/4 d100 load 22/60
+[running] run 2/4 d100 load 32/60
+[running] run 2/4 d100 load 42/60
+[running] run 2/4 d100 load 53/60
+[running] run 2/4 d100 cooldown 60/60
+[running] run 3/4 d0 load 6/60
+[running] run 3/4 d0 load 17/60
+[running] run 3/4 d0 load 27/60
+[running] run 3/4 d0 load 37/60
+[running] run 3/4 d0 load 47/60
+[running] run 3/4 d0 load 57/60
+[running] run 4/4 d100 load 0/60
+[running] run 4/4 d100 load 9/60
+[running] run 4/4 d100 load 19/60
+[running] run 4/4 d100 load 29/60
+[running] run 4/4 d100 load 39/60
+[running] run 4/4 d100 load 49/60
+[running] run 4/4 d100 load 59/60
+[completed] run 4/4 d100 done 60/60
+
+status: completed   validation: ok   rows: 240
+  d0                       runs=2 median(per-run p50 latency_ok)=11.9225 ms  median(success)=1
+  d100                     runs=2 median(per-run p50 latency_ok)=113.962 ms  median(success)=1
+records: results/20261025T130037Z-smoke-simulated-4a0647
+d0: per-run medians (csv) 11.325, 12.520
+d100: per-run medians (csv) 114.110, 113.814
+difference of medians (csv) = 102.039 ms; summary.json = 102.0395 ms, CI95 101.294..102.785; injected_delay_ms values for d100: 100.0
+>>> D14 PASS - stack mode=simulated; median(d100) - median(d0) within 100 +/- 25 ms and equal to summary.json
+=== D15 hardening of all 6 services, graceful stop, clean down (results volume kept)
+$ docker compose stop
+ Container setu-x-runner-1 Stopping 
+ Container setu-x-runner-1 Stopped 
+ Container setu-x-gateway-1 Stopping 
+ Container setu-x-gateway-1 Stopped 
+ Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-pricing-1 Stopping 
+ Container setu-x-inventory-b-1 Stopping 
+ Container setu-x-controller-1 Stopping 
+ Container setu-x-inventory-a-1 Stopped 
+ Container setu-x-controller-1 Stopped 
+ Container setu-x-inventory-b-1 Stopped 
+ Container setu-x-pricing-1 Stopped
+exit codes: controller=0 gateway=0 inventory-a=0 inventory-b=0 pricing=0 runner=0
+$ docker compose down
+ Container setu-x-runner-1 Stopping 
+ Container setu-x-runner-1 Stopped 
+ Container setu-x-runner-1 Removing 
+ Container setu-x-runner-1 Removed 
+ Container setu-x-gateway-1 Stopping 
+ Container setu-x-gateway-1 Stopped 
+ Container setu-x-gateway-1 Removing 
+ Container setu-x-gateway-1 Removed 
+ Container setu-x-pricing-1 Stopping 
+ Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-inventory-b-1 Stopping 
+ Container setu-x-controller-1 Stopping 
+ Container setu-x-pricing-1 Stopped 
+ Container setu-x-pricing-1 Removing 
+ Container setu-x-controller-1 Stopped 
+ Container setu-x-controller-1 Removing 
+ Container setu-x-inventory-a-1 Stopped 
+ Container setu-x-inventory-a-1 Removing 
+ Container setu-x-inventory-b-1 Stopped 
+ Container setu-x-inventory-b-1 Removing 
+ Container setu-x-pricing-1 Removed 
+ Container setu-x-inventory-b-1 Removed 
+ Container setu-x-inventory-a-1 Removed 
+ Container setu-x-controller-1 Removed 
+ Network setu-x_default Removing 
+ Network setu-x_default Removed
+>>> D15 PASS - hardening intact; all 6 exited 0; 0 containers left; results volume: setu-x_setu-results
+
+================ SUMMARY ================
+D1   PASS compose configuration valid
+D2   PASS images built
+D3   PASS all 6 services healthy; runner has no host port binding
+D4   PASS unit + contract + integration tests passed
+D5   PASS e2e tests passed
+D6   PASS ruff clean
+D7   PASS 10 scenario files, all valid
+D8   PASS unknown scenario 404; path-like name 422; simulated scenario on a local stack refused (409); file path traversal 404
+D9   PASS exit 0; files: events.jsonl, manifest.json, observations.csv, observations.jsonl, summary.json
+D10  PASS rows=360 scheduled=360; per-run counts, success rates and type-7 medians match summary.json; p95/p99 withheld (n<200); runner validation ok=True
+D11  PASS every run synced the gateway to its own placement version before load; distinct seeds per run; afterwards placement source=file, active faults=0
+D12  PASS failures only inside the actual fault window (+/-0.15 s), ~20 per fault run, healthy runs 100%; controller fault_injected events in events.jsonl: 2
+D13  PASS second start refused while running; stopped experiment keeps and validates its completed runs
+D14  PASS stack mode=simulated; median(d100) - median(d0) within 100 +/- 25 ms and equal to summary.json
+D15  PASS hardening intact; all 6 exited 0; 0 containers left; results volume: setu-x_setu-results
+checks: 15  failed: 0  skipped (not executed): 0
+PHASE 5 ACCEPTANCE: PASS

@@ -7,6 +7,7 @@ import { comparabilityWarnings, compareSummaries, fmtMs, fmtNum, fmtPct, parseCs
 const $ = (id) => document.getElementById(id);
 const state = { mode: null, envs: [], placement: null, links: {}, scenarios: [], experiments: [], running: null,
   pollTimer: null, liveTimer: null, results: new Map(), csv: new Map() };
+const HISTORY_ROWS = 12;
 const FILES = ["observations.csv", "observations.jsonl", "summary.json", "manifest.json", "events.jsonl"];
 
 // ------------------------------------------------------------------------------------------ DOM helpers
@@ -350,7 +351,7 @@ async function sendOrder() {
       h("div", {}, h("strong", {}, `${r.status.toUpperCase()}`), ` · order ${r.order_id} · request ${r.request_id}`),
       h("div", { class: "kv" },
         h("span", {}, `inventory: ${inv.instance} (${inv.env}) · available ${inv.available}`),
-        h("span", {}, r.pricing ? `price: ${r.pricing.total_cents} ${r.pricing.currency} via ${r.pricing.price_source}` : "no price (rejected)"),
+        h("span", {}, r.pricing ? `price: ${(r.pricing.total_cents / 100).toFixed(2)} ${r.pricing.currency} (demo currency) via ${r.pricing.price_source}` : "no price (rejected)"),
         h("span", {}, `gateway total (measured): ${fmtMs(r.timings_ms.total)}`),
         h("span", {}, `injected delay on critical path (configured): ${fmtMs(res.injected_delay_ms_critical_path)}`),
         h("span", {}, `attempts ${res.attempts} · retries ${res.retries} · fallbacks ${res.fallbacks}`),
@@ -499,7 +500,7 @@ function renderLive(live) {
   });
   lineChart($("live-latency"), {
     points: live.seconds.map((s) => ({ t: s.t, y: s.p50_ms })), yLabel: "median latency (ms)",
-    xLabel: "scheduled send time (s from start of measurement)", bands, fmt: (v) => `${fmtNum(v, 0)}`,
+    xLabel: "scheduled send time (s from start of measurement; < 0 = warm-up)", bands, fmt: (v) => `${fmtNum(v, 0)}`,
     describe: "Live median latency per second",
   });
   put("live-runs", table(["Run", "Condition", "Success", "Availability", "Median latency", "Measured rows"],
@@ -528,10 +529,13 @@ async function refreshHistory() {
     const running = data.experiments.find((e) => ["running", "analysing"].includes(e.status));
     if (running && state.running !== running.experiment_id) watchExperiment(running.experiment_id);
     put("history", table(["Experiment", "Scenario", "Status", "Started (UTC)", "Label", ""],
-      data.experiments.map((e) => [e.experiment_id, e.scenario, statusCell(e.status), (e.started_at || "").slice(0, 19).replace("T", " "),
+      data.experiments.slice(0, state.showAllHistory ? undefined : HISTORY_ROWS).map((e) => [e.experiment_id, e.scenario, statusCell(e.status), (e.started_at || "").slice(0, 19).replace("T", " "),
         e.label || "", ["completed", "stopped", "failed"].includes(e.status)
           ? h("button", { type: "button", class: "small", onclick: () => openResults(e.experiment_id) }, "Results") : ""]),
-      { empty: "No experiments yet. Results appear here only after you run one; the dashboard never shows example data." }));
+      { empty: "No experiments yet. Results appear here only after you run one; the dashboard never shows example data." }),
+    data.experiments.length > HISTORY_ROWS ? h("button", { type: "button", class: "small", onclick: () => {
+      state.showAllHistory = !state.showAllHistory; refreshHistory(); } },
+    state.showAllHistory ? "Show recent only" : `Show all ${data.experiments.length}`) : null);
     fillExperimentSelects();
   });
 }
