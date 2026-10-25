@@ -2,8 +2,8 @@
 
 Resume from this file if work is interrupted. Updated at every phase boundary.
 
-**Last updated:** 2026-10-25 (end of Phase 6)
-**Current phase:** Phase 6 complete, PASS on Linux and Windows (Phase 5 Windows re-run 15/15, Phase 6 Windows 15/15, both on 235e006). Progress deck (6 slides, not the final ≤5-slide deck): `presentation/setu-x_progress_deck.html`. Next: Phase 7, integration and validation report, **to start only when Parv says so**.
+**Last updated:** 2026-10-25 (end of Phase 7)
+**Current phase:** Phase 7 complete on Linux: `scripts/verify.ps1` 18/18 PASS on 21a0ba6 from a clean checkout; `docs/validation_report.md` written. Windows verify run pending. Next: Phase 8 (run Experiments A–G on Parv's Windows machine), **to start only when Parv says so**.
 
 ## Completed
 
@@ -107,8 +107,8 @@ Second defect found by the Phase 4 regression run (C7 failed once, then passed o
 - PowerShell 7.6.8: `<scratchpad>/pwsh/pwsh`, symlinked to `/usr/local/bin/pwsh` (needed because the acceptance script calls `pwsh` for `fault_container.ps1`).
 - Sync: **use a new archive file name for every sync** (reusing a name once delivered a stale copy despite reporting success) and compare `sha256sum` on both sides. Then tar → `device_commit_files` to `.p0\setu-x-<phase>.tgz` → on the device: `tar --overwrite --exclude='setu-x/.git/objects/*'`, then `tar --skip-old-files … 'setu-x/.git/objects'`, then `git fsck`.
 
-## Next commands (Phase 7)
+## Next commands (Phase 8)
 
-1. `scripts/verify.ps1`: one command for a clean checkout. It runs compose config, build, health, unit/contract/integration, e2e, browser tests, a short experiment with file reconciliation, stop/restart, and down, then prints a PASS/FAIL table.
-2. `docs/validation_report.md`: map every brief requirement (§15 checklist) to the file, test or command that proves it, with the executed status only (never "passing" for an unexecuted check).
-3. Then Phase 8: run Experiments A–G on Parv's Windows machine with `scripts/run_experiment.ps1` (about 1 h of load, two stack restarts), and write the findings.
+1. On Parv's Windows machine, local mode (`docker compose up -d`): run A_baseline, C_service_failure, D_policies_hang, D_retries_transient and E_scaling with `pwsh -File scripts/run_experiment.ps1 -Scenario <name> -DockerStats`.
+2. Then simulated mode (`$env:SETU_MODE='simulated'; docker compose up -d`): run B_network_delay, F_placement and G_hybrid_fallback the same way.
+3. Commit `results/<id>/` for those runs (verify V2 requires each committed result directory to be complete and validated). Produce plots from those files only; evaluate H1–H5 against the rejection criteria in `docs/research_questions.md`; write the findings and the threats to validity.

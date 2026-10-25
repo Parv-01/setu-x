@@ -3,7 +3,7 @@
 **Scope.** This report covers what has been executed and verified for SETU-X up to the end of Phase 7: the application, the experiment harness and the dashboard. It does **not** report experimental findings; those come from the Phase 8 runs. Every "PASS" below names the log that shows it. A check that was not executed is listed as not executed, never as passing.
 
 **Versions.**
-- Code: SETU-X 0.6.0, verified on commit `eb4d2f0` (Linux).
+- Code: SETU-X 0.6.0, verified on commit `21a0ba6` (Linux; the first verify run on `eb4d2f0` also passed 18/18).
 - Workspace toolchain: Docker Engine 29.x with Compose 5.x, PowerShell 7.6.8.
 - Parv's Windows machine: Docker Desktop 29.4.2 with Compose 5.1.3, PowerShell 7.6.8.
 
@@ -17,7 +17,7 @@
 
 Uncommitted files are therefore never part of a verification.
 
-| Check | What it proves | Linux (`eb4d2f0` + mapping fix) | Windows |
+| Check | What it proves | Linux (`21a0ba6`) | Windows |
 |---|---|---|---|
 | V1 | Clean clone of `HEAD`; nothing uncommitted is used | PASS | pending |
 | V2 | No secret patterns (private keys, AWS/GitHub/Slack/Google/OpenAI-style tokens, hard-coded passwords), no `.env`/key files tracked; any committed `results/` directory is complete and validated | PASS (173 tracked text files; patterns tested against a planted key file) | pending |

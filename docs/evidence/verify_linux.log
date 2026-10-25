@@ -1,17 +1,18 @@
 SETU-X Phase 7 verification from a clean checkout (PowerShell)
-date_utc: 2026-10-25T13:39:12Z
-git_commit: eb4d2f0 (uncommitted files outside docs/evidence: 0)
+date_utc: 2026-10-25T13:46:59Z
+git_commit: 21a0ba6 (uncommitted files outside docs/evidence: 0)
 powershell: 7.6.8 on linux
 docker: client 29.9.2 / server 29.9.2
 compose: 5.6.1
 
 === V1 source state and clean clone of HEAD
-$ git clone --quiet --no-hardlinks "/home/claude/setu-x" "/tmp/setu-x-verify-26b47399"
-clone: /tmp/setu-x-verify-26b47399  HEAD eb4d2f0fccad1c10c08f67df7bb7ce1e81f40ead  untracked/modified: 0  compose project: setu-x-verify  ports: 18080/18090
->>> V1 PASS - clean clone of eb4d2f0 in a temporary folder (0 uncommitted source files excluded)
+uncommitted in source (NOT included in the clone):  D docs/evidence/verify_linux.log
+$ git clone --quiet --no-hardlinks "/home/claude/setu-x" "/tmp/setu-x-verify-2c4c41f4"
+clone: /tmp/setu-x-verify-2c4c41f4  HEAD 21a0ba62652af983caa1e60bca2aa4e1d188b6ae  untracked/modified: 0  compose project: setu-x-verify  ports: 18080/18090
+>>> V1 PASS - clean clone of 21a0ba6 in a temporary folder (1 uncommitted source files excluded)
 === V2 no credentials, private keys, .env files or unvalidated results in the repository
-scanned 173 tracked text files; committed result directories: 0
->>> V2 PASS - no secret patterns or credential files in 173 tracked files; 0 committed result directories, all validated
+scanned 175 tracked text files; committed result directories: 0
+>>> V2 PASS - no secret patterns or credential files in 175 tracked files; 0 committed result directories, all validated
 === V3 docker compose config
 $ docker compose config --quiet
 >>> V3 PASS - compose configuration valid
@@ -24,20 +25,20 @@ $ docker compose --profile test run --rm --no-deps tests python -m setu_x.config
  Network setu-x-verify_default Creating 
  Network setu-x-verify_default Created 
  Network setu-x-verify_default Created 
- Container setu-x-verify-tests-run-c6f2d77b4235 Creating 
- Container setu-x-verify-tests-run-c6f2d77b4235 Created 
+ Container setu-x-verify-tests-run-871d54c240b7 Creating 
+ Container setu-x-verify-tests-run-871d54c240b7 Created 
 VALID configs: 4 environments (3 simulated: aws-simulated, azure-simulated, gcp-simulated); call_mode=parallel
   inventory: routing=primary-fallback; inventory-a@aws-simulated[primary], inventory-b@gcp-simulated[secondary]
   pricing: routing=primary-fallback; pricing@azure-simulated[primary]
 $ docker compose --profile test run --rm --no-deps tests python -m setu_x.config_check tests/fixtures/bad_config
- Container setu-x-verify-tests-run-b8c156954ebb Creating 
- Container setu-x-verify-tests-run-b8c156954ebb Created 
+ Container setu-x-verify-tests-run-d3579e8742ec Creating 
+ Container setu-x-verify-tests-run-d3579e8742ec Created 
 INVALID tests/fixtures/bad_config/placement.yaml: services.inventory.instances.1.env: unknown environment 'gcp-simualted' (known: aws-simulated, azure-simulated, gcp-simulated, local)
 >>> V5 PASS - shipped configs valid (exit 0); tests/fixtures/bad_config rejected (exit 1)
 === V6 unit + contract + integration tests
 $ docker compose --profile test run --rm tests
- Container setu-x-verify-tests-run-0e3e4d088b70 Creating 
- Container setu-x-verify-tests-run-0e3e4d088b70 Created 
+ Container setu-x-verify-tests-run-01ce54f63244 Creating 
+ Container setu-x-verify-tests-run-01ce54f63244 Created 
 ============================= test session starts ==============================
 platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
 rootdir: /app
@@ -76,12 +77,12 @@ tests/unit/test_routing.py ........                                      [100%]
 
 =========================== short test summary info ============================
 SKIPPED [1] tests/browser/test_dashboard.py:22: could not import 'playwright.sync_api': No module named 'playwright'
-================ 336 passed, 1 skipped, 10 deselected in 50.21s ================
+================ 336 passed, 1 skipped, 10 deselected in 50.10s ================
 >>> V6 PASS - all unit, contract and integration tests passed
 === V7 lint
 $ docker compose --profile test run --rm tests ruff check --no-cache src tests
- Container setu-x-verify-tests-run-aba55e6c39bb Creating 
- Container setu-x-verify-tests-run-aba55e6c39bb Created 
+ Container setu-x-verify-tests-run-8b3e1ddb06ce Creating 
+ Container setu-x-verify-tests-run-8b3e1ddb06ce Created 
 All checks passed!
 >>> V7 PASS - ruff clean
 === V8 clean start and the README quick start
@@ -89,35 +90,35 @@ $ docker compose up -d
  Volume setu-x-verify_setu-results Creating 
  Volume setu-x-verify_setu-results Creating 
  Container setu-x-verify-inventory-b-1 Creating 
- Container setu-x-verify-pricing-1 Creating 
  Container setu-x-verify-controller-1 Creating 
  Container setu-x-verify-inventory-a-1 Creating 
+ Container setu-x-verify-pricing-1 Creating 
  Volume setu-x-verify_setu-results Created 
  Volume setu-x-verify_setu-results Created 
+ Container setu-x-verify-inventory-a-1 Created 
  Container setu-x-verify-controller-1 Created 
  Container setu-x-verify-pricing-1 Created 
  Container setu-x-verify-inventory-b-1 Created 
- Container setu-x-verify-inventory-a-1 Created 
  Container setu-x-verify-gateway-1 Creating 
  Container setu-x-verify-gateway-1 Created 
  Container setu-x-verify-runner-1 Creating 
  Container setu-x-verify-runner-1 Created 
- Container setu-x-verify-inventory-b-1 Starting 
- Container setu-x-verify-pricing-1 Starting 
  Container setu-x-verify-controller-1 Starting 
  Container setu-x-verify-inventory-a-1 Starting 
- Container setu-x-verify-inventory-b-1 Started 
- Container setu-x-verify-pricing-1 Started 
+ Container setu-x-verify-inventory-b-1 Starting 
+ Container setu-x-verify-pricing-1 Starting 
  Container setu-x-verify-controller-1 Started 
  Container setu-x-verify-inventory-a-1 Started 
- Container setu-x-verify-pricing-1 Waiting 
+ Container setu-x-verify-inventory-b-1 Started 
+ Container setu-x-verify-pricing-1 Started 
  Container setu-x-verify-controller-1 Waiting 
  Container setu-x-verify-inventory-a-1 Waiting 
  Container setu-x-verify-inventory-b-1 Waiting 
- Container setu-x-verify-pricing-1 Healthy 
- Container setu-x-verify-inventory-b-1 Healthy 
+ Container setu-x-verify-pricing-1 Waiting 
  Container setu-x-verify-inventory-a-1 Healthy 
  Container setu-x-verify-controller-1 Healthy 
+ Container setu-x-verify-inventory-b-1 Healthy 
+ Container setu-x-verify-pricing-1 Healthy 
  Container setu-x-verify-gateway-1 Starting 
  Container setu-x-verify-gateway-1 Started 
  Container setu-x-verify-gateway-1 Waiting 
@@ -133,15 +134,15 @@ setu-x-verify-gateway-1       setu-x:0.6.0   "python -m setu_x.se…"   gateway 
 setu-x-verify-inventory-a-1   setu-x:0.6.0   "python -m setu_x.se…"   inventory-a   18 seconds ago   Up 17 seconds (healthy)   8000/tcp
 setu-x-verify-inventory-b-1   setu-x:0.6.0   "python -m setu_x.se…"   inventory-b   18 seconds ago   Up 17 seconds (healthy)   8000/tcp
 setu-x-verify-pricing-1       setu-x:0.6.0   "python -m setu_x.se…"   pricing       18 seconds ago   Up 17 seconds (healthy)   8000/tcp
-setu-x-verify-runner-1        setu-x:0.6.0   "python -m setu_x.se…"   runner        18 seconds ago   Up 6 seconds (healthy)    8000/tcp
-curl -> {"order_id":"ord-verify-readme-1","request_id":"verify-readme-1","trace_id":"0018cae9d0d87f93e57e4a7cab7b4e1c","status":"confirmed","sku":"SKU-001","quantity":2,"customer_tier":"standard","inventory":{"available":8,"in_stock":true,"instance":"inventory-a","env":"aws-simulated","simulated":true,"reported_by":"inventory-a@aws-simulated"},"pricing":{"unit_price_cents":5500,"discount_pct":0,"total_cents":11000,"currency":"DEMO","price_source":"pricing-service","instance":"pricing","env":"azure-simulated","simulated":true},"timings_ms":{"total":10.158,"inventory":10.022,"pricing":8.707},"dependencies":[{"name":"inventory","ok":true,"status_code":200,"error_type":null,"elapsed_ms":10.022,"served_by":"inventory-a@aws-simulated","instance":"inventory-a","env":"aws-simulated","simulated":true,"attempts":1,"retries":0,"injected_delay_ms":0.0,"fallback_used":false,"breaker_rejections":0,"tried":[{"instance":"inventory-a","outcome":"ok","attempts":1}]},{"name":"pricing","ok":true,"status_code":200,"error_type":null,"elapsed_ms":8.707,"served_by":"pricing@azure-simulated","instance":"pricing","env":"azure-simulated","simulated":true,"attempts":1,"retries":0,"injected_delay_ms":0.0,"fallback_used":false,"breaker_rejections":0,"tried":[{"instance":"pricing","outcome":"ok","attempts":1}]}],"routing":[{"seq":1,"ts":"2026-10-25T13:40:25.470+00:00","service":"inventory","policy":"primary-fallback","instance":"inventory-a","env":"aws-simulated","simulated":true,"url":"http://inventory-a:8000","reason":"primary instance","candidates":["inventory-a","inventory-b"],"placement_version":1,"served_instance":"inventory-a","fallback_used":false},{"seq":2,"ts":"2026-10-25T13:40:25.470+00:00","service":"pricing","policy":"primary-fallback","instance":"pricing","env":"azure-simulated","simulated":true,"url":"http://pricing:8000","reason":"primary instance","candidates":["pricing"],"placement_version":1,"served_instance":"pricing","fallback_used":false}],"resilience":{"attempts":2,"retries":0,"fallbacks":0,"breaker_rejections":0,"injected_delay_ms_total":0.0,"injected_delay_ms_critical_path":0.0,"settings":{"timeout_ms":800,"retries":0,"circuit_breaker":false,"fallback":true,"outer_deadline_ms":3000}},"call_mode":"parallel","environment_mode":"local","placement":{"version":1,"source":"controller","sha256":"77867e92fa4d3d941bbeaeee73fdf186343c6e67cfd6bca2e97c50bd0740c35e"},"simulated_environments":["aws-simulated","azure-simulated"],"simulation_notice":"Environment labels ending in '-simulated' are logical labels on one Docker host, not deployments on that cloud provider."}
+setu-x-verify-runner-1        setu-x:0.6.0   "python -m setu_x.se…"   runner        18 seconds ago   Up 5 seconds (healthy)    8000/tcp
+curl -> {"order_id":"ord-verify-readme-1","request_id":"verify-readme-1","trace_id":"68be0dbe7d4faa0c1cc48003af0bad99","status":"confirmed","sku":"SKU-001","quantity":2,"customer_tier":"standard","inventory":{"available":8,"in_stock":true,"instance":"inventory-a","env":"aws-simulated","simulated":true,"reported_by":"inventory-a@aws-simulated"},"pricing":{"unit_price_cents":5500,"discount_pct":0,"total_cents":11000,"currency":"DEMO","price_source":"pricing-service","instance":"pricing","env":"azure-simulated","simulated":true},"timings_ms":{"total":8.301,"inventory":8.134,"pricing":7.215},"dependencies":[{"name":"inventory","ok":true,"status_code":200,"error_type":null,"elapsed_ms":8.134,"served_by":"inventory-a@aws-simulated","instance":"inventory-a","env":"aws-simulated","simulated":true,"attempts":1,"retries":0,"injected_delay_ms":0.0,"fallback_used":false,"breaker_rejections":0,"tried":[{"instance":"inventory-a","outcome":"ok","attempts":1}]},{"name":"pricing","ok":true,"status_code":200,"error_type":null,"elapsed_ms":7.215,"served_by":"pricing@azure-simulated","instance":"pricing","env":"azure-simulated","simulated":true,"attempts":1,"retries":0,"injected_delay_ms":0.0,"fallback_used":false,"breaker_rejections":0,"tried":[{"instance":"pricing","outcome":"ok","attempts":1}]}],"routing":[{"seq":1,"ts":"2026-10-25T13:48:12.120+00:00","service":"inventory","policy":"primary-fallback","instance":"inventory-a","env":"aws-simulated","simulated":true,"url":"http://inventory-a:8000","reason":"primary instance","candidates":["inventory-a","inventory-b"],"placement_version":1,"served_instance":"inventory-a","fallback_used":false},{"seq":2,"ts":"2026-10-25T13:48:12.120+00:00","service":"pricing","policy":"primary-fallback","instance":"pricing","env":"azure-simulated","simulated":true,"url":"http://pricing:8000","reason":"primary instance","candidates":["pricing"],"placement_version":1,"served_instance":"pricing","fallback_used":false}],"resilience":{"attempts":2,"retries":0,"fallbacks":0,"breaker_rejections":0,"injected_delay_ms_total":0.0,"injected_delay_ms_critical_path":0.0,"settings":{"timeout_ms":800,"retries":0,"circuit_breaker":false,"fallback":true,"outer_deadline_ms":3000}},"call_mode":"parallel","environment_mode":"local","placement":{"version":1,"source":"controller","sha256":"77867e92fa4d3d941bbeaeee73fdf186343c6e67cfd6bca2e97c50bd0740c35e"},"simulated_environments":["aws-simulated","azure-simulated"],"simulation_notice":"Environment labels ending in '-simulated' are logical labels on one Docker host, not deployments on that cloud provider."}
 
-gateway log line for the request: {"ts": "2026-10-25T13:40:25.481+00:00", "level": "INFO", "logger": "setu_x.http", "service": "gateway", "instance": "gateway", "env": "local", "event": "http_request", "request_id": "verify-readme-1", "trace_id": "0018cae9d0d87f93e57e4a7cab7b4e1c", "method": "POST", "path": "/api/orders", "status": 200, "duration_ms": 13.102}
+gateway log line for the request: {"ts": "2026-10-25T13:48:12.128+00:00", "level": "INFO", "logger": "setu_x.http", "service": "gateway", "instance": "gateway", "env": "local", "event": "http_request", "request_id": "verify-readme-1", "trace_id": "68be0dbe7d4faa0c1cc48003af0bad99", "method": "POST", "path": "/api/orders", "status": 200, "duration_ms": 11.513}
 >>> V8 PASS - stack up, 6 healthy; README curl order confirmed with the golden values (8 in stock, 11000 cents); structured log line carries the request ID
 === V9 end-to-end tests
 $ docker compose --profile test run --rm tests pytest -p no:cacheprovider -m e2e
- Container setu-x-verify-tests-run-22a60686dbe8 Creating 
- Container setu-x-verify-tests-run-22a60686dbe8 Created 
+ Container setu-x-verify-tests-run-e73f2e803de5 Creating 
+ Container setu-x-verify-tests-run-e73f2e803de5 Created 
 ============================= test session starts ==============================
 platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
 rootdir: /app
@@ -155,12 +156,12 @@ tests/end_to_end/test_stack.py ..........                                [100%]
 
 =========================== short test summary info ============================
 SKIPPED [1] tests/browser/test_dashboard.py:22: could not import 'playwright.sync_api': No module named 'playwright'
-================ 10 passed, 1 skipped, 336 deselected in 41.15s ================
+================ 10 passed, 1 skipped, 336 deselected in 41.13s ================
 >>> V9 PASS - e2e tests passed
 === V10 dashboard in a real browser
 $ docker compose --profile browser run --rm browser-tests
- Container setu-x-verify-browser-tests-run-bfe25b79b4c9 Creating 
- Container setu-x-verify-browser-tests-run-bfe25b79b4c9 Created 
+ Container setu-x-verify-browser-tests-run-c585de870b46 Creating 
+ Container setu-x-verify-browser-tests-run-c585de870b46 Created 
 ============================= test session starts ==============================
 platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.7.0
 rootdir: /app/tests/browser
@@ -170,50 +171,50 @@ collected 13 items
 
 tests/browser/test_dashboard.py .............                            [100%]
 
-======================== 13 passed in 99.87s (0:01:39) =========================
+======================== 13 passed in 81.59s (0:01:21) =========================
 >>> V10 PASS - 13 browser tests (incl. JS helpers identical to the Python statistics)
 $ node --test dashboard/tests/stats.test.mjs
 TAP version 13
 # Subtest: percentile matches type 7 (same values as the Python implementation's tests)
 ok 1 - percentile matches type 7 (same values as the Python implementation's tests)
   ---
-  duration_ms: 1.560219
+  duration_ms: 0.702098
   type: 'test'
   ...
 # Subtest: parseCsv handles quotes, doubled quotes, CRLF and empty fields
 ok 2 - parseCsv handles quotes, doubled quotes, CRLF and empty fields
   ---
-  duration_ms: 0.702035
+  duration_ms: 0.674542
   type: 'test'
   ...
 # Subtest: outcome classes follow the methodology
 ok 3 - outcome classes follow the methodology
   ---
-  duration_ms: 0.984491
+  duration_ms: 0.934042
   type: 'test'
   ...
 # Subtest: perSecond buckets by scheduled second, keeps warm-up separate, medians of successes only
 ok 4 - perSecond buckets by scheduled second, keeps warm-up separate, medians of successes only
   ---
-  duration_ms: 0.397728
+  duration_ms: 0.375929
   type: 'test'
   ...
 # Subtest: compareSummaries aligns conditions and reports missing ones
 ok 5 - compareSummaries aligns conditions and reports missing ones
   ---
-  duration_ms: 0.221035
+  duration_ms: 0.218902
   type: 'test'
   ...
 # Subtest: comparability warnings list every difference
 ok 6 - comparability warnings list every difference
   ---
-  duration_ms: 0.257815
+  duration_ms: 0.134649
   type: 'test'
   ...
 # Subtest: formatting and ticks
 ok 7 - formatting and ticks
   ---
-  duration_ms: 0.281906
+  duration_ms: 0.245252
   type: 'test'
   ...
 1..7
@@ -224,19 +225,19 @@ ok 7 - formatting and ticks
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 63.874947
+# duration_ms 52.935656
 === V11 baseline experiment (A_baseline, shortened: 2 runs x 20 s; records reconciled independently)
 $ pwsh -NoProfile -File scripts/run_experiment.ps1 -Scenario A_baseline -ControllerPort 18090 -Runs 2 -WarmupS 3 -DurationS 20 -Label verify baseline
-overrides: {"warmup_s":3.0,"runs":2,"duration_s":20.0}
-experiment 20261025T134253Z-A_baseline-24af7c started (2 runs)
-[running] run 1/2 parallel load 27/486
+overrides: {"runs":2,"warmup_s":3.0,"duration_s":20.0}
+experiment 20261025T135017Z-A_baseline-39afc0 started (2 runs)
+[running] run 1/2 parallel load 29/486
 [running] run 1/2 parallel load 42/486
 [running] run 1/2 parallel load 66/486
 [running] run 1/2 parallel load 89/486
-[running] run 1/2 parallel load 108/486
+[running] run 1/2 parallel load 109/486
 [running] run 1/2 parallel load 130/486
 [running] run 1/2 parallel load 155/486
-[running] run 1/2 parallel load 173/486
+[running] run 1/2 parallel load 170/486
 [running] run 1/2 parallel load 194/486
 [running] run 1/2 parallel load 216/486
 [running] run 1/2 parallel load 232/486
@@ -244,49 +245,49 @@ experiment 20261025T134253Z-A_baseline-24af7c started (2 runs)
 [running] run 1/2 parallel load 275/486
 [running] run 1/2 parallel load 295/486
 [running] run 1/2 parallel load 323/486
-[running] run 1/2 parallel load 335/486
+[running] run 1/2 parallel load 334/486
 [running] run 1/2 parallel load 354/486
 [running] run 1/2 parallel load 374/486
 [running] run 1/2 parallel load 398/486
 [running] run 1/2 parallel load 425/486
-[running] run 1/2 parallel load 445/486
+[running] run 1/2 parallel load 443/486
 [running] run 1/2 parallel load 468/486
 [running] run 1/2 parallel cooldown 486/486
 [running] run 2/2 parallel load 0/436
-[running] run 2/2 parallel load 17/436
-[running] run 2/2 parallel load 40/436
+[running] run 2/2 parallel load 16/436
+[running] run 2/2 parallel load 39/436
 [running] run 2/2 parallel load 56/436
-[running] run 2/2 parallel load 69/436
-[running] run 2/2 parallel load 89/436
-[running] run 2/2 parallel load 110/436
+[running] run 2/2 parallel load 68/436
+[running] run 2/2 parallel load 88/436
+[running] run 2/2 parallel load 109/436
 [running] run 2/2 parallel load 133/436
 [running] run 2/2 parallel load 145/436
 [running] run 2/2 parallel load 158/436
 [running] run 2/2 parallel load 187/436
-[running] run 2/2 parallel load 206/436
-[running] run 2/2 parallel load 228/436
-[running] run 2/2 parallel load 249/436
-[running] run 2/2 parallel load 267/436
-[running] run 2/2 parallel load 289/436
-[running] run 2/2 parallel load 308/436
-[running] run 2/2 parallel load 320/436
-[running] run 2/2 parallel load 334/436
+[running] run 2/2 parallel load 202/436
+[running] run 2/2 parallel load 227/436
+[running] run 2/2 parallel load 246/436
+[running] run 2/2 parallel load 265/436
+[running] run 2/2 parallel load 287/436
+[running] run 2/2 parallel load 307/436
+[running] run 2/2 parallel load 319/436
+[running] run 2/2 parallel load 333/436
 [running] run 2/2 parallel load 352/436
 [running] run 2/2 parallel load 377/436
-[running] run 2/2 parallel load 399/436
-[running] run 2/2 parallel load 416/436
+[running] run 2/2 parallel load 398/436
+[running] run 2/2 parallel load 415/436
 [completed] run 2/2 parallel done 436/436
 
 status: completed   validation: ok   rows: 922
-  parallel                 runs=2 median(per-run p50 latency_ok)=8.3445 ms  median(success)=1
-records: results/20261025T134253Z-A_baseline-24af7c
-parallel-r1: n=415 success=1 p50 csv=8.122 summary=8.122 p95 csv=36.710 summary=36.71 p99 summary= (n<1000: withheld)
-parallel-r0: n=379 success=1 p50 csv=8.567 summary=8.567 p95 csv=46.721 summary=46.721 p99 summary= (n<1000: withheld)
+  parallel                 runs=2 median(per-run p50 latency_ok)=9.2865 ms  median(success)=1
+records: results/20261025T135017Z-A_baseline-39afc0
+parallel-r1: n=415 success=1 p50 csv=9.301 summary=9.301 p95 csv=23.711 summary=23.711 p99 summary= (n<1000: withheld)
+parallel-r0: n=379 success=1 p50 csv=9.272 summary=9.272 p95 csv=33.908 summary=33.908 p99 summary= (n<1000: withheld)
 >>> V11 PASS - completed and validated; scenario sha256 and git commit in the manifest match the checkout; overrides recorded; p50/p95 recomputed from the CSV match; p99 withheld (n < 1000); 100% success
 === V12 failure experiment (C_service_failure: error and hang on inventory-a, 1 run x 25 s)
 $ pwsh -NoProfile -File scripts/run_experiment.ps1 -Scenario C_service_failure -ControllerPort 18090 -Runs 1 -WarmupS 3 -DurationS 25 -Label verify failure
-overrides: {"warmup_s":3.0,"runs":1,"duration_s":25.0}
-experiment 20261025T134341Z-C_service_failure-2e4449 started (2 runs)
+overrides: {"runs":1,"warmup_s":3.0,"duration_s":25.0}
+experiment 20261025T135105Z-C_service_failure-b2c75f started (2 runs)
 [running] run 1/2 hang load 15/572
 [running] run 1/2 hang load 33/572
 [running] run 1/2 hang load 55/572
@@ -300,26 +301,26 @@ experiment 20261025T134341Z-C_service_failure-2e4449 started (2 runs)
 [running] run 1/2 hang load 220/572
 [running] run 1/2 hang load 242/572
 [running] run 1/2 hang load 262/572
-[running] run 1/2 hang load 269/572
-[running] run 1/2 hang load 287/572
-[running] run 1/2 hang load 306/572
+[running] run 1/2 hang load 268/572
+[running] run 1/2 hang load 286/572
+[running] run 1/2 hang load 305/572
 [running] run 1/2 hang load 325/572
-[running] run 1/2 hang load 345/572
-[running] run 1/2 hang load 367/572
+[running] run 1/2 hang load 344/572
+[running] run 1/2 hang load 365/572
 [running] run 1/2 hang load 386/572
 [running] run 1/2 hang load 414/572
-[running] run 1/2 hang load 438/572
-[running] run 1/2 hang load 477/572
-[running] run 1/2 hang load 495/572
+[running] run 1/2 hang load 437/572
+[running] run 1/2 hang load 462/572
+[running] run 1/2 hang load 492/572
 [running] run 1/2 hang load 510/572
 [running] run 1/2 hang load 529/572
 [running] run 1/2 hang load 548/572
 [running] run 1/2 hang cooldown 572/572
 [running] run 2/2 error load 0/598
-[running] run 2/2 error load 22/598
+[running] run 2/2 error load 24/598
 [running] run 2/2 error load 48/598
-[running] run 2/2 error load 69/598
-[running] run 2/2 error load 99/598
+[running] run 2/2 error load 70/598
+[running] run 2/2 error load 100/598
 [running] run 2/2 error load 111/598
 [running] run 2/2 error load 131/598
 [running] run 2/2 error load 150/598
@@ -327,33 +328,33 @@ experiment 20261025T134341Z-C_service_failure-2e4449 started (2 runs)
 [running] run 2/2 error load 196/598
 [running] run 2/2 error load 220/598
 [running] run 2/2 error load 244/598
-[running] run 2/2 error load 260/598
+[running] run 2/2 error load 262/598
 [running] run 2/2 error load 276/598
-[running] run 2/2 error load 295/598
+[running] run 2/2 error load 296/598
 [running] run 2/2 error load 314/598
 [running] run 2/2 error load 339/598
-[running] run 2/2 error load 358/598
+[running] run 2/2 error load 360/598
 [running] run 2/2 error load 383/598
 [running] run 2/2 error load 393/598
-[running] run 2/2 error load 408/598
+[running] run 2/2 error load 410/598
 [running] run 2/2 error load 428/598
 [running] run 2/2 error load 453/598
-[running] run 2/2 error load 472/598
-[running] run 2/2 error load 498/598
-[running] run 2/2 error load 521/598
-[running] run 2/2 error load 553/598
+[running] run 2/2 error load 476/598
+[running] run 2/2 error load 500/598
+[running] run 2/2 error load 520/598
+[running] run 2/2 error load 552/598
 [running] run 2/2 error load 578/598
 [completed] run 2/2 error done 598/598
 
 status: completed   validation: ok   rows: 1170
-  error                    runs=1 median(per-run p50 latency_ok)=8.201 ms  median(success)=0.632576
-  hang                     runs=1 median(per-run p50 latency_ok)=9.14 ms  median(success)=0.593023
-records: results/20261025T134341Z-C_service_failure-2e4449
-hang-r0: fault hang at 10.001-20.001 s; failures 210 (outside window 0); before fault 203/203 ok; slowest failure 877 ms; recovery_s=0.999
-error-r0: fault error at 10.002-20.002 s; failures 194 (outside window 0); before fault 201/201 ok; slowest failure 71 ms; recovery_s=0.998
+  error                    runs=1 median(per-run p50 latency_ok)=8.857 ms  median(success)=0.632576
+  hang                     runs=1 median(per-run p50 latency_ok)=8.746 ms  median(success)=0.591085
+records: results/20261025T135105Z-C_service_failure-b2c75f
+hang-r0: fault hang at 10.001-20.001 s; failures 211 (outside window 0); before fault 203/203 ok; slowest failure 862 ms; recovery_s=0.999
+error-r0: fault error at 10.000-20.000 s; failures 194 (outside window 0); before fault 201/201 ok; slowest failure 76 ms; recovery_s=1
 >>> V12 PASS - failures only inside the actual fault window, none before it; hang failures bounded by the 800 ms timeout; recovery measured; records validated
 === V13 artifacts: request rows trace to service logs; events trace to the fault schedule
-request A_baseline-24af7c-c0-r1-000071 in gateway log: True, in inventory-a log: True; failure-run controller events: fault_cleared, fault_injected; fault_scheduled: 2; gateway events: 0
+request A_baseline-39afc0-c0-r1-000071 in gateway log: True, in inventory-a log: True; failure-run controller events: fault_cleared, fault_injected; fault_scheduled: 2; gateway events: 0
 >>> V13 PASS - a measured request ID is found in gateway and inventory logs; fault injection/clearing recorded per run alongside the runner's schedule
 === V14 configuration changes at runtime (validated, applied, reverted)
 invalid PUT -> 422 (request body: resilience: timeout_ms must not exceed outer_deadline_ms); version unchanged: True
@@ -368,31 +369,31 @@ $ docker compose stop
  Container setu-x-verify-runner-1 Stopped 
  Container setu-x-verify-gateway-1 Stopping 
  Container setu-x-verify-gateway-1 Stopped 
- Container setu-x-verify-inventory-a-1 Stopping 
  Container setu-x-verify-pricing-1 Stopping 
  Container setu-x-verify-controller-1 Stopping 
+ Container setu-x-verify-inventory-a-1 Stopping 
  Container setu-x-verify-inventory-b-1 Stopping 
  Container setu-x-verify-pricing-1 Stopped 
- Container setu-x-verify-inventory-b-1 Stopped 
  Container setu-x-verify-controller-1 Stopped 
- Container setu-x-verify-inventory-a-1 Stopped
+ Container setu-x-verify-inventory-a-1 Stopped 
+ Container setu-x-verify-inventory-b-1 Stopped
 $ docker compose start
  Container setu-x-verify-controller-1 Starting 
  Container setu-x-verify-inventory-b-1 Starting 
  Container setu-x-verify-inventory-a-1 Starting 
  Container setu-x-verify-pricing-1 Starting 
- Container setu-x-verify-inventory-b-1 Started 
  Container setu-x-verify-controller-1 Started 
+ Container setu-x-verify-inventory-b-1 Started 
  Container setu-x-verify-inventory-a-1 Started 
  Container setu-x-verify-pricing-1 Started 
- Container setu-x-verify-pricing-1 Waiting 
  Container setu-x-verify-controller-1 Waiting 
  Container setu-x-verify-inventory-a-1 Waiting 
  Container setu-x-verify-inventory-b-1 Waiting 
- Container setu-x-verify-inventory-b-1 Healthy 
+ Container setu-x-verify-pricing-1 Waiting 
  Container setu-x-verify-controller-1 Healthy 
  Container setu-x-verify-pricing-1 Healthy 
  Container setu-x-verify-inventory-a-1 Healthy 
+ Container setu-x-verify-inventory-b-1 Healthy 
  Container setu-x-verify-gateway-1 Starting 
  Container setu-x-verify-gateway-1 Started 
  Container setu-x-verify-controller-1 Waiting 
@@ -407,12 +408,12 @@ after stop/start: healthy=True; experiments still listed: 6 (baseline present: T
 === V16 container-level fault: inventory-a really stopped, fallback serves, container restored
  Container setu-x-verify-inventory-a-1 Stopping 
  Container setu-x-verify-inventory-a-1 Stopped 
-2026-10-25T13:45:11.129Z stopped inventory-a for 8 s
+2026-10-25T13:52:33.265Z stopped inventory-a for 8 s
  Container setu-x-verify-inventory-a-1 Starting 
  Container setu-x-verify-inventory-a-1 Started 
-2026-10-25T13:45:19.679Z started inventory-a
-2026-10-25T13:45:25.381Z inventory-a health: healthy
-{"type":"container_fault","service":"inventory-a","planned_seconds":8,"stopped_at":"2026-10-25T13:45:11.129Z","started_at":"2026-10-25T13:45:19.679Z","healthy_at":"2026-10-25T13:45:25.381Z"}
+2026-10-25T13:52:41.853Z started inventory-a
+2026-10-25T13:52:47.791Z inventory-a health: healthy
+{"type":"container_fault","service":"inventory-a","planned_seconds":8,"stopped_at":"2026-10-25T13:52:33.265Z","started_at":"2026-10-25T13:52:41.853Z","healthy_at":"2026-10-25T13:52:47.791Z"}
 container stopped: True; order during stop: HTTP 200 via inventory-b; restored healthy: True; afterwards via inventory-a
 >>> V16 PASS - stopped primary -> served by inventory-b; primary back and serving after restart
 === V17 every command in the README is exercised here or evidenced by a passing acceptance log
@@ -421,7 +422,7 @@ container stopped: True; order during stop: HTTP 200 via inventory-b; restored h
   [V10 (executed)] docker compose --profile browser run --rm browser-tests
   [V5 (executed)] docker compose --profile test run --rm --no-deps tests python -m setu_x.config_check configs
   [V6 (executed)] docker compose --profile test run --rm tests
-  [V6 (executed)] docker compose --profile test run --rm tests pytest -p no:cacheprovider -m e2e
+  [V9 (executed)] docker compose --profile test run --rm tests pytest -p no:cacheprovider -m e2e
   [V3 (executed)] docker compose config
   [V18 (executed)] docker compose down
   [V8 (executed; JSON log line found by request ID)] docker compose logs gateway
@@ -443,14 +444,14 @@ $ docker compose stop
  Container setu-x-verify-runner-1 Stopped 
  Container setu-x-verify-gateway-1 Stopping 
  Container setu-x-verify-gateway-1 Stopped 
- Container setu-x-verify-controller-1 Stopping 
- Container setu-x-verify-inventory-a-1 Stopping 
  Container setu-x-verify-inventory-b-1 Stopping 
  Container setu-x-verify-pricing-1 Stopping 
- Container setu-x-verify-inventory-b-1 Stopped 
+ Container setu-x-verify-controller-1 Stopping 
+ Container setu-x-verify-inventory-a-1 Stopping 
+ Container setu-x-verify-inventory-a-1 Stopped 
  Container setu-x-verify-controller-1 Stopped 
- Container setu-x-verify-pricing-1 Stopped 
- Container setu-x-verify-inventory-a-1 Stopped
+ Container setu-x-verify-inventory-b-1 Stopped 
+ Container setu-x-verify-pricing-1 Stopped
 exit codes: controller=0 gateway=0 inventory-a=0 inventory-b=0 pricing=0 runner=0
 $ docker compose down -v --remove-orphans
  Container setu-x-verify-runner-1 Stopping 
@@ -461,22 +462,22 @@ $ docker compose down -v --remove-orphans
  Container setu-x-verify-gateway-1 Stopped 
  Container setu-x-verify-gateway-1 Removing 
  Container setu-x-verify-gateway-1 Removed 
- Container setu-x-verify-inventory-a-1 Stopping 
  Container setu-x-verify-inventory-b-1 Stopping 
- Container setu-x-verify-pricing-1 Stopping 
  Container setu-x-verify-controller-1 Stopping 
- Container setu-x-verify-inventory-a-1 Stopped 
- Container setu-x-verify-inventory-a-1 Removing 
  Container setu-x-verify-inventory-b-1 Stopped 
  Container setu-x-verify-inventory-b-1 Removing 
+ Container setu-x-verify-inventory-a-1 Stopping 
+ Container setu-x-verify-pricing-1 Stopping 
  Container setu-x-verify-controller-1 Stopped 
  Container setu-x-verify-controller-1 Removing 
  Container setu-x-verify-pricing-1 Stopped 
  Container setu-x-verify-pricing-1 Removing 
+ Container setu-x-verify-inventory-a-1 Stopped 
+ Container setu-x-verify-inventory-a-1 Removing 
+ Container setu-x-verify-inventory-b-1 Removed 
  Container setu-x-verify-controller-1 Removed 
  Container setu-x-verify-pricing-1 Removed 
  Container setu-x-verify-inventory-a-1 Removed 
- Container setu-x-verify-inventory-b-1 Removed 
  Network setu-x-verify_default Removing 
  Volume setu-x-verify_setu-results Removing 
  Volume setu-x-verify_setu-results Removed 
@@ -485,8 +486,8 @@ $ docker compose down -v --remove-orphans
 temporary checkout removed
 
 ================ SUMMARY ================
-V1   PASS clean clone of eb4d2f0 in a temporary folder (0 uncommitted source files excluded)
-V2   PASS no secret patterns or credential files in 173 tracked files; 0 committed result directories, all validated
+V1   PASS clean clone of 21a0ba6 in a temporary folder (1 uncommitted source files excluded)
+V2   PASS no secret patterns or credential files in 175 tracked files; 0 committed result directories, all validated
 V3   PASS compose configuration valid
 V4   PASS images built from the clean checkout
 V5   PASS shipped configs valid (exit 0); tests/fixtures/bad_config rejected (exit 1)
