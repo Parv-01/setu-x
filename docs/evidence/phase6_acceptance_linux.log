@@ -1,0 +1,562 @@
+SETU-X Phase 6 acceptance (PowerShell)
+date_utc: 2026-10-25T13:05:35Z
+git_commit: 4f2d752 (uncommitted files outside docs/evidence: 0)
+powershell: 7.6.8 on linux
+docker: client 29.9.2 / server 29.9.2
+compose: 5.6.1
+
+=== E1 docker compose config
+$ docker compose config --quiet
+>>> E1 PASS - compose configuration valid
+=== E2 build images (services, tests, and browser tests unless -SkipBrowser)
+$ bash /tmp/claude-0/-home-claude/3c5ce73b-5f63-53d9-a7b3-6574ae9d3afa/scratchpad/sandbox_build.sh
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 3.52kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 1.0s
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#3 resolve docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e 0.0s done
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377
+#4 DONE 0.5s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 158B done
+#5 DONE 0.0s
+
+#6 [base 1/2] FROM docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377
+#6 resolve docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377 0.0s done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 346.48kB 0.0s done
+#7 DONE 0.0s
+
+#8 [runtime 2/7] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels setu-x
+#8 CACHED
+
+#9 [builder 1/4] COPY pyproject.toml README.md ./
+#9 CACHED
+
+#10 [base 2/2] WORKDIR /app
+#10 CACHED
+
+#11 [builder 2/4] COPY requirements ./requirements
+#11 CACHED
+
+#12 [builder 3/4] COPY src ./src
+#12 CACHED
+
+#13 [builder 4/4] RUN --mount=type=secret,id=pip_ca,required=false     if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi;     pip wheel --wheel-dir /wheels --constraint requirements/dev.lock ".[dev]"
+#13 CACHED
+
+#14 [runtime 1/7] RUN useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin setu
+#14 CACHED
+
+#15 [runtime 3/7] COPY configs ./configs
+#15 CACHED
+
+#16 [runtime 4/7] COPY dashboard/index.html ./dashboard/index.html
+#16 DONE 0.0s
+
+#17 [runtime 5/7] COPY dashboard/css ./dashboard/css
+#17 DONE 0.0s
+
+#18 [runtime 6/7] COPY dashboard/js ./dashboard/js
+#18 DONE 0.0s
+
+#19 [runtime 7/7] RUN mkdir -p /app/results && chown 10001:10001 /app/results
+#19 DONE 0.1s
+
+#20 exporting to image
+#20 exporting layers 0.1s done
+#20 exporting manifest sha256:812b0be03f368c999e5d0fd07ee20713a2d781166d3f537f104a551166b3cd36
+#20 exporting manifest sha256:812b0be03f368c999e5d0fd07ee20713a2d781166d3f537f104a551166b3cd36 done
+#20 exporting config sha256:0f2b8d360fe24679ed66af25832215ae0c7b42cd776be3f3893066f40f75c8e6 done
+#20 exporting attestation manifest sha256:1b527ae6bfbea446b92522db6411efa25d6ba88ddd627c251d15948135659ce4 done
+#20 exporting manifest list sha256:8d261c1a72ebc9f7578cf7f85256a632feba5f19082dc0b23b6b2649762aaa99 done
+#20 naming to docker.io/library/setu-x:0.6.0 done
+#20 unpacking to docker.io/library/setu-x:0.6.0 0.0s done
+#20 DONE 0.1s
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 3.52kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 0.1s
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#3 resolve docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e done
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377
+#4 DONE 0.0s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 158B done
+#5 DONE 0.0s
+
+#6 [base 1/2] FROM docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377
+#6 resolve docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377 0.0s done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 173.23kB 0.0s done
+#7 DONE 0.0s
+
+#8 [builder 2/4] COPY requirements ./requirements
+#8 CACHED
+
+#9 [builder 3/4] COPY src ./src
+#9 CACHED
+
+#10 [builder 1/4] COPY pyproject.toml README.md ./
+#10 CACHED
+
+#11 [base 2/2] WORKDIR /app
+#11 CACHED
+
+#12 [builder 4/4] RUN --mount=type=secret,id=pip_ca,required=false     if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi;     pip wheel --wheel-dir /wheels --constraint requirements/dev.lock ".[dev]"
+#12 CACHED
+
+#13 [runtime 3/7] COPY configs ./configs
+#13 CACHED
+
+#14 [runtime 5/7] COPY dashboard/css ./dashboard/css
+#14 CACHED
+
+#15 [runtime 1/7] RUN useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin setu
+#15 CACHED
+
+#16 [runtime 4/7] COPY dashboard/index.html ./dashboard/index.html
+#16 CACHED
+
+#17 [runtime 6/7] COPY dashboard/js ./dashboard/js
+#17 CACHED
+
+#18 [runtime 2/7] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels setu-x
+#18 CACHED
+
+#19 [runtime 7/7] RUN mkdir -p /app/results && chown 10001:10001 /app/results
+#19 CACHED
+
+#20 [test 1/4] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels "setu-x[dev]"
+#20 1.017 Looking in links: /wheels
+#20 1.017 Requirement already satisfied: setu-x[dev] in /usr/local/lib/python3.11/site-packages (0.6.0)
+#20 1.024 Requirement already satisfied: fastapi==0.162.0 in /usr/local/lib/python3.11/site-packages (from setu-x[dev]) (0.162.0)
+#20 1.025 Requirement already satisfied: uvicorn==0.54.0 in /usr/local/lib/python3.11/site-packages (from setu-x[dev]) (0.54.0)
+#20 1.026 Requirement already satisfied: httpx==0.28.1 in /usr/local/lib/python3.11/site-packages (from setu-x[dev]) (0.28.1)
+#20 1.028 Requirement already satisfied: pydantic==2.14.1 in /usr/local/lib/python3.11/site-packages (from setu-x[dev]) (2.14.1)
+#20 1.029 Requirement already satisfied: pyyaml==6.0.3 in /usr/local/lib/python3.11/site-packages (from setu-x[dev]) (6.0.3)
+#20 1.037 Processing /wheels/pytest-9.1.1-py3-none-any.whl (from setu-x[dev])
+#20 1.044 Processing /wheels/pytest_asyncio-1.4.0-py3-none-any.whl (from setu-x[dev])
+#20 1.049 Processing /wheels/ruff-0.17.2-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (from setu-x[dev])
+#20 1.077 Requirement already satisfied: starlette>=0.46.0 in /usr/local/lib/python3.11/site-packages (from fastapi==0.162.0->setu-x[dev]) (1.10.0)
+#20 1.078 Requirement already satisfied: typing-extensions>=4.8.0 in /usr/local/lib/python3.11/site-packages (from fastapi==0.162.0->setu-x[dev]) (4.16.0)
+#20 1.079 Requirement already satisfied: typing-inspection>=0.4.2 in /usr/local/lib/python3.11/site-packages (from fastapi==0.162.0->setu-x[dev]) (0.4.4)
+#20 1.080 Requirement already satisfied: annotated-doc>=0.0.2 in /usr/local/lib/python3.11/site-packages (from fastapi==0.162.0->setu-x[dev]) (0.0.5)
+#20 1.080 Requirement already satisfied: opentelemetry-api>=1.44.0 in /usr/local/lib/python3.11/site-packages (from fastapi==0.162.0->setu-x[dev]) (1.45.1)
+#20 1.086 Requirement already satisfied: anyio in /usr/local/lib/python3.11/site-packages (from httpx==0.28.1->setu-x[dev]) (4.15.1)
+#20 1.087 Requirement already satisfied: certifi in /usr/local/lib/python3.11/site-packages (from httpx==0.28.1->setu-x[dev]) (2026.10.23)
+#20 1.088 Requirement already satisfied: httpcore==1.* in /usr/local/lib/python3.11/site-packages (from httpx==0.28.1->setu-x[dev]) (1.0.9)
+#20 1.089 Requirement already satisfied: idna in /usr/local/lib/python3.11/site-packages (from httpx==0.28.1->setu-x[dev]) (3.20)
+#20 1.093 Requirement already satisfied: annotated-types>=0.6.0 in /usr/local/lib/python3.11/site-packages (from pydantic==2.14.1->setu-x[dev]) (0.8.0)
+#20 1.094 Requirement already satisfied: pydantic-core==2.50.1 in /usr/local/lib/python3.11/site-packages (from pydantic==2.14.1->setu-x[dev]) (2.50.1)
+#20 1.104 Processing /wheels/iniconfig-2.3.1-py3-none-any.whl (from pytest==9.1.1->setu-x[dev])
+#20 1.105 Requirement already satisfied: packaging>=22 in /usr/local/lib/python3.11/site-packages (from pytest==9.1.1->setu-x[dev]) (26.3)
+#20 1.109 Processing /wheels/pluggy-1.7.0-py3-none-any.whl (from pytest==9.1.1->setu-x[dev])
+#20 1.113 Processing /wheels/pygments-2.21.0-py3-none-any.whl (from pytest==9.1.1->setu-x[dev])
+#20 1.128 Requirement already satisfied: click>=7.0 in /usr/local/lib/python3.11/site-packages (from uvicorn==0.54.0->setu-x[dev]) (8.5.0)
+#20 1.129 Requirement already satisfied: h11>=0.8 in /usr/local/lib/python3.11/site-packages (from uvicorn==0.54.0->setu-x[dev]) (0.16.0)
+#20 1.275 Installing collected packages: ruff, pygments, pluggy, iniconfig, pytest, pytest-asyncio
+#20 2.061 Successfully installed iniconfig-2.3.1 pluggy-1.7.0 pygments-2.21.0 pytest-9.1.1 pytest-asyncio-1.4.0 ruff-0.17.2
+#20 2.062 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+#20 DONE 2.4s
+
+#21 [test 2/4] COPY pyproject.toml compose.yaml ./
+#21 DONE 0.1s
+
+#22 [test 3/4] COPY src ./src
+#22 DONE 0.0s
+
+#23 [test 4/4] COPY tests ./tests
+#23 DONE 0.0s
+
+#24 exporting to image
+#24 exporting layers
+#24 exporting layers 1.2s done
+#24 exporting manifest sha256:0fc385cef0400353f4449d5b37164b2fc8099c51aa8e6860bed8b70ed4f7ff79 done
+#24 exporting config sha256:f5654eb8dc26833e5bb85e1916ad96949411e657c726ca756b608ded5610fb75 done
+#24 exporting attestation manifest sha256:678953de393cb2a686e0fa763ee2f02684acc7cbdebd5fb25575b1c069840408 done
+#24 exporting manifest list sha256:2e88744bc898250e2dfc398872c8a72dea650c7ded104f4b32e8b444b98fad36 done
+#24 naming to docker.io/library/setu-x-test:0.6.0 done
+#24 unpacking to docker.io/library/setu-x-test:0.6.0
+#24 unpacking to docker.io/library/setu-x-test:0.6.0 0.3s done
+#24 DONE 1.5s
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 3.52kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 0.1s
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#3 resolve docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e 0.0s done
+#3 CACHED
+
+#4 [internal] load metadata for mcr.microsoft.com/playwright/python:v1.63.0-noble@sha256:72bd171a9ffc2b4b59532aaa6210e21014d07093120dc25528870c0b840da1f0
+#4 DONE 0.5s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 158B done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 ...
+
+#7 [browser-test 1/5] FROM mcr.microsoft.com/playwright/python:v1.63.0-noble@sha256:72bd171a9ffc2b4b59532aaa6210e21014d07093120dc25528870c0b840da1f0
+#7 resolve mcr.microsoft.com/playwright/python:v1.63.0-noble@sha256:72bd171a9ffc2b4b59532aaa6210e21014d07093120dc25528870c0b840da1f0 0.0s done
+#7 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 274B 0.1s done
+#6 DONE 0.1s
+
+#8 [browser-test 2/5] WORKDIR /app
+#8 CACHED
+
+#9 [browser-test 3/5] COPY requirements/browser.lock ./requirements/browser.lock
+#9 CACHED
+
+#10 [browser-test 4/5] RUN --mount=type=secret,id=pip_ca,required=false     if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi;     pip install --break-system-packages --no-deps -r requirements/browser.lock
+#10 CACHED
+
+#11 [browser-test 5/5] COPY tests/browser ./tests/browser
+#11 CACHED
+
+#12 exporting to image
+#12 exporting layers done
+#12 exporting manifest sha256:8456a1490169b97b5c2e7f4931a1d348635fe40c2846782f9f22cb7c8c5103d4 done
+#12 exporting config sha256:d72d2e9abbb65007b0fdff81aa4115cc5748c854d90f5b86f4e10cfa355b6510 done
+#12 exporting attestation manifest sha256:087d1cbe8ce4b565e71a87a9d82053acbd55249514a02a03c53d19d808d4e6d5 done
+#12 exporting manifest list sha256:08c45ca4a2a6a26e5899f23567e27a1408756cfbac7d1215bb5974e6e408e4cc done
+#12 naming to docker.io/library/setu-x-browser-test:0.6.0 done
+#12 unpacking to docker.io/library/setu-x-browser-test:0.6.0 done
+#12 DONE 0.1s
+>>> E2 PASS - images built
+=== E3 start stack (local mode): 6 services healthy
+$ docker compose up -d --wait --wait-timeout 150
+ Network setu-x_default Creating 
+ Network setu-x_default Creating 
+ Network setu-x_default Created 
+ Network setu-x_default Created 
+ Container setu-x-inventory-a-1 Creating 
+ Container setu-x-pricing-1 Creating 
+ Container setu-x-controller-1 Creating 
+ Container setu-x-inventory-b-1 Creating 
+ Container setu-x-pricing-1 Created 
+ Container setu-x-controller-1 Created 
+ Container setu-x-inventory-b-1 Created 
+ Container setu-x-inventory-a-1 Created 
+ Container setu-x-gateway-1 Creating 
+ Container setu-x-gateway-1 Created 
+ Container setu-x-runner-1 Creating 
+ Container setu-x-runner-1 Created 
+ Container setu-x-inventory-b-1 Starting 
+ Container setu-x-inventory-a-1 Starting 
+ Container setu-x-controller-1 Starting 
+ Container setu-x-pricing-1 Starting 
+ Container setu-x-inventory-b-1 Started 
+ Container setu-x-inventory-a-1 Started 
+ Container setu-x-controller-1 Started 
+ Container setu-x-pricing-1 Started 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-gateway-1 Starting 
+ Container setu-x-gateway-1 Started 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-gateway-1 Healthy 
+ Container setu-x-runner-1 Starting 
+ Container setu-x-runner-1 Started 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-runner-1 Waiting 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-gateway-1 Healthy 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-runner-1 Healthy
+>>> E3 PASS - all 6 services healthy
+=== E4 automated tests (unit + contract + integration, includes dashboard backend tests)
+$ docker compose --profile test run --rm tests
+ Container setu-x-tests-run-ba58bcc02dd7 Creating 
+ Container setu-x-tests-run-ba58bcc02dd7 Created 
+============================= test session starts ==============================
+platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
+rootdir: /app
+configfile: pyproject.toml
+testpaths: tests
+plugins: asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 346 items / 10 deselected / 1 skipped / 336 selected
+
+tests/contract/test_adapter_contract.py ................................ [  9%]
+......................                                                   [ 16%]
+tests/integration/test_controller.py ........                            [ 18%]
+tests/integration/test_dashboard_backend.py ...............              [ 22%]
+tests/integration/test_experiment_runner.py ........                     [ 25%]
+tests/integration/test_fault_injection.py .......                        [ 27%]
+tests/integration/test_gateway_flow.py .............                     [ 31%]
+tests/integration/test_gateway_routing.py ......                         [ 33%]
+tests/integration/test_loadgen.py .....                                  [ 34%]
+tests/integration/test_resilience_flow.py ..............                 [ 38%]
+tests/integration/test_runner_service.py .....                           [ 40%]
+tests/integration/test_services.py ......                                [ 41%]
+tests/unit/test_client.py ........                                       [ 44%]
+tests/unit/test_config.py .........                                      [ 47%]
+tests/unit/test_domain.py ................................               [ 56%]
+tests/unit/test_experiment_metrics.py ............                       [ 60%]
+tests/unit/test_experiment_records.py .............                      [ 63%]
+tests/unit/test_experiment_scenario.py ................................. [ 73%]
+..                                                                       [ 74%]
+tests/unit/test_experiment_statistics.py .......                         [ 76%]
+tests/unit/test_faults.py ..............                                 [ 80%]
+tests/unit/test_ids.py ....                                              [ 81%]
+tests/unit/test_placement_config.py .................................... [ 92%]
+.....                                                                    [ 94%]
+tests/unit/test_resilience.py ............                               [ 97%]
+tests/unit/test_routing.py ........                                      [100%]
+
+=========================== short test summary info ============================
+SKIPPED [1] tests/browser/test_dashboard.py:22: could not import 'playwright.sync_api': No module named 'playwright'
+================ 336 passed, 1 skipped, 10 deselected in 50.60s ================
+>>> E4 PASS - unit + contract + integration tests passed
+=== E5 end-to-end tests
+$ docker compose --profile test run --rm tests pytest -p no:cacheprovider -m e2e
+ Container setu-x-tests-run-ba0324fdce06 Creating 
+ Container setu-x-tests-run-ba0324fdce06 Created 
+============================= test session starts ==============================
+platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
+rootdir: /app
+configfile: pyproject.toml
+testpaths: tests
+plugins: asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 346 items / 336 deselected / 1 skipped / 10 selected
+
+tests/end_to_end/test_stack.py ..........                                [100%]
+
+=========================== short test summary info ============================
+SKIPPED [1] tests/browser/test_dashboard.py:22: could not import 'playwright.sync_api': No module named 'playwright'
+================ 10 passed, 1 skipped, 336 deselected in 42.34s ================
+>>> E5 PASS - e2e tests passed
+=== E6 lint
+$ docker compose --profile test run --rm tests ruff check --no-cache src tests
+ Container setu-x-tests-run-941c85f82909 Creating 
+ Container setu-x-tests-run-941c85f82909 Created 
+All checks passed!
+>>> E6 PASS - ruff clean
+=== E7 dashboard served with a strict Content-Security-Policy; assets load
+GET / -> 307 /dashboard/
+GET /dashboard/ -> 200; CSP: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'
+  css/app.css    200 text/css; charset=utf-8
+  js/app.js      200 application/javascript
+  js/api.js      200 application/javascript
+  js/charts.js   200 application/javascript
+  js/stats.js    200 application/javascript
+>>> E7 PASS - redirect to /dashboard/, CSP without unsafe-inline, 5 assets served with correct types
+=== E8 control surface refuses other web origins and foreign Host headers
+POST /api/faults with Origin http://evil.example -> 403 {"error":{"code":"forbidden_origin","message":"state-changing requests from origin 'http://evil.example' are refused","request_id":null}}; active faults afterwards: 0
+GET with Host attacker.example -> 400; POST reset from the dashboard's own origin -> 200
+>>> E8 PASS - foreign origin 403 (no fault set), DNS-rebinding Host 400, same-origin request accepted
+=== E9 every API the dashboard uses answers
+  /api/environments                  HTTP 200
+  /api/services                      HTTP 200
+  /api/placement                     HTTP 200
+  /api/faults                        HTTP 200
+  /api/scenarios                     HTTP 200
+  /api/experiments                   HTTP 200
+  /api/gateway/routing/decisions     HTTP 200
+  /api/gateway/resilience/events     HTTP 200
+  /api/gateway/resilience/breakers   HTTP 200
+  /api/gateway/placement/current     HTTP 200
+  /api/gateway/dependencies          HTTP 200
+test order via controller: HTTP 200 confirmed; /api/services lists: gateway, runner, inventory-a, inventory-b, pricing
+>>> E9 PASS - 11 read endpoints 200 JSON; test order confirmed; runner listed in service health
+=== E10 experiment overrides are bounded
+HTTP 422: request validation failed
+HTTP 422: smoke.yaml with overrides {'links': {'local--aws-simulated': 10}}: (root): condition 'healthy': link delays only take effect with requires_mode: simulated
+HTTP 422: smoke.yaml with overrides {'duration_s': 1.0}: (root): condition 'error-fault': fault at_s=2.0 is not inside the 1.0 s measurement window
+>>> E10 PASS - rate > 100, link override on a local scenario, window too short for the scheduled fault: all 422
+=== E11 dashboard in a real browser (Chromium), local mode
+$ docker compose --profile browser run --rm browser-tests
+ Container setu-x-browser-tests-run-a3b3d6ba3e6a Creating 
+ Container setu-x-browser-tests-run-a3b3d6ba3e6a Created 
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.7.0
+rootdir: /app/tests/browser
+configfile: pytest.ini
+plugins: anyio-4.15.1
+collected 12 items
+
+tests/browser/test_dashboard.py ............                             [100%]
+
+======================== 12 passed in 81.53s (0:01:21) =========================
+>>> E11 PASS - 12 browser tests: controls send the right requests and change the backend, errors displayed, empty states, one experiment run end to end, comparison
+=== E12 the experiment started from the dashboard left valid records
+20261025T130745Z-smoke-9dcb2f status=completed validation=True overrides={"runs":1} csv rows=180 summary rows=180
+>>> E12 PASS - completed, records validated, overrides recorded in the manifest, CSV row count matches the summary
+=== E13 dashboard in a real browser, simulated mode
+$ docker compose up -d --wait --wait-timeout 150
+ Network setu-x_default Creating 
+ Network setu-x_default Creating 
+ Network setu-x_default Created 
+ Network setu-x_default Created 
+ Container setu-x-pricing-1 Creating 
+ Container setu-x-controller-1 Creating 
+ Container setu-x-inventory-a-1 Creating 
+ Container setu-x-inventory-b-1 Creating 
+ Container setu-x-controller-1 Created 
+ Container setu-x-inventory-a-1 Created 
+ Container setu-x-pricing-1 Created 
+ Container setu-x-inventory-b-1 Created 
+ Container setu-x-gateway-1 Creating 
+ Container setu-x-gateway-1 Created 
+ Container setu-x-runner-1 Creating 
+ Container setu-x-runner-1 Created 
+ Container setu-x-inventory-b-1 Starting 
+ Container setu-x-controller-1 Starting 
+ Container setu-x-inventory-a-1 Starting 
+ Container setu-x-pricing-1 Starting 
+ Container setu-x-inventory-b-1 Started 
+ Container setu-x-controller-1 Started 
+ Container setu-x-inventory-a-1 Started 
+ Container setu-x-pricing-1 Started 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-gateway-1 Starting 
+ Container setu-x-gateway-1 Started 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-gateway-1 Healthy 
+ Container setu-x-runner-1 Starting 
+ Container setu-x-runner-1 Started 
+ Container setu-x-runner-1 Waiting 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-gateway-1 Healthy 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-runner-1 Healthy
+$ docker compose --profile browser run --rm browser-tests
+ Container setu-x-browser-tests-run-d34bbc7ef2c5 Creating 
+ Container setu-x-browser-tests-run-d34bbc7ef2c5 Created 
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.1.1, pluggy-1.7.0
+rootdir: /app/tests/browser
+configfile: pytest.ini
+plugins: anyio-4.15.1
+collected 12 items
+
+tests/browser/test_dashboard.py ............                             [100%]
+
+============================= 12 passed in 58.16s ==============================
+>>> E13 PASS - stack mode=simulated; same 12 browser tests incl. configured link delays shown as configured
+=== E14 dashboard is self-contained (no CDN or external URLs)
+>>> E14 PASS - no external script, style or font URLs in the dashboard
+=== E15 hardening of all 6 services, graceful stop, clean down
+$ docker compose stop
+ Container setu-x-runner-1 Stopping 
+ Container setu-x-runner-1 Stopped 
+ Container setu-x-gateway-1 Stopping 
+ Container setu-x-gateway-1 Stopped 
+ Container setu-x-controller-1 Stopping 
+ Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-inventory-b-1 Stopping 
+ Container setu-x-pricing-1 Stopping 
+ Container setu-x-controller-1 Stopped 
+ Container setu-x-inventory-b-1 Stopped 
+ Container setu-x-pricing-1 Stopped 
+ Container setu-x-inventory-a-1 Stopped
+exit codes: controller=0 gateway=0 inventory-a=0 inventory-b=0 pricing=0 runner=0
+$ docker compose down
+ Container setu-x-runner-1 Stopping 
+ Container setu-x-runner-1 Stopped 
+ Container setu-x-runner-1 Removing 
+ Container setu-x-runner-1 Removed 
+ Container setu-x-gateway-1 Stopping 
+ Container setu-x-gateway-1 Stopped 
+ Container setu-x-gateway-1 Removing 
+ Container setu-x-gateway-1 Removed 
+ Container setu-x-controller-1 Stopping 
+ Container setu-x-pricing-1 Stopping 
+ Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-inventory-b-1 Stopping 
+ Container setu-x-controller-1 Stopped 
+ Container setu-x-controller-1 Removing 
+ Container setu-x-pricing-1 Stopped 
+ Container setu-x-pricing-1 Removing 
+ Container setu-x-inventory-b-1 Stopped 
+ Container setu-x-inventory-b-1 Removing 
+ Container setu-x-inventory-a-1 Stopped 
+ Container setu-x-inventory-a-1 Removing 
+ Container setu-x-controller-1 Removed 
+ Container setu-x-inventory-b-1 Removed 
+ Container setu-x-inventory-a-1 Removed 
+ Container setu-x-pricing-1 Removed 
+ Network setu-x_default Removing 
+ Network setu-x_default Removed
+>>> E15 PASS - hardening intact; all 6 exited 0; 0 containers left
+
+================ SUMMARY ================
+E1   PASS compose configuration valid
+E2   PASS images built
+E3   PASS all 6 services healthy
+E4   PASS unit + contract + integration tests passed
+E5   PASS e2e tests passed
+E6   PASS ruff clean
+E7   PASS redirect to /dashboard/, CSP without unsafe-inline, 5 assets served with correct types
+E8   PASS foreign origin 403 (no fault set), DNS-rebinding Host 400, same-origin request accepted
+E9   PASS 11 read endpoints 200 JSON; test order confirmed; runner listed in service health
+E10  PASS rate > 100, link override on a local scenario, window too short for the scheduled fault: all 422
+E11  PASS 12 browser tests: controls send the right requests and change the backend, errors displayed, empty states, one experiment run end to end, comparison
+E12  PASS completed, records validated, overrides recorded in the manifest, CSV row count matches the summary
+E13  PASS stack mode=simulated; same 12 browser tests incl. configured link delays shown as configured
+E14  PASS no external script, style or font URLs in the dashboard
+E15  PASS hardening intact; all 6 exited 0; 0 containers left
+checks: 15  failed: 0  skipped (not executed): 0
+PHASE 6 ACCEPTANCE: PASS

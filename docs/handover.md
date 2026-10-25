@@ -2,8 +2,8 @@
 
 Resume from this file if work is interrupted. Updated at every phase boundary.
 
-**Last updated:** 2026-10-25 (Phase 6 in progress)
-**Current phase:** Phase 6 (dashboard) implemented; acceptance pending. Phase 5: Windows 14/15, D3 check fixed, re-run pending.
+**Last updated:** 2026-10-25 (end of Phase 6)
+**Current phase:** Phase 6 complete in the Linux build workspace (Windows run pending). Phase 5: Windows 14/15 with a check bug (D3 fixed; Linux re-run 15/15); Windows re-run pending. Next: Phase 7, integration and validation report.
 
 ## Completed
 
@@ -34,6 +34,21 @@ Resume from this file if work is interrupted. Updated at every phase boundary.
   - `scripts/phase5_acceptance.ps1`: 15 checks, including independent recomputation of counts, success rates and medians from the CSV.
   - Version 0.5.0.
 
+- **Phase 6 (PASS, Linux build workspace):**
+  - `dashboard/`: static HTML/CSS/JS served by the controller at `/dashboard/`. No CDN, strict CSP, SVG charts with units.
+    - Tabs: overview (health, dependency graph, adapters), control (placement, links, bounded faults, test order, routing decisions, breakers, events), experiments (scenario detail, bounded overrides, provisional live view, history), results (run-level dot plots with bootstrap CIs, table, comparisons, per-second timeline from the CSV, export), compare, method and limits.
+    - Every value is labelled LIVE / PROVISIONAL / HISTORICAL / MEASURED / CONFIGURED / SIMULATED LABEL. Empty and error states are handled; no results are hard-coded.
+  - Controller:
+    - Serves the dashboard, plus read-only gateway views and a test-order proxy, and the live-experiment proxy.
+    - **Browser protections:** a Host allow-list (against DNS rebinding) and an Origin check on state-changing requests (another website cannot inject faults); the runner appears in service health.
+  - Runner: bounded overrides (rate, warm-up, duration, runs, default links), validated by the scenario schema and recorded in the manifest; provisional live view.
+  - Tests:
+    - Backend integration tests.
+    - JS unit tests (`node --test dashboard/tests/*.test.mjs`, 7).
+    - 12 Playwright browser tests in a pinned image, compose profile `browser`, run in local and simulated mode.
+  - Acceptance helpers gained an explicit SKIP status. A skipped check is never PASS; the verdict becomes INCOMPLETE.
+  - `scripts/phase6_acceptance.ps1` (15 checks). `docs/dashboard.md`. Genuine screenshots in `docs/evidence/screenshots/phase6/`. Version 0.6.0.
+
 ## Test status (executed in the build workspace)
 
 | Check | Result |
@@ -44,6 +59,12 @@ Resume from this file if work is interrupted. Updated at every phase boundary.
 | `ruff check src tests` | clean |
 | `phase5_acceptance.ps1` (pwsh 7.6.8, Linux) on 14df432 | 15/15 PASS (`docs/evidence/phase5_acceptance_linux.log`). Smoke checks: median(d100) − median(d0) = 101.7 ms for an injected 100 ms; fault injected < 1 ms late; failures only inside the fault window |
 | Phase 4 regression on 14df432 | 15/15 PASS (`docs/evidence/phase4_regression_on_phase5_linux.log`); an earlier run on 1d64f6e failed C7, see below |
+| Phase 6: unit + contract + integration | 336 passed, 1 skipped (browser tests are skipped in the test image; they run in their own image) |
+| Phase 6: JS unit tests (Node 22) | 7 passed |
+| Phase 6: browser tests (Chromium, Playwright 1.63) | 12 passed in local mode and 12 in simulated mode (inside the Compose network and from the host) |
+| Phase 6: mutation checks on the dashboard (6): fallback checkbox ignored, quantity sent as a string, request ID dropped from errors, fault posted to the wrong endpoint, overrides not sent, empty history blank | all 6 caught |
+| `phase6_acceptance.ps1` (pwsh 7.6.8, Linux) on 4f2d752 | 15/15 PASS, 0 skipped (`docs/evidence/phase6_acceptance_linux.log`). Run 1 on 53c0782 failed E5, see below |
+| Phase 5 regression on 0afc449 (includes the D3 fix) | 15/15 PASS (`docs/evidence/phase5_regression_on_phase6_linux.log`) |
 | Windows (Parv's PC), run 1 on 3050b87 | 14/15: D3 failed because of the check, not the stack. `docker compose port` prints `invalid IP:0` for an unpublished port on Compose 5.1.3/Windows (`:0` on Linux); the container inspection in the same check showed no host port. D3 now decides from `docker inspect` (Ports + PortBindings) only; verified that it fails when the runner is published. Evidence: `docs/evidence/phase5_acceptance_windows_run1_d3_check_bug.log`. Re-run pending |
 
 Phase 6, first acceptance run (53c0782): 14/15. E5 failed because the e2e test `test_controller_sees_all_services_ready` still expected four services after the runner was added to `/api/services`. I had run the unit/integration suite but not the e2e suite before committing. Test updated. Log: `docs/evidence/phase6_acceptance_linux_run1_e2e_test_not_updated.log`.
@@ -70,12 +91,13 @@ Second defect found by the Phase 4 regression run (C7 failed once, then passed o
 
 ## Unresolved issues
 
-1. Windows Phase 5 re-run pending (D3 check fixed; the other 14 checks passed on Windows, including the 100 ms simulated-delay check).
+1. Windows runs pending: Phase 5 re-run (D3 check fixed; the other 14 checks passed on Windows, including the 100 ms simulated-delay check) and Phase 6 (first run downloads the ~3.5 GB browser-test image).
 2. GitHub credentials unavailable; GitHub name availability unverified.
 3. No cloud credentials (expected); real-cloud integration not implemented (documented).
 4. Leftover folders `E:\Projects\Cloud_Mini_Project\.p0\` (sync staging) and `_to_delete\` (safe to delete).
 5. License not yet chosen (Phase 9).
 6. Phase 2 acceptance scripts are a snapshot: A9/A10 assume no fallback and now get 200s (documented).
+7. Experiments started from the dashboard record the git commit as "not recorded" (the container has no git). Use `scripts/run_experiment.ps1` for Phase 8.
 
 ## Build-workspace notes (not part of the repo)
 
@@ -85,9 +107,8 @@ Second defect found by the Phase 4 regression run (C7 failed once, then passed o
 - PowerShell 7.6.8: `<scratchpad>/pwsh/pwsh`, symlinked to `/usr/local/bin/pwsh` (needed because the acceptance script calls `pwsh` for `fault_container.ps1`).
 - Sync: **use a new archive file name for every sync** (reusing a name once delivered a stale copy despite reporting success) and compare `sha256sum` on both sides. Then tar → `device_commit_files` to `.p0\setu-x-<phase>.tgz` → on the device: `tar --overwrite --exclude='setu-x/.git/objects/*'`, then `tar --skip-old-files … 'setu-x/.git/objects'`, then `git fsck`.
 
-## Next commands (Phase 6)
+## Next commands (Phase 7)
 
-1. Dashboard served by the controller: service health and environment labels (with the simulated notice), the placement editor, link delays, fault controls, and the experiment list with start/stop and progress through `/api/experiments`.
-2. Charts from `summary.json` and raw rows only (no fabricated or placeholder data). An empty state when no results exist.
-3. Genuine screenshots for the deck come later (Phase 10), from real runs.
-4. Then Phase 7 (validation report and `verify.ps1`) and Phase 8 (run A–G on the Windows machine, findings).
+1. `scripts/verify.ps1`: one command for a clean checkout. It runs compose config, build, health, unit/contract/integration, e2e, browser tests, a short experiment with file reconciliation, stop/restart, and down, then prints a PASS/FAIL table.
+2. `docs/validation_report.md`: map every brief requirement (§15 checklist) to the file, test or command that proves it, with the executed status only (never "passing" for an unexecuted check).
+3. Then Phase 8: run Experiments A–G on Parv's Windows machine with `scripts/run_experiment.ps1` (about 1 h of load, two stack restarts), and write the findings.
