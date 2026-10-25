@@ -40,7 +40,8 @@ SMOKE = {
 
 
 async def test_full_experiment_records_and_summary(make_stack, tmp_path):
-    async with make_stack() as stack:
+    # long poll interval: the gateway only changes placement when the runner syncs it explicitly
+    async with make_stack(poll_interval_ms=60_000) as stack:
         r = runner_for(stack, SMOKE, tmp_path)
         summary = await r.run()
         assert r.status == "completed", r.error
@@ -81,9 +82,11 @@ async def test_full_experiment_records_and_summary(make_stack, tmp_path):
         assert cond["runs"] == 2 and cond["run_level"]["success_rate"]["per_run"] == [1.0, 1.0]
         assert summary["comparisons"]["reference"] == "healthy"
 
-        # platform restored afterwards
+        # platform restored afterwards, including the gateway (immediately, not at its next poll)
         snap = (await stack.client.get("http://controller/api/placement")).json()
         assert snap["source"] == "file"
+        cur = (await stack.client.get("http://gateway/api/placement/current")).json()
+        assert cur["placement_version"] == snap["version"] and cur["placement_sha256"] == BASE.fingerprint()
         faults = (await stack.client.get("http://controller/api/faults")).json()["faults"]
         assert all(f["active"] is None for f in faults)
 

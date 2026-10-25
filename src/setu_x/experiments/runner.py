@@ -109,6 +109,19 @@ class ControlPlane:
         await self._json("POST", self.controller + "/api/placement/reset")
         await self.clear_faults()
 
+    async def restore(self) -> dict[str, Any]:
+        """After an experiment: files placement + links, no faults, and the gateway synced to it NOW.
+
+        Without the gateway sync, the gateway would keep the last run's placement until its next
+        poll (up to SETU_POLL_INTERVAL_MS), which could affect whatever the user does next.
+        """
+        await self.reset()
+        snap = await self._json("GET", self.controller + "/api/placement")
+        r = await self._json("POST", self.gateway + "/api/resilience/reset", json={"seed": None, "sync": True})
+        if r.get("placement_version") != snap["version"]:
+            raise ExperimentError("gateway did not return to the file placement after the experiment")
+        return r
+
     async def clear_faults(self) -> None:
         res = await self._json("DELETE", self.controller + "/api/faults")
         failed = [r["target"] for r in res.get("results", []) if not r.get("cleared")]
@@ -267,7 +280,7 @@ class ExperimentRunner:
             self.progress["phase"] = "analysing"
             writer.close()
             try:
-                await asyncio.shield(self.control.reset())
+                await asyncio.shield(self.control.restore())
             except Exception as exc:  # noqa: BLE001
                 self.warnings.append(f"final reset failed: {exc}")
             self.summary = self.analyse(outcome)

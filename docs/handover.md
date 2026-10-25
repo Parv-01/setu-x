@@ -47,6 +47,8 @@ Resume from this file if work is interrupted. Updated at every phase boundary.
 
 Race fixed during Phase 5: the runner briefly reported `completed` before `summary.json` existed (1 failure in about 9 suite runs). The status is now `analysing` until the summary is written; a regression test covers this.
 
+Second defect found by the Phase 4 regression run (C7 failed once, then passed on a re-run). The e2e smoke experiment ends with fallback off. The runner reset the controller afterwards, but the gateway kept that placement until its next 2 s poll, so C7's orders, sent within 2 s, got 503s. Fix: the runner's final cleanup (`ControlPlane.restore`) now also syncs the gateway immediately and checks the version. The integration test runs with a 60 s poll interval and asserts the gateway is back on the file placement as soon as the experiment ends; it fails without the fix. Log of the failing run: `docs/evidence/phase4_regression_on_phase5_linux_run1_stale_gateway.log`.
+
 ## Findings to carry into Phase 8 (threats to validity / limitations)
 
 1. **Platform-dependent failure signatures.** For the same stopped container: Linux Engine 29.9.2 gave an immediate refusal (0.03 s), while Docker Desktop 29.4.2 on Windows gave a 0.3 s connect timeout. With the controller stopped, Linux reported a DNS failure and Windows a `ConnectTimeout`. Failure-detection time is platform-dependent.
