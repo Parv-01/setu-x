@@ -26,6 +26,8 @@ FROM base AS runtime
 RUN useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin setu
 RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels \
     pip install --no-index --find-links /wheels setu-x
+# Default configuration baked into the image; compose.yaml mounts ./configs over it (read-only).
+COPY configs ./configs
 USER 10001
 EXPOSE 8000
 CMD ["python", "-m", "setu_x.services.gateway"]
@@ -35,7 +37,7 @@ FROM runtime AS test
 USER root
 RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels \
     pip install --no-index --find-links /wheels "setu-x[dev]"
-COPY pyproject.toml ./
+COPY pyproject.toml compose.yaml ./
 COPY tests ./tests
 USER 10001
 CMD ["pytest", "-p", "no:cacheprovider", "-m", "not e2e"]

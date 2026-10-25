@@ -50,6 +50,30 @@ The run ends with `PHASE 2 ACCEPTANCE: PASS` or `FAIL` and writes the full log t
 
 The first run downloads the Python base image and packages, so it takes a few minutes. Later runs use the cache.
 
+## 1c. Phase 3 acceptance (available now)
+
+```powershell
+pwsh -ExecutionPolicy Bypass -File scripts\phase3_acceptance.ps1
+```
+15 checks:
+- **B1–B4:** config valid; images build; `configs/` validates, and a deliberately broken config is rejected with the field named; all five services healthy (inventory-a, inventory-b, pricing, controller, gateway).
+- **B5–B6:** unit, contract, integration and end-to-end tests.
+- **B7–B8:** simulated environments are labelled everywhere; the AWS/Azure/GCP adapters honestly report `not_configured`.
+- **B9:** the placement API rejects invalid changes.
+- **B10–B12:** round-robin, weighted 3:1, and disabled-primary routing.
+- **B13:** the gateway keeps serving while the controller is stopped.
+- **B14:** container hardening.
+- **B15:** clean shutdown.
+
+The log goes to `docs\evidence\phase3_acceptance_windows.log`. Please send it to me, as you did for Phase 2.
+
+Phase 3 also adds the **controller** on http://127.0.0.1:8090. Try http://127.0.0.1:8090/docs, `GET /api/environments`, `GET /api/adapters`, `GET /api/services` and `GET /api/placement`. On the gateway, `GET /api/routing/decisions` shows recent routing choices with reasons.
+
+To validate your own edits to `configs\*.yaml` before starting anything:
+```powershell
+docker compose --profile test run --rm --no-deps tests python -m setu_x.config_check configs
+```
+
 ## 2. Start, inspect and stop the stack (Phase 2, available now)
 
 ```powershell

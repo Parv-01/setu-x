@@ -1,0 +1,45 @@
+# SETU-X placement, routing and resilience configuration.
+#
+# The controller serves this file at startup (GET /api/placement) and accepts validated runtime
+# changes (PUT /api/placement). Instance names and URLs are fixed by this file: the API can change
+# env labels, roles, weights, enabled flags, routing policy, call mode and resilience settings,
+# but cannot add new URLs. The gateway polls the controller and falls back to this file if the
+# controller is unreachable.
+
+call_mode: parallel            # parallel | sequential
+
+services:
+  inventory:
+    routing: primary-fallback  # primary-fallback | round-robin | weighted
+    instances:
+      - name: inventory-a
+        env: aws-simulated
+        url: http://inventory-a:8000
+        role: primary
+        weight: 1
+        enabled: true
+      - name: inventory-b
+        env: gcp-simulated
+        url: http://inventory-b:8000
+        role: secondary
+        weight: 1
+        enabled: true
+  pricing:
+    routing: primary-fallback
+    instances:
+      - name: pricing
+        env: azure-simulated
+        url: http://pricing:8000
+        role: primary
+        weight: 1
+        enabled: true
+
+resilience:
+  outer_deadline_ms: 3000      # hard bound per order
+  timeout_ms: 800              # per attempt
+  connect_timeout_ms: 300
+  # The settings below are validated now and take effect in Phase 4.
+  retries: 0                   # 0..3
+  backoff: {base_ms: 50, max_ms: 400}
+  circuit_breaker: {enabled: false, consecutive_failures: 5, reset_timeout_ms: 5000}
+  fallback: true

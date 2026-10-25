@@ -1,7 +1,7 @@
 # SETU-X Architecture
 
 SETU-X · Parv Agarwal, Junior Research Associate (Technical), AI NLP ML Research Laboratory, IIT Patna
-Status: **Phase 1 design.** Nothing described here is implemented yet. Each section names the phase that implements it and the test that will verify it. Citation keys refer to `docs/references.bib`.
+Status: **Phases 2–3 implemented** (services, placement, routing, controller, adapter boundary). Sections for Phases 4–6 are still design. Each section names the phase that implements it and the test that verifies it. Citation keys refer to `docs/references.bib`.
 
 ---
 
@@ -57,7 +57,7 @@ All configuration is YAML under `configs/`, validated at startup by Pydantic mod
 
 ```yaml
 # configs/environments.yaml (illustrative values, NOT measured provider latencies)
-mode: simulated            # local | simulated | cloud
+# (the execution mode is a deployment setting: SETU_MODE=local|simulated|cloud, not part of this file)
 environments:
   local:          {provider: local}
   aws-simulated:  {provider: aws,   simulated: true}
@@ -96,7 +96,11 @@ resilience:
   fallback: true
 ```
 
-The gateway fetches placement from the controller every 2 s. If the controller is unreachable, it keeps the last valid config (and starts from `configs/placement.yaml`), and reports `config_source: "cached"` on its readiness endpoint. Control-plane loss is therefore observable but not fatal.
+The gateway fetches placement from the controller every 2 s (`SETU_POLL_INTERVAL_MS`). It starts from `configs/placement.yaml`, re-validates everything it receives, and keeps the last valid placement if the controller is unreachable or sends something invalid. `GET /health/ready` → `info` reports `placement_source` (`file`/`controller`), `placement_version`, `controller_reachable` and `last_error`, so control-plane loss is observable but not fatal (tested in `test_gateway_routing.py` and acceptance check B13).
+
+Runtime placement changes (`PUT /api/placement`) are held in the controller's memory. Restarting the controller reverts to `placement.yaml`, and the gateway follows. The API cannot add instances or URLs: names and URLs must match the file (this prevents the control API being used to point the gateway at arbitrary hosts).
+
+**Environment labels in each mode.** In `local` mode, labels are still reported (and marked `simulated: true`), but no link delay is injected. In `simulated` mode, the configured link delays are injected (Phase 4). Every order response lists `simulated_environments` and carries a `simulation_notice` whenever a simulated label was involved.
 
 ## 5. Delay and fault injection
 
@@ -141,11 +145,15 @@ class CloudAdapter(Protocol):
 
 `Operation` covers each method. `OperationSupport` is one of `implemented`, `not_implemented`, `unsupported_by_provider`. Calling an operation that is not `implemented` raises a typed error. It never returns fabricated data. The contract test suite (`tests/contract/`) runs the same tests against all four adapters without credentials.
 
+Implemented in Phase 3: `adapters/base.py` (contract and guards), `adapters/local_docker.py` (status `local`: environment/endpoint discovery, health checks, service status), and `adapters/cloud.py` (AWS/Azure/GCP skeletons: configuration validation only, every operation `not_implemented`). Details and the plan for real integration are in `docs/cloud_setup.md`.
+
 ### 6.2 Status ladder (never used interchangeably)
 
 | Status | Meaning | How it is reached |
 |---|---|---|
+| `local` | The local Docker host itself (the `local-docker` adapter) | always |
 | `simulated` | Logical environment label on the local Docker host | default for `*-simulated` |
+| `not_configured` | Real-provider adapter without (complete) configuration | default for aws/azure/gcp |
 | `configured` | Required configuration supplied and validated (region, names, credentials source present) | config validation passes |
 | `connected` | An authenticated provider API call succeeded | e.g. AWS STS `GetCallerIdentity` |
 | `deployed` | A real resource was created or updated, and its ID was recorded | deploy call returns a resource ID |

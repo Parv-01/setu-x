@@ -1,0 +1,37 @@
+# SETU-X environments.
+#
+# "*-simulated" environments are LOGICAL LABELS on the local Docker host. They are not
+# deployments on AWS, Azure or Google Cloud. The validator enforces this naming: a simulated
+# environment must end in "-simulated" and set simulated: true.
+#
+# link_rtt_ms: round-trip delay (ms) that the gateway injects per call between two environments
+# when SETU_MODE=simulated (Phase 4). The values below are ILLUSTRATIVE placeholders of a
+# plausible order of magnitude. They are NOT measured or calibrated provider latencies.
+# Experiments set their own values in their scenario files. Every pair of distinct environments
+# must be listed (same-environment calls are 0 ms).
+
+environments:
+  local:
+    provider: local
+    simulated: false
+    description: "The Docker host itself (plays the private-cloud / on-premises role)"
+  aws-simulated:
+    provider: aws
+    simulated: true
+    description: "Simulation label for an AWS-like environment (no AWS resources involved)"
+  azure-simulated:
+    provider: azure
+    simulated: true
+    description: "Simulation label for an Azure-like environment (no Azure resources involved)"
+  gcp-simulated:
+    provider: gcp
+    simulated: true
+    description: "Simulation label for a GCP-like environment (no Google Cloud resources involved)"
+
+link_rtt_ms:
+  local--aws-simulated: 40
+  local--azure-simulated: 55
+  local--gcp-simulated: 45
+  aws-simulated--azure-simulated: 70
+  aws-simulated--gcp-simulated: 60
+  azure-simulated--gcp-simulated: 65

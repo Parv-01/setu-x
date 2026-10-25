@@ -1,15 +1,17 @@
-# SETU-X local stack (Phase 2: gateway + inventory-a + pricing).
+# SETU-X local stack (Phase 3: gateway, controller, inventory-a, inventory-b, pricing).
 # Start:  docker compose up --build -d      Stop: docker compose down
 # Tests:  docker compose --profile test run --rm tests
 # Compatible with Docker Compose v5.1.3 and later.
 #
 # Environment labels (SETU_ENV) such as "aws-simulated" are SIMULATION LABELS on this Docker
-# host. They are not cloud deployments.
+# host. They are not cloud deployments. The authoritative placement (which instance is in which
+# environment) is configs/placement.yaml, served by the controller. The SETU_ENV values below must
+# match it; a test checks this.
 
 name: setu-x
 
 x-service: &service
-  image: setu-x:0.2.0
+  image: setu-x:0.3.0
   build:
     context: .
     target: runtime
@@ -47,6 +49,14 @@ services:
       SETU_INSTANCE: inventory-a
       SETU_ENV: aws-simulated
 
+  inventory-b:
+    <<: *service
+    command: ["python", "-m", "setu_x.services.inventory"]
+    environment:
+      <<: *env
+      SETU_INSTANCE: inventory-b
+      SETU_ENV: gcp-simulated
+
   pricing:
     <<: *service
     command: ["python", "-m", "setu_x.services.pricing"]
@@ -55,6 +65,20 @@ services:
       SETU_INSTANCE: pricing
       SETU_ENV: azure-simulated
 
+  controller:
+    <<: *service
+    command: ["python", "-m", "setu_x.services.controller"]
+    environment:
+      <<: *env
+      SETU_INSTANCE: controller
+      SETU_ENV: local
+      SETU_CONFIG_DIR: /app/configs
+      SETU_GATEWAY_URL: http://gateway:8000
+    volumes:
+      - ./configs:/app/configs:ro
+    ports:
+      - "127.0.0.1:${CONTROLLER_PORT:-8090}:8000"
+
   gateway:
     <<: *service
     command: ["python", "-m", "setu_x.services.gateway"]
@@ -62,21 +86,25 @@ services:
       <<: *env
       SETU_INSTANCE: gateway
       SETU_ENV: local
-      SETU_INVENTORY_URL: http://inventory-a:8000
-      SETU_PRICING_URL: http://pricing:8000
-      SETU_CALL_MODE: ${SETU_CALL_MODE:-parallel}
-      SETU_TIMEOUT_MS: ${SETU_TIMEOUT_MS:-800}
-      SETU_OUTER_DEADLINE_MS: ${SETU_OUTER_DEADLINE_MS:-3000}
+      SETU_CONFIG_DIR: /app/configs
+      SETU_CONTROLLER_URL: http://controller:8000
+      SETU_POLL_INTERVAL_MS: ${SETU_POLL_INTERVAL_MS:-2000}
+    volumes:
+      - ./configs:/app/configs:ro
     ports:
       - "127.0.0.1:${GATEWAY_PORT:-8080}:8000"
     depends_on:
       inventory-a:
         condition: service_healthy
+      inventory-b:
+        condition: service_healthy
       pricing:
+        condition: service_healthy
+      controller:
         condition: service_healthy
 
   tests:
-    image: setu-x-test:0.2.0
+    image: setu-x-test:0.3.0
     build:
       context: .
       target: test
@@ -88,3 +116,4 @@ services:
       - no-new-privileges:true
     environment:
       SETU_E2E_GATEWAY_URL: http://gateway:8000
+      SETU_E2E_CONTROLLER_URL: http://controller:8000

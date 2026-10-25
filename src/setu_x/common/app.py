@@ -50,6 +50,7 @@ def create_app(
     *,
     title: str,
     readiness: ReadinessCheck | None = None,
+    info: Callable[[], dict[str, Any]] | None = None,
     lifespan: Callable[[FastAPI], AbstractAsyncContextManager[None]] | None = None,
 ) -> FastAPI:
     app = FastAPI(title=title, version=__version__, lifespan=lifespan)
@@ -132,6 +133,8 @@ def create_app(
         checks = readiness() if readiness else {"config": "ok"}
         ok = all(v == "ok" for v in checks.values())
         body = {"status": "ready" if ok else "not_ready", "checks": checks, **identity}
+        if info is not None:
+            body["info"] = info()
         return JSONResponse(status_code=200 if ok else 503, content=body)
 
     return app

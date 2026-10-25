@@ -10,7 +10,7 @@ SETU-X is a local-first experimental platform. It shows how a small containerize
 
 **Author:** Parv Agarwal, Junior Research Associate (Technical), AI NLP ML Research Laboratory, IIT Patna. Independent mini-project, not an officially endorsed IIT Patna project.
 
-**Status:** Phase 2 of 11, minimal runnable microservices (gateway, inventory, pricing). See [`docs/handover.md`](docs/handover.md) for current progress.
+**Status:** Phase 3 of 11: placement, routing and the provider-adapter boundary. Five services: gateway, controller, inventory-a, inventory-b, pricing. Real AWS/Azure/GCP integration is **not implemented** (adapters validate configuration only; see [`docs/cloud_setup.md`](docs/cloud_setup.md)). Progress: [`docs/handover.md`](docs/handover.md).
 
 ## Quick start (Docker only)
 
@@ -18,7 +18,7 @@ Requirements: Docker Engine with Docker Compose v5.1.3 or later. Docker Desktop 
 
 ```bash
 docker compose config              # validate the configuration
-docker compose up --build -d       # build and start (gateway on http://127.0.0.1:8080)
+docker compose up --build -d       # build and start (gateway :8080, controller :8090, both on 127.0.0.1)
 docker compose ps                  # all services should be "healthy"
 curl -s -X POST http://127.0.0.1:8080/api/orders \
   -H 'content-type: application/json' \
@@ -27,7 +27,11 @@ docker compose logs gateway        # structured JSON logs
 docker compose down                # stop
 ```
 
-Interactive API docs: http://127.0.0.1:8080/docs
+Interactive API docs: gateway http://127.0.0.1:8080/docs · controller http://127.0.0.1:8090/docs
+
+Useful endpoints: `GET :8090/api/environments`, `GET :8090/api/adapters`, `GET :8090/api/services`, `GET|PUT :8090/api/placement`, `GET :8080/api/routing/decisions`.
+
+Configuration: [`configs/environments.yaml`](configs/environments.yaml) (environments and illustrative link delays) and [`configs/placement.yaml`](configs/placement.yaml) (instances, routing policy, timeouts). Validate with `docker compose --profile test run --rm --no-deps tests python -m setu_x.config_check configs`.
 
 On Windows PowerShell, use `Invoke-RestMethod` (see [`docs/testing_on_windows.md`](docs/testing_on_windows.md)).
 
@@ -38,6 +42,7 @@ docker compose --profile test run --rm tests                 # unit + integratio
 docker compose --profile test run --rm tests pytest -m e2e   # end-to-end (stack must be up)
 bash scripts/phase2_acceptance.sh                            # full Phase 2 acceptance run (Linux/macOS/Git Bash)
 pwsh -ExecutionPolicy Bypass -File scripts/phase2_acceptance.ps1   # same checks in PowerShell 7 (Windows)
+pwsh -ExecutionPolicy Bypass -File scripts/phase3_acceptance.ps1   # Phase 3: placement, routing, adapters (any OS with pwsh 7)
 ```
 
 ## Documentation
@@ -46,6 +51,7 @@ pwsh -ExecutionPolicy Bypass -File scripts/phase2_acceptance.ps1   # same checks
 - Architecture: [`docs/architecture.md`](docs/architecture.md)
 - Literature review: [`docs/literature_review.md`](docs/literature_review.md), bibliography [`docs/references.bib`](docs/references.bib)
 - Implementation plan: [`docs/implementation_plan.md`](docs/implementation_plan.md)
+- Real-cloud status and plan: [`docs/cloud_setup.md`](docs/cloud_setup.md)
 - Windows + VS Code testing: [`docs/testing_on_windows.md`](docs/testing_on_windows.md)
 
 ## License

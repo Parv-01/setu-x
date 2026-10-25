@@ -1,42 +1,41 @@
 import pytest
 
-from setu_x.common.config import ConfigError, load_gateway_settings, load_service_settings
+from setu_x.common.config import (
+    ConfigError,
+    load_controller_settings,
+    load_gateway_settings,
+    load_service_settings,
+)
 
 
 def test_defaults_load():
     s = load_gateway_settings({})
-    assert s.call_mode == "parallel" and s.timeout_ms == 800 and s.outer_deadline_ms == 3000
-    assert s.mode == "local"
+    assert s.controller_url == "http://controller:8000" and s.poll_interval_ms == 2000 and s.mode == "local"
+    c = load_controller_settings({})
+    assert c.gateway_url == "http://gateway:8000" and c.config_dir == "configs"
 
 
 def test_env_overrides_are_parsed():
-    s = load_gateway_settings(
-        {"SETU_CALL_MODE": "sequential", "SETU_TIMEOUT_MS": "250", "SETU_ENV": "local", "SETU_MODE": "simulated"}
-    )
-    assert s.call_mode == "sequential" and s.timeout_ms == 250 and s.mode == "simulated"
+    s = load_gateway_settings({"SETU_POLL_INTERVAL_MS": "500", "SETU_MODE": "simulated", "SETU_CONTROLLER_URL": ""})
+    assert s.poll_interval_ms == 500 and s.mode == "simulated"
+    assert s.controller_url == "http://controller:8000"  # empty env value means "not set"
 
 
 @pytest.mark.parametrize(
     "env,var",
     [
-        ({"SETU_TIMEOUT_MS": "-5"}, "SETU_TIMEOUT_MS"),
-        ({"SETU_TIMEOUT_MS": "abc"}, "SETU_TIMEOUT_MS"),
-        ({"SETU_CALL_MODE": "random"}, "SETU_CALL_MODE"),
+        ({"SETU_POLL_INTERVAL_MS": "50"}, "SETU_POLL_INTERVAL_MS"),
+        ({"SETU_POLL_INTERVAL_MS": "abc"}, "SETU_POLL_INTERVAL_MS"),
         ({"SETU_MODE": "production"}, "SETU_MODE"),
-        ({"SETU_INVENTORY_URL": "not a url"}, "SETU_INVENTORY_URL"),
-        ({"SETU_OUTER_DEADLINE_MS": "20000"}, "SETU_OUTER_DEADLINE_MS"),
+        ({"SETU_CONTROLLER_URL": "not a url"}, "SETU_CONTROLLER_URL"),
         ({"SETU_PORT": "70000"}, "SETU_PORT"),
+        ({"SETU_LOG_LEVEL": "LOUD"}, "SETU_LOG_LEVEL"),
     ],
 )
 def test_invalid_values_fail_naming_the_variable(env, var):
     with pytest.raises(ConfigError) as exc:
         load_gateway_settings(env)
     assert var in str(exc.value)
-
-
-def test_timeout_larger_than_deadline_is_rejected():
-    with pytest.raises(ConfigError, match="SETU_TIMEOUT_MS must not exceed SETU_OUTER_DEADLINE_MS"):
-        load_gateway_settings({"SETU_TIMEOUT_MS": "2000", "SETU_OUTER_DEADLINE_MS": "1000"})
 
 
 def test_service_settings_instance_and_env():

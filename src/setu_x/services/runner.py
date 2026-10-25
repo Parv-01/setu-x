@@ -23,7 +23,11 @@ def run(load_settings: Callable[[], ServiceSettings], build_app: Callable[[Servi
         print(f"FATAL {exc}", file=sys.stderr)
         sys.exit(2)
     configure_logging(settings.service_name, settings.instance, settings.env, settings.log_level)
-    app = build_app(settings)
+    try:
+        app = build_app(settings)
+    except ConfigError as exc:
+        print(f"FATAL {exc}", file=sys.stderr)
+        sys.exit(2)
     uvicorn.run(
         app,
         host="0.0.0.0",  # inside the container; Compose publishes only to 127.0.0.1 on the host

@@ -16,7 +16,10 @@ async def test_confirmed_order_expected_result(make_gateway, call_mode):
     assert r.status_code == 200, r.text
     body = r.json()
     assert body["status"] == "confirmed" and body["call_mode"] == call_mode
-    assert body["inventory"] == {"available": 8, "in_stock": True, "instance": "inventory-a", "env": "aws-simulated"}
+    assert body["inventory"] == {"available": 8, "in_stock": True, "instance": "inventory-a", "env": "aws-simulated",
+                                 "simulated": True, "reported_by": "inventory-a@aws-simulated"}
+    assert body["simulated_environments"] == ["aws-simulated", "azure-simulated"] and body["simulation_notice"]
+    assert [d["instance"] for d in body["routing"]] == ["inventory-a", "pricing"]
     assert body["pricing"]["total_cents"] == 11000 and body["pricing"]["price_source"] == "pricing-service"
     assert body["request_id"] == "e2e-req-1" and body["order_id"] == "ord-e2e-req-1"
     # request id is propagated to every downstream call
@@ -109,5 +112,7 @@ async def test_gateway_health_and_dependency_probe(make_gateway):
         ready = (await client.get("/health/ready")).json()
         deps = (await client.get("/health/dependencies")).json()["dependencies"]
     assert ready["status"] == "ready" and ready["checks"] == {"config": "ok", "http_client": "ok"}
-    status = {d["name"]: d["status"] for d in deps}
-    assert status["inventory"] == "ready" and status["pricing"] == "ConnectError"
+    assert ready["info"]["placement_source"] == "file"
+    status = {d["instance"]: d["status"] for d in deps}
+    assert status == {"inventory-a": "ready", "inventory-b": "ConnectError", "pricing": "ConnectError"}
+    assert all(d["simulated"] for d in deps)

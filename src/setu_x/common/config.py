@@ -10,7 +10,7 @@ import os
 from collections.abc import Mapping
 from typing import Literal
 
-from pydantic import BaseModel, Field, ValidationError, model_validator
+from pydantic import BaseModel, Field, ValidationError
 
 ENV_PREFIX = "SETU_"
 
@@ -29,18 +29,17 @@ class ServiceSettings(BaseModel):
 
 
 class GatewaySettings(ServiceSettings):
-    inventory_url: str = Field(default="http://inventory-a:8000", pattern=r"^https?://[^\s]+$")
-    pricing_url: str = Field(default="http://pricing:8000", pattern=r"^https?://[^\s]+$")
-    call_mode: Literal["parallel", "sequential"] = "parallel"
-    timeout_ms: int = Field(default=800, ge=10, le=10_000, description="per-attempt timeout")
-    connect_timeout_ms: int = Field(default=300, ge=10, le=10_000)
-    outer_deadline_ms: int = Field(default=3000, ge=100, le=10_000, description="hard bound per order")
+    """Deployment settings only. Placement, routing and timeouts live in configs/placement.yaml."""
 
-    @model_validator(mode="after")
-    def _check_bounds(self) -> GatewaySettings:
-        if self.timeout_ms > self.outer_deadline_ms:
-            raise ValueError("SETU_TIMEOUT_MS must not exceed SETU_OUTER_DEADLINE_MS")
-        return self
+    config_dir: str = Field(default="configs", min_length=1)
+    controller_url: str = Field(default="http://controller:8000", pattern=r"^(https?://[^\s]+)?$",
+                                description="empty string disables controller sync (file config only)")
+    poll_interval_ms: int = Field(default=2000, ge=200, le=60_000)
+
+
+class ControllerSettings(ServiceSettings):
+    config_dir: str = Field(default="configs", min_length=1)
+    gateway_url: str = Field(default="http://gateway:8000", pattern=r"^https?://[^\s]+$")
 
 
 def _load(model: type[BaseModel], environ: Mapping[str, str], defaults: dict) -> BaseModel:
@@ -68,3 +67,8 @@ def load_service_settings(service_name: str, environ: Mapping[str, str] | None =
 def load_gateway_settings(environ: Mapping[str, str] | None = None) -> GatewaySettings:
     env = os.environ if environ is None else environ
     return _load(GatewaySettings, env, {"service_name": "gateway", "instance": "gateway"})
+
+
+def load_controller_settings(environ: Mapping[str, str] | None = None) -> ControllerSettings:
+    env = os.environ if environ is None else environ
+    return _load(ControllerSettings, env, {"service_name": "controller", "instance": "controller"})

@@ -85,7 +85,7 @@ One factor changes at a time unless stated. All experiments run in **simulated m
 
 ### 5.1 Modes
 
-- `local`: plain containers, no environment labels or link delay.
+- `local`: plain containers and no injected link delay. Environment labels are still reported as metadata, marked `simulated: true`.
 - `simulated`: containers labelled `local`, `aws-simulated`, `azure-simulated`, `gcp-simulated`. Link delays and faults come from configuration. Every export carries `"environment_mode": "simulated"`.
 - `cloud`: optional real-provider deployment, off by default. See `docs/architecture.md` §6.
 
