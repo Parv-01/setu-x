@@ -5,8 +5,8 @@ flowchart LR
 
   subgraph LOCAL["local (Docker host)"]
     gw["gateway<br/>orders orchestration<br/>timeouts · retries · breaker · fallback"]
-    ctl["controller<br/>placement & routing config<br/>fault control plane (bounded)<br/>results + export · dashboard"]
-    lg["experiment runner<br/>(inside controller)"]
+    ctl["controller<br/>placement & routing config<br/>fault control plane (bounded)<br/>runner API proxy · dashboard"]
+    lg["runner<br/>open-loop load generator<br/>records · statistics"]
   end
   subgraph AWS["aws-simulated (label only)"]
     inva["inventory-a<br/>primary"]
@@ -26,6 +26,8 @@ flowchart LR
   ctl --> invb
   ctl --> pr
   ctl -->|health| gw
+  ctl -->|"/api/experiments (proxy)"| lg
+  lg -->|"reset · apply · faults"| ctl
 
   classDef sim stroke-dasharray: 5 5;
   class AWS,GCP,AZ sim;

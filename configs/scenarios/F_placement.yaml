@@ -1,0 +1,29 @@
+# Experiment F - placement (RQ3 / H4).
+# Fixed link matrix: gateway->inventory environment 50 ms, gateway->pricing environment 80 ms
+# (pricing is the slower, critical dependency in parallel mode). Placement changes RELABEL which
+# environment an instance is in (the container does not move; the injected delay changes):
+#   distributed       inventory-a: aws-simulated, pricing: azure-simulated   (critical path ~80 ms)
+#   pricing-local     pricing moved to the gateway's environment             (critical path ~50 ms)
+#   inventory-local   inventory-a moved to the gateway's environment         (critical path ~80 ms)
+#   both-local        both moved                                              (critical path ~0 ms)
+id: F_placement
+title: "F - Placement of pricing and inventory relative to the gateway"
+hypotheses: [H4]
+requires_mode: simulated
+workload: {rate_rps: 20, arrival: poisson, warmup_s: 5, duration_s: 30}
+runs: 3
+seed: 606
+defaults:
+  call_mode: parallel
+  links:
+    local--aws-simulated: 50
+    local--gcp-simulated: 50
+    local--azure-simulated: 80
+    aws-simulated--azure-simulated: 0
+    aws-simulated--gcp-simulated: 0
+    azure-simulated--gcp-simulated: 0
+conditions:
+  - {name: distributed}
+  - {name: pricing-local, instance_env: {pricing: local}}
+  - {name: inventory-local, instance_env: {inventory-a: local}}
+  - {name: both-local, instance_env: {pricing: local, inventory-a: local}}

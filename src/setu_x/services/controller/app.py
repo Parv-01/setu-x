@@ -11,6 +11,9 @@ POST /api/faults           inject a bounded fault into an allow-listed instance 
 GET  /api/faults           active fault on every allow-listed instance
 DELETE /api/faults/{name}  clear one; DELETE /api/faults clears all
 GET  /api/events           controller event log (placement/link changes, faults), newest first
+*    /api/experiments...   proxied to the internal experiment runner (Phase 5): GET/POST
+     /api/experiments, GET /api/experiments/{id}, POST /api/experiments/{id}/stop,
+     GET /api/experiments/{id}/files/{name}, GET /api/scenarios
 
 Safety rule for PUT: instance names and URLs are fixed by configs/placement.yaml. The API can
 change env labels, roles, weights, enabled flags, routing policy, call mode and resilience
@@ -20,14 +23,16 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import re
 from contextlib import asynccontextmanager
 from datetime import UTC, datetime
 from typing import Any
 
 import httpx
 from fastapi import FastAPI, Query, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import ValidationError
+from starlette.background import BackgroundTask
 
 from setu_x.adapters import build_adapters
 from setu_x.adapters.base import ServiceEndpoint
@@ -264,8 +269,73 @@ def build_app(
         return {"results": list(await asyncio.gather(*(_clear(n) for n in sorted(fault_targets))))}
 
     @app.get("/api/events", tags=["events"])
-    async def get_events(limit: int = Query(default=100, ge=1, le=1000)) -> dict:
-        return {"events": events.recent(limit)}
+    async def get_events(limit: int = Query(default=100, ge=1, le=1000),
+                         since: int | None = Query(default=None, ge=0)) -> dict:
+        return {"events": events.recent(limit, since=since), "last_seq": events.last_seq,
+                "oldest_seq": events.oldest_seq}
+
+    # ------------------------------------------------------------------ experiment runner proxy
+    runner_url = settings.runner_url.rstrip("/")
+    id_re = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,96}$")
+    file_re = re.compile(r"^[a-z_]+\.(json|jsonl|csv)$")
+
+    async def to_runner(request: Request, method: str, path: str, stream: bool = False):
+        rid = request.state.request_id
+        if not runner_url:
+            return JSONResponse(status_code=503, content=error_body(
+                "runner_disabled", "SETU_RUNNER_URL is empty; the experiment runner is not configured", rid))
+        body = await request.body() if method == "POST" else None
+        req = state["http"].build_request(
+            method, runner_url + path, content=body, params=dict(request.query_params),
+            headers={"content-type": "application/json", "X-Request-ID": rid}, timeout=10.0)
+        try:
+            r = await state["http"].send(req, stream=stream)
+        except httpx.HTTPError as exc:
+            return JSONResponse(status_code=503, content=error_body(
+                "runner_unreachable", f"experiment runner not reachable ({type(exc).__name__})", rid))
+        if stream:
+            headers = {k: v for k, v in r.headers.items() if k.lower() in ("content-type", "content-disposition")}
+            return StreamingResponse(r.aiter_raw(), status_code=r.status_code, headers=headers,
+                                     background=BackgroundTask(r.aclose))
+        try:
+            content = r.json()
+        except ValueError:
+            content = error_body("runner_bad_response", "experiment runner returned non-JSON", rid)
+        return JSONResponse(status_code=r.status_code, content=content)
+
+    def bad_id(request: Request) -> JSONResponse:
+        return JSONResponse(status_code=404, content=error_body("not_found", "unknown experiment or file",
+                                                                request.state.request_id))
+
+    @app.get("/api/scenarios", tags=["experiments"])
+    async def scenarios(request: Request):
+        return await to_runner(request, "GET", "/api/scenarios")
+
+    @app.get("/api/experiments", tags=["experiments"])
+    async def list_experiments(request: Request):
+        return await to_runner(request, "GET", "/api/experiments")
+
+    @app.post("/api/experiments", tags=["experiments"])
+    async def start_experiment(request: Request):
+        return await to_runner(request, "POST", "/api/experiments")
+
+    @app.get("/api/experiments/{exp_id}", tags=["experiments"])
+    async def get_experiment(exp_id: str, request: Request):
+        if not id_re.match(exp_id):
+            return bad_id(request)
+        return await to_runner(request, "GET", f"/api/experiments/{exp_id}")
+
+    @app.post("/api/experiments/{exp_id}/stop", tags=["experiments"])
+    async def stop_experiment(exp_id: str, request: Request):
+        if not id_re.match(exp_id):
+            return bad_id(request)
+        return await to_runner(request, "POST", f"/api/experiments/{exp_id}/stop")
+
+    @app.get("/api/experiments/{exp_id}/files/{name}", tags=["experiments"])
+    async def experiment_file(exp_id: str, name: str, request: Request):
+        if not id_re.match(exp_id) or not file_re.match(name):
+            return bad_id(request)
+        return await to_runner(request, "GET", f"/api/experiments/{exp_id}/files/{name}", stream=True)
 
     @app.get("/api/services", tags=["health"])
     async def services() -> dict:

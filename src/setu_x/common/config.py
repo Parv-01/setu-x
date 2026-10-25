@@ -42,6 +42,15 @@ class GatewaySettings(ServiceSettings):
 class ControllerSettings(ServiceSettings):
     config_dir: str = Field(default="configs", min_length=1)
     gateway_url: str = Field(default="http://gateway:8000", pattern=r"^https?://[^\s]+$")
+    runner_url: str = Field(default="http://runner:8000", pattern=r"^(https?://[^\s]+)?$",
+                            description="experiment runner; empty string disables the /api/experiments proxy")
+
+
+class RunnerSettings(ServiceSettings):
+    config_dir: str = Field(default="configs", min_length=1)
+    results_dir: str = Field(default="results", min_length=1)
+    controller_url: str = Field(default="http://controller:8000", pattern=r"^https?://[^\s]+$")
+    gateway_url: str = Field(default="http://gateway:8000", pattern=r"^https?://[^\s]+$")
 
 
 def _load(model: type[BaseModel], environ: Mapping[str, str], defaults: dict) -> BaseModel:
@@ -74,3 +83,8 @@ def load_gateway_settings(environ: Mapping[str, str] | None = None) -> GatewaySe
 def load_controller_settings(environ: Mapping[str, str] | None = None) -> ControllerSettings:
     env = os.environ if environ is None else environ
     return _load(ControllerSettings, env, {"service_name": "controller", "instance": "controller"})
+
+
+def load_runner_settings(environ: Mapping[str, str] | None = None) -> RunnerSettings:
+    env = os.environ if environ is None else environ
+    return _load(RunnerSettings, env, {"service_name": "runner", "instance": "runner"})

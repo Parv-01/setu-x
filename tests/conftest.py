@@ -193,3 +193,41 @@ def make_controller():
         await downstream.aclose()
 
     return _make
+
+
+class Stack:
+    """A full in-process stack: inventory-a/b + pricing (with fault injection), controller, gateway."""
+
+    def __init__(self, router: HostRouter, controller: FastAPI, gateway: FastAPI, client: httpx.AsyncClient) -> None:
+        self.router = router
+        self.controller = controller
+        self.gateway = gateway
+        self.client = client  # routes by host: http://controller, http://gateway, http://inventory-a, ...
+        self.controller_url = "http://controller"
+        self.gateway_url = "http://gateway"
+
+
+@pytest.fixture
+def make_stack():
+    """async with make_stack(mode="local"|"simulated", config=...) as stack"""
+
+    @asynccontextmanager
+    async def _make(mode: str = "local", config=None, poll_interval_ms: int = 200) -> AsyncIterator[Stack]:
+        config = config or build_config()
+        routes: dict[str, httpx.AsyncBaseTransport] = {h: asgi(a) for h, a in default_routes().items()}
+        router = HostRouter(routes)
+        internal = httpx.AsyncClient(transport=router)
+        ctl = build_controller(ControllerSettings(service_name="controller", instance="controller", env="local",
+                                                  mode=mode, config_dir=str(CONFIG_DIR), runner_url=""),
+                               client=internal, config=config, environ={})
+        gw = build_gateway(GatewaySettings(service_name="gateway", instance="gateway", env="local", mode=mode,
+                                           controller_url="http://controller", config_dir=str(CONFIG_DIR),
+                                           poll_interval_ms=poll_interval_ms, random_seed=1),
+                           client=internal, config=config)
+        routes["controller"] = asgi(ctl)
+        routes["gateway"] = asgi(gw)
+        async with ctl.router.lifespan_context(ctl), gw.router.lifespan_context(gw):
+            yield Stack(router, ctl, gw, internal)
+        await internal.aclose()
+
+    return _make

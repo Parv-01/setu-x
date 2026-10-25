@@ -1,0 +1,405 @@
+SETU-X Phase 4 acceptance (PowerShell)
+date_utc: 2026-10-25T09:54:16Z
+git_commit: 2d6a8f6 (uncommitted files outside docs/evidence: 0)
+powershell: 7.6.8 on windows
+docker: client 29.4.2 / server 29.4.2
+compose: 5.1.3
+
+=== C1 docker compose config
+$ docker compose config --quiet
+>>> C1 PASS - compose configuration valid
+=== C2 build images
+$ docker compose --profile test build
+ Image setu-x-test:0.4.0 Building 
+ Image setu-x:0.4.0 Building 
+ Image setu-x:0.4.0 Building 
+ Image setu-x:0.4.0 Building 
+ Image setu-x:0.4.0 Building 
+ Image setu-x:0.4.0 Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 2.95kB done
+#1 DONE 0.0s
+
+#2 [pricing internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.97kB done
+#2 DONE 0.0s
+
+#3 [inventory-a] resolve image config for docker-image://docker.io/docker/dockerfile:1
+#3 DONE 1.8s
+
+#4 [gateway] docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#4 resolve docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e 0.0s done
+#4 CACHED
+
+#5 [gateway internal] load metadata for docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377
+#5 DONE 0.0s
+
+#6 [inventory-a internal] load .dockerignore
+#6 transferring context: 158B done
+#6 DONE 0.0s
+
+#7 [pricing base 1/2] FROM docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377
+#7 resolve docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377 0.0s done
+#7 DONE 0.0s
+
+#8 [pricing internal] load build context
+#8 transferring context: 129.95kB 0.0s done
+#8 transferring context: 129.95kB 0.0s done
+#8 DONE 0.1s
+
+#9 [tests internal] load build context
+#9 transferring context: 223.21kB 0.0s done
+#9 DONE 0.1s
+
+#10 [inventory-a builder 4/4] RUN --mount=type=secret,id=pip_ca,required=false     if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi;     pip wheel --wheel-dir /wheels --constraint requirements/dev.lock ".[dev]"
+#10 CACHED
+
+#11 [inventory-a builder 1/4] COPY pyproject.toml README.md ./
+#11 CACHED
+
+#12 [inventory-a builder 3/4] COPY src ./src
+#12 CACHED
+
+#13 [inventory-a builder 2/4] COPY requirements ./requirements
+#13 CACHED
+
+#14 [inventory-a runtime 2/3] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels setu-x
+#14 CACHED
+
+#15 [tests runtime 3/3] COPY configs ./configs
+#15 CACHED
+
+#16 [tests builder 1/4] COPY pyproject.toml README.md ./
+#16 CACHED
+
+#17 [tests runtime 2/3] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels setu-x
+#17 CACHED
+
+#18 [tests runtime 3/3] COPY configs ./configs
+#18 CACHED
+
+#19 [tests builder 3/4] COPY src ./src
+#19 CACHED
+
+#20 [tests builder 2/4] COPY requirements ./requirements
+#20 CACHED
+
+#21 [tests base 2/2] WORKDIR /app
+#21 CACHED
+
+#22 [tests builder 4/4] RUN --mount=type=secret,id=pip_ca,required=false     if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi;     pip wheel --wheel-dir /wheels --constraint requirements/dev.lock ".[dev]"
+#22 CACHED
+
+#23 [tests test 1/3] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels "setu-x[dev]"
+#23 CACHED
+
+#24 [tests runtime 1/3] RUN useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin setu
+#24 CACHED
+
+#25 [tests test 2/3] COPY pyproject.toml compose.yaml ./
+#25 CACHED
+
+#26 [tests test 3/3] COPY tests ./tests
+#26 CACHED
+
+#27 [tests] exporting to image
+#27 exporting layers done
+#27 exporting manifest sha256:f3f6cae3de519801d1d6e64a914d7633a4ec1c3f60998db34ac7ac24b7c6aa09 0.0s done
+#27 exporting config sha256:cb8ff639f0ef9ca4c0073539b6c18a5e3519976535bf00bced3257a667d851c6 done
+#27 exporting attestation manifest sha256:d639c4710534c4658e34ea1edb69f6f398d9f7e875a87b58082a24f375080986
+#27 exporting attestation manifest sha256:d639c4710534c4658e34ea1edb69f6f398d9f7e875a87b58082a24f375080986 0.2s done
+#27 exporting manifest list sha256:bc135652759b67d65fb9610ebca74e5b2f61e0942edb489480e3b26eafde2b51 0.1s done
+#27 naming to docker.io/library/setu-x-test:0.4.0
+#27 naming to docker.io/library/setu-x-test:0.4.0 0.0s done
+#27 unpacking to docker.io/library/setu-x-test:0.4.0 0.0s done
+#27 DONE 0.4s
+
+#28 [inventory-a] exporting to image
+#28 exporting layers done
+#28 exporting manifest sha256:11a2a9b1a059eea93aa4822d276ce22b57898695b2d88fefbe225a6a555db136 0.0s done
+#28 exporting config sha256:4b02d5fbe5217c75966387b76785842a28b7e109569a19b7194fe087f598ca0d 0.0s done
+#28 exporting attestation manifest sha256:fe6040dbb5c14a16a2bd273837a89b6c6d483653f4d29c728a6b589639ec749c 0.2s done
+#28 exporting manifest list sha256:f6fa1b2d6bc88634ed1275a1575dda85fed597c85629bbdf975c9e35d79fa8dc 0.1s done
+#28 naming to docker.io/library/setu-x:0.4.0 0.0s done
+#28 unpacking to docker.io/library/setu-x:0.4.0 0.0s done
+#28 DONE 0.4s
+
+#29 [gateway] exporting to image
+#29 exporting layers done
+#29 exporting manifest sha256:b06a7e30fbaecc3023c4653019e1b7646581d95b2a4ee6b6d7476c15d4539f93 done
+#29 exporting config sha256:4a910db986f4886eb36e04ceccb5d41dc7ebac343263ddb2dd278549e2df85d9 0.0s done
+#29 exporting attestation manifest sha256:6aadc27f02c8533b2605d5cc1298e7557c8008de765f9be108c749f59fa6f3ef 0.2s done
+#29 exporting manifest list sha256:983db96bcd79e48ffd60a77b454f54889ae59a1bab251673f628343d9a7bf49e 0.1s done
+#29 naming to docker.io/library/setu-x:0.4.0 0.0s done
+#29 unpacking to docker.io/library/setu-x:0.4.0 0.0s done
+#29 DONE 0.4s
+
+#30 [controller] exporting to image
+#30 exporting layers done
+#30 exporting manifest sha256:6309c2829df3be3b9e4e8018b17dece74dea819d8e6170c1138732989553faf4 0.0s done
+#30 exporting config sha256:5a5b9e2d7d13fdd61bbc29fdf55988700d6791cf4fbb26a34543c0acd5287452 0.0s done
+#30 exporting attestation manifest sha256:526e23aba885a3c41ad41fc3bab8b498784ba537deb238e1c2b91347fbaef8e5 0.2s done
+#30 exporting manifest list sha256:3b3d55023bc329e17b0684ba2b46ae20db33b77f7c41e589c60c5b3853612a20 0.1s done
+#30 naming to docker.io/library/setu-x:0.4.0 0.0s done
+#30 unpacking to docker.io/library/setu-x:0.4.0 0.0s done
+#30 DONE 0.4s
+
+#31 [pricing] exporting to image
+#31 exporting layers done
+#31 exporting manifest sha256:f022a847f1f2d2ea637a4799965648d2a0d3d323833c101a7117cafb6bdf1741 0.0s done
+#31 exporting config sha256:2fa5daaf2c67ab776aaef661e2dbe7d036954c9fcd61cf9370067f47d8f3299b 0.0s done
+#31 exporting attestation manifest sha256:357c23aaaf1e919f615611aa17b209779580758a373e9eefd997e3fac3fd1702 0.1s done
+#31 exporting manifest list sha256:8e6aee157c2e3218c55e8a8a517efc622f2d778d95eba0569acd89cde2a626bc 0.1s done
+#31 naming to docker.io/library/setu-x:0.4.0 0.0s done
+#31 unpacking to docker.io/library/setu-x:0.4.0 0.0s done
+#31 DONE 0.4s
+
+#32 [inventory-b] exporting to image
+#32 exporting layers done
+#32 exporting manifest sha256:6f91fda5b2a54779e0683d5a5366d3745b3ce65300f3cf55e59a3a380e80fd5a 0.0s done
+#32 exporting config sha256:eff08be32261012c9dbdfdaf3bf46587e6be8792a8d11e600e979ca77c114c68 0.0s done
+#32 exporting attestation manifest sha256:b77477207f3e4e893f7b484fbc639fef9c38f4640065f74ec196c71efab31f49 0.2s done
+#32 exporting manifest list sha256:08b9e6f85c5240cebf1180b24ff176ab272b25443b9e0b0a06e20106ff232733 0.1s done
+#32 naming to docker.io/library/setu-x:0.4.0 0.0s done
+#32 unpacking to docker.io/library/setu-x:0.4.0 0.0s done
+#32 DONE 0.5s
+
+#33 [inventory-a] resolving provenance for metadata file
+#33 DONE 0.2s
+
+#34 [tests] resolving provenance for metadata file
+#34 DONE 0.0s
+
+#35 [inventory-b] resolving provenance for metadata file
+#35 DONE 0.1s
+
+#36 [pricing] resolving provenance for metadata file
+#36 DONE 0.1s
+
+#37 [gateway] resolving provenance for metadata file
+#37 DONE 0.2s
+
+#38 [controller] resolving provenance for metadata file
+#38 DONE 0.1s
+ Image setu-x:0.4.0 Built 
+ Image setu-x:0.4.0 Built 
+ Image setu-x:0.4.0 Built 
+ Image setu-x:0.4.0 Built 
+ Image setu-x:0.4.0 Built 
+ Image setu-x-test:0.4.0 Built
+>>> C2 PASS - images built
+=== C3 start stack (local mode) and check all 5 services healthy
+$ docker compose up -d --wait --wait-timeout 120
+ Network setu-x_default Creating 
+ Network setu-x_default Created 
+ Container setu-x-pricing-1 Creating 
+ Container setu-x-inventory-a-1 Creating 
+ Container setu-x-controller-1 Creating 
+ Container setu-x-inventory-b-1 Creating 
+ Container setu-x-pricing-1 Created 
+ Container setu-x-inventory-a-1 Created 
+ Container setu-x-inventory-b-1 Created 
+ Container setu-x-controller-1 Created 
+ Container setu-x-gateway-1 Creating 
+ Container setu-x-gateway-1 Created 
+ Container setu-x-inventory-b-1 Starting 
+ Container setu-x-inventory-a-1 Starting 
+ Container setu-x-pricing-1 Starting 
+ Container setu-x-controller-1 Starting 
+ Container setu-x-inventory-b-1 Started 
+ Container setu-x-inventory-a-1 Started 
+ Container setu-x-pricing-1 Started 
+ Container setu-x-controller-1 Started 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-gateway-1 Starting 
+ Container setu-x-gateway-1 Started 
+ Container setu-x-pricing-1 Waiting 
+ Container setu-x-controller-1 Waiting 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-inventory-a-1 Waiting 
+ Container setu-x-inventory-b-1 Waiting 
+ Container setu-x-controller-1 Healthy 
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-inventory-b-1 Healthy 
+ Container setu-x-gateway-1 Healthy
+>>> C3 PASS - all 5 services healthy
+=== C4 automated tests (unit + contract + integration)
+$ docker compose --profile test run --rm tests
+ Container setu-x-tests-run-4fe3e5071cd3 Creating 
+ Container setu-x-tests-run-4fe3e5071cd3 Created 
+============================= test session starts ==============================
+platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
+rootdir: /app
+configfile: pyproject.toml
+testpaths: tests
+plugins: asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 244 items / 8 deselected / 236 selected
+
+tests/contract/test_adapter_contract.py ................................ [ 13%]
+......................                                                   [ 22%]
+tests/integration/test_controller.py ........                            [ 26%]
+tests/integration/test_fault_injection.py .......                        [ 29%]
+tests/integration/test_gateway_flow.py .............                     [ 34%]
+tests/integration/test_gateway_routing.py ......                         [ 37%]
+tests/integration/test_resilience_flow.py ..............                 [ 43%]
+tests/integration/test_services.py ......                                [ 45%]
+tests/unit/test_client.py ........                                       [ 49%]
+tests/unit/test_config.py .........                                      [ 52%]
+tests/unit/test_domain.py ................................               [ 66%]
+tests/unit/test_faults.py ..............                                 [ 72%]
+tests/unit/test_ids.py ....                                              [ 74%]
+tests/unit/test_placement_config.py .................................... [ 89%]
+.....                                                                    [ 91%]
+tests/unit/test_resilience.py ............                               [ 96%]
+tests/unit/test_routing.py ........                                      [100%]
+
+====================== 236 passed, 8 deselected in 6.18s =======================
+>>> C4 PASS - unit + contract + integration tests passed
+=== C5 end-to-end tests
+$ docker compose --profile test run --rm tests pytest -p no:cacheprovider -m e2e
+ Container setu-x-tests-run-6c84f32c5971 Creating 
+ Container setu-x-tests-run-6c84f32c5971 Created 
+============================= test session starts ==============================
+platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
+rootdir: /app
+configfile: pyproject.toml
+testpaths: tests
+plugins: asyncio-1.4.0, anyio-4.15.1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
+collected 244 items / 236 deselected / 8 selected
+
+tests/end_to_end/test_stack.py ........                                  [100%]
+
+====================== 8 passed, 236 deselected in 3.19s =======================
+>>> C5 PASS - e2e tests passed
+=== C6 fault injection only within allowed limits
+HTTP 422: invalid fault spec {"loc":["duration_s"],"msg":"Input should be less than or equal to 300"}
+HTTP 422: target must be one of ['inventory-a', 'inventory-b', 'pricing'] (got 'gateway') null
+HTTP 422: invalid fault spec {"loc":["probability"],"msg":"Input should be less than or equal to 1"}
+HTTP 422: invalid fault spec {"loc":[],"msg":"Value error, mode 'slow' requires delay_ms > 0"}
+>>> C6 PASS - duration>300, non-allow-listed target, probability>1, slow without delay: all 422; no fault active
+=== C7 error fault on primary -> fallback to secondary (fallback on by default)
+served: inventory-b, inventory-b, inventory-b, inventory-b, inventory-b; fallback_used: True,True,True,True,True
+latencies (s): 0.010, 0.012, 0.011, 0.012, 0.010
+>>> C7 PASS - 5/5 orders HTTP 200 served by inventory-b with fallback_used=true
+=== C8 same fault with fallback disabled -> bounded 503
+HTTP 503 in 0.045s: inventory unavailable (http_5xx)
+>>> C8 PASS - 503 dependency_unavailable in 0.045s
+=== C9 bounded retries under a transient fault (p=0.5, seed 42, retries=2, no fallback)
+success: 34/40; attempts per order max=3 total=65; requests that reached inventory-a: 65
+>>> C9 PASS - attempts per order <= 1+retries (max 3); inventory-a saw exactly 65 requests = gateway attempts; 34/40 succeeded
+=== C10 unresponsive dependency (hang): cut by timeout; with fallback -> served by secondary
+fallback on : HTTP 200 via inventory-b in 0.831s; tried=[{"instance":"inventory-a","outcome":"timeout","attempts":1},{"instance":"inventory-b","outcome":"ok","attempts":1}]
+fallback off: HTTP 503 in 0.821s: inventory unavailable (timeout)
+gateway-measured inventory time: fallback on 818.712 ms (timeout on a + call to b), fallback off 802.738 ms
+>>> C10 PASS - timeout honoured (gateway-measured 818.712 / 802.738 ms vs 800 ms timeout); client saw 200 in 0.831s with fallback, 503 timeout in 0.821s without (upper bound 1.6 s)
+=== C11 circuit breaker: opens, stops calls to the failing instance, recovers (recovery time measured)
+8 orders served by: inventory-b, inventory-b, inventory-b, inventory-b, inventory-b, inventory-b, inventory-b, inventory-b
+inventory-a requests during fault: 3 (threshold 3); breaker rejections: 5; breaker state: open
+recovery: inventory-a served again 0.024s after the fault expired; transitions: closed->open, open->half_open, half_open->closed
+>>> C11 PASS - breaker opened after 3 failures; inventory-a then received 0 further requests; served again 0.024s after fault expiry (no traffic during the open period, so the first request after expiry was the half-open probe; recovery under load is measured in Phase 5)
+=== C12 real container failure (stop) with fallback; container fault script
+ Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-inventory-a-1 Stopped 
+2026-10-25T09:55:11.562Z stopped inventory-a for 60 s
+{"type":"container_fault","service":"inventory-a","planned_seconds":60,"stopped_at":"2026-10-25T09:55:11.562Z"}
+inventory-a stopped: HTTP 200 via inventory-b in 0.313s; tried=[{"instance":"inventory-a","outcome":"timeout","attempts":1},{"instance":"inventory-b","outcome":"ok","attempts":1}]
+$ docker compose start inventory-a
+ Container setu-x-inventory-a-1 Starting 
+ Container setu-x-inventory-a-1 Started
+ Container setu-x-pricing-1 Stopping 
+ Container setu-x-pricing-1 Stopped 
+2026-10-25T09:55:24.211Z stopped pricing for 2 s
+ Container setu-x-pricing-1 Starting 
+ Container setu-x-pricing-1 Started 
+2026-10-25T09:55:26.849Z started pricing
+2026-10-25T09:55:32.793Z pricing health: healthy
+{"type":"container_fault","service":"pricing","planned_seconds":2,"stopped_at":"2026-10-25T09:55:24.211Z","started_at":"2026-10-25T09:55:26.849Z","healthy_at":"2026-10-25T09:55:32.793Z"}
+>>> C12 PASS - stopped primary -> 200 via inventory-b in 0.313s; back to inventory-a after restart; fault_container.ps1 full cycle exit 0
+=== C13 simulated mode: configured link delay injected and reported separately
+$ docker compose up -d --no-deps --wait --wait-timeout 60 gateway
+ Container setu-x-gateway-1 Recreate 
+ Container setu-x-gateway-1 Recreated 
+ Container setu-x-gateway-1 Starting 
+ Container setu-x-gateway-1 Started 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-gateway-1 Healthy
+simulated: HTTP 200 total=65.772 ms; injected inventory=40 pricing=55 critical_path=55
+after PUT local--aws-simulated=150: total=162.02 ms; injected inventory=150
+>>> C13 PASS - injected 40/55 ms (critical path 55, measured total 65.772 ms); runtime change to 150 ms applied (total 162.02 ms)
+$ docker compose up -d --no-deps --wait --wait-timeout 60 gateway
+ Container setu-x-gateway-1 Recreate 
+ Container setu-x-gateway-1 Recreated 
+ Container setu-x-gateway-1 Starting 
+ Container setu-x-gateway-1 Started 
+ Container setu-x-gateway-1 Waiting 
+ Container setu-x-gateway-1 Healthy
+=== C14 resilience and fault events are observable
+gateway event types (since gateway restart): 
+controller event types: fault_cleared, fault_injected, links_updated, placement_reset, placement_updated
+>>> C14 PASS - controller recorded fault_injected, fault_cleared, placement_updated, links_updated (gateway events shown in C9-C11 output)
+=== C15 hardening unchanged, graceful stop and clean down
+$ docker compose stop
+ Container setu-x-gateway-1 Stopping 
+ Container setu-x-gateway-1 Stopped 
+ Container setu-x-inventory-b-1 Stopping 
+ Container setu-x-pricing-1 Stopping 
+ Container setu-x-controller-1 Stopping 
+ Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-pricing-1 Stopped 
+ Container setu-x-inventory-b-1 Stopped 
+ Container setu-x-inventory-a-1 Stopped 
+ Container setu-x-controller-1 Stopped
+exit codes: controller=0 gateway=0 inventory-a=0 inventory-b=0 pricing=0
+$ docker compose down
+ Container setu-x-gateway-1 Stopping 
+ Container setu-x-gateway-1 Stopped 
+ Container setu-x-gateway-1 Removing 
+ Container setu-x-gateway-1 Removed 
+ Container setu-x-inventory-b-1 Stopping 
+ Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-controller-1 Stopping 
+ Container setu-x-pricing-1 Stopping 
+ Container setu-x-inventory-a-1 Stopped 
+ Container setu-x-inventory-a-1 Removing 
+ Container setu-x-inventory-b-1 Stopped 
+ Container setu-x-inventory-b-1 Removing 
+ Container setu-x-controller-1 Stopped 
+ Container setu-x-controller-1 Removing 
+ Container setu-x-pricing-1 Stopped 
+ Container setu-x-pricing-1 Removing 
+ Container setu-x-inventory-a-1 Removed 
+ Container setu-x-pricing-1 Removed 
+ Container setu-x-inventory-b-1 Removed 
+ Container setu-x-controller-1 Removed 
+ Network setu-x_default Removing 
+ Network setu-x_default Removed
+>>> C15 PASS - hardening intact; all 5 exited 0; 0 containers left
+
+================ SUMMARY ================
+C1   PASS compose configuration valid
+C2   PASS images built
+C3   PASS all 5 services healthy
+C4   PASS unit + contract + integration tests passed
+C5   PASS e2e tests passed
+C6   PASS duration>300, non-allow-listed target, probability>1, slow without delay: all 422; no fault active
+C7   PASS 5/5 orders HTTP 200 served by inventory-b with fallback_used=true
+C8   PASS 503 dependency_unavailable in 0.045s
+C9   PASS attempts per order <= 1+retries (max 3); inventory-a saw exactly 65 requests = gateway attempts; 34/40 succeeded
+C10  PASS timeout honoured (gateway-measured 818.712 / 802.738 ms vs 800 ms timeout); client saw 200 in 0.831s with fallback, 503 timeout in 0.821s without (upper bound 1.6 s)
+C11  PASS breaker opened after 3 failures; inventory-a then received 0 further requests; served again 0.024s after fault expiry (no traffic during the open period, so the first request after expiry was the half-open probe; recovery under load is measured in Phase 5)
+C12  PASS stopped primary -> 200 via inventory-b in 0.313s; back to inventory-a after restart; fault_container.ps1 full cycle exit 0
+C13  PASS injected 40/55 ms (critical path 55, measured total 65.772 ms); runtime change to 150 ms applied (total 162.02 ms)
+C14  PASS controller recorded fault_injected, fault_cleared, placement_updated, links_updated (gateway events shown in C9-C11 output)
+C15  PASS hardening intact; all 5 exited 0; 0 containers left
+checks: 15  failed: 0
+PHASE 4 ACCEPTANCE: PASS

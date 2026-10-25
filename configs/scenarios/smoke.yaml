@@ -1,0 +1,20 @@
+# Smoke scenario for Phase 5 acceptance: exercises isolation, open-loop load, a scheduled fault,
+# records and validation in ~40 s. NOT an experiment: too short for p95/p99 (marked insufficient).
+id: smoke
+title: "Harness smoke test (local mode)"
+requires_mode: local
+workload: {rate_rps: 10, arrival: constant, warmup_s: 1, duration_s: 8}
+runs: 2
+order: interleaved
+seed: 11
+cooldown_s: 0.5
+recovery_hold_s: 1
+defaults:
+  resilience: {fallback: false}
+conditions:
+  - name: healthy
+    description: "no fault"
+  - name: error-fault
+    description: "100% errors on inventory-a from t=2 s to t=4 s of the measurement phase"
+    faults:
+      - {target: inventory-a, mode: error, at_s: 2, duration_s: 2}

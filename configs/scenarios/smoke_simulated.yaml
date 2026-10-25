@@ -1,0 +1,24 @@
+# Smoke scenario for simulated mode: checks that the harness measures an injected delay.
+# Sequential calls, all links 0 except gateway->pricing (0 vs 100 ms): the median of
+# latency_ok should differ by about 100 ms. NOT an experiment (2 short runs).
+id: smoke-simulated
+title: "Harness smoke test (simulated mode, injected delay)"
+requires_mode: simulated
+workload: {rate_rps: 10, arrival: constant, warmup_s: 1, duration_s: 5}
+runs: 2
+order: interleaved
+seed: 12
+cooldown_s: 0.5
+defaults:
+  call_mode: sequential
+  links:
+    local--aws-simulated: 0
+    local--azure-simulated: 0
+    local--gcp-simulated: 0
+    aws-simulated--azure-simulated: 0
+    aws-simulated--gcp-simulated: 0
+    azure-simulated--gcp-simulated: 0
+conditions:
+  - name: d0
+  - name: d100
+    links: {local--azure-simulated: 100}

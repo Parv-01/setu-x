@@ -1,0 +1,30 @@
+# Experiment B - network delay propagation (RQ1 / H1).
+# Independent variables: injected gateway->pricing link delay d in {0, 25, 50, 100} ms and call mode
+# (sequential vs parallel). Controlled: gateway->inventory link fixed at 50 ms, so in parallel mode
+# pricing runs alongside a dependency whose delay is >= d for d <= 50 (H1's condition).
+# Other links are 0 (inventory-b and the simulated-to-simulated links are not on the request path).
+# Link delays are configured values, not measured provider latencies.
+id: B_network_delay
+title: "B - Network delay on the pricing link, sequential vs parallel"
+hypotheses: [H1]
+requires_mode: simulated
+workload: {rate_rps: 20, arrival: poisson, warmup_s: 5, duration_s: 30}
+runs: 3
+seed: 202
+defaults:
+  links:
+    local--aws-simulated: 50
+    local--gcp-simulated: 50
+    local--azure-simulated: 0
+    aws-simulated--azure-simulated: 0
+    aws-simulated--gcp-simulated: 0
+    azure-simulated--gcp-simulated: 0
+conditions:
+  - {name: seq-d0, call_mode: sequential}
+  - {name: seq-d25, call_mode: sequential, links: {local--azure-simulated: 25}}
+  - {name: seq-d50, call_mode: sequential, links: {local--azure-simulated: 50}}
+  - {name: seq-d100, call_mode: sequential, links: {local--azure-simulated: 100}}
+  - {name: par-d0, call_mode: parallel}
+  - {name: par-d25, call_mode: parallel, links: {local--azure-simulated: 25}}
+  - {name: par-d50, call_mode: parallel, links: {local--azure-simulated: 50}}
+  - {name: par-d100, call_mode: parallel, links: {local--azure-simulated: 100}}

@@ -1,0 +1,25 @@
+# Experiment D (part 2) - bounded retries under transient errors (H5).
+# inventory-a returns 503 with probability 0.5 for the whole measurement window (seeded per run).
+# Retries 0 / 1 / 2. Prediction if failures are independent: success = 1 - 0.5^(1+r)
+# = 0.5 / 0.75 / 0.875, downstream attempts per request up to (1 + r). Fallback off.
+# Note: the fault draws each attempt independently by construction, so this checks the retry
+# implementation under load (budget, deadline, backoff), not real-world failure correlation.
+id: D_retries_transient
+title: "D2 - Retries vs transient 50% errors"
+hypotheses: [H5]
+requires_mode: local
+workload: {rate_rps: 20, arrival: poisson, warmup_s: 5, duration_s: 30}
+runs: 3
+seed: 405
+defaults:
+  resilience: {fallback: false, timeout_ms: 800, circuit_breaker: {enabled: false}}
+conditions:
+  - name: retries-0
+    resilience: {retries: 0}
+    faults: [{target: inventory-a, mode: error, probability: 0.5, at_s: 0, duration_s: 31}]
+  - name: retries-1
+    resilience: {retries: 1}
+    faults: [{target: inventory-a, mode: error, probability: 0.5, at_s: 0, duration_s: 31}]
+  - name: retries-2
+    resilience: {retries: 2}
+    faults: [{target: inventory-a, mode: error, probability: 0.5, at_s: 0, duration_s: 31}]

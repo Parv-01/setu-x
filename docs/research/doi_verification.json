@@ -992,5 +992,68 @@
     "verdict": "VERIFIED",
     "abstract": "Modern distributed applications offer complex performance behavior and many degrees of freedom regarding deployment and configuration. Researchers employ various methods of analysis, modeling, and management that leverage these degrees of freedom to predict or improve non-functional properties of the software under consideration. In order to demonstrate and evaluate their applicability in the real world, methods resulting from such research areas require test and reference applications that offer a range of different behaviors, as well as the necessary degrees of freedom. Existing production software is often inaccessible for researchers or closed off to instrumentation. Existing testing and benchmarking frameworks, on the other hand, are either designed for specific testing scenarios, or they do not offer the necessary degrees of freedom. Further, most test applications are difficult to deploy and run, or are outdated. In this paper, we introduce the TeaStore, a state-of-the-art micro-service-based test and reference application. TeaStore offers services with different performance characteristics and many degrees of freedom regarding deployment and configuration to be used as a benchmarking framework for researchers. The TeaStore allows evaluating performance modeling and resource management techniques; it also offers instrumented variants to enable extensive run-time analysis. We demonstrate TeaStore's use in three contexts: performance modeling, cloud resource management, and energy efficiency analysis. Our experiments show that TeaStore can be used for evaluating novel approaches in these contexts and also motivates further research in the areas of performance modeling and resource management.",
     "abstract_source": "openalex"
+  },
+  {
+    "id": "hyndman1996sample",
+    "doi": "10.1080/00031305.1996.10473566",
+    "expect": {
+      "title": "Sample Quantiles in Statistical Packages",
+      "first_author": "Hyndman",
+      "year": 1996
+    },
+    "registered": {
+      "title": "Sample Quantiles in Statistical Packages",
+      "authors": [
+        "Rob J. Hyndman",
+        "Yanan Fan"
+      ],
+      "year": 1996,
+      "venue": "The American Statistician",
+      "volume": "50",
+      "issue": "4",
+      "pages": "361-365",
+      "publisher": "Informa UK Limited",
+      "type": "journal-article",
+      "url": "https://doi.org/10.1080/00031305.1996.10473566"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "There are a large number of different definitions used for sample quantiles in statistical computer packages. Often within the same package one definition will be used to compute a quantile explicitly, while other definitions may be used when producing a boxplot, a probability plot, or a QQ plot. We compare the most commonly implemented sample quantile definitions by writing them in a common notation and investigating their motivation and some of their properties. We argue that there is a need to adopt a standard definition for sample quantiles so that the same answers are produced by different packages and within each package. We conclude by recommending that the median-unbiased estimator be used because it has most of the desirable properties of a quantile estimator and can be defined independently of the underlying distribution.",
+    "abstract_source": "openalex"
+  },
+  {
+    "id": "efron1979bootstrap",
+    "doi": "10.1214/aos/1176344552",
+    "expect": {
+      "title": "Bootstrap Methods: Another Look at the Jackknife",
+      "first_author": "Efron",
+      "year": 1979
+    },
+    "registered": {
+      "title": "Bootstrap Methods: Another Look at the Jackknife",
+      "authors": [
+        "B. Efron"
+      ],
+      "year": 1979,
+      "venue": "The Annals of Statistics",
+      "volume": "7",
+      "issue": "1",
+      "pages": "1-26",
+      "publisher": "Institute of Mathematical Statistics",
+      "type": "journal-article",
+      "url": "https://doi.org/10.1214/aos/1176344552"
+    },
+    "checks": {
+      "title": true,
+      "first_author": true,
+      "year": true
+    },
+    "verdict": "VERIFIED",
+    "abstract": "We discuss the following problem: given a random sample $\\mathbf{X} = (X_1, X_2, \\cdots, X_n)$ from an unknown probability distribution $F$, estimate the sampling distribution of some prespecified random variable $R(\\mathbf{X}, F)$, on the basis of the observed data $\\mathbf{x}$. (Standard jackknife theory gives an approximate mean and variance in the case $R(\\mathbf{X}, F) = \\theta(\\hat{F}) - \\theta(F), \\theta$ some parameter of interest.) A general method, called the \"bootstrap,\" is introduced, and shown to work satisfactorily on a variety of estimation problems. The jackknife is shown to be a linear approximation method for the bootstrap. The exposition proceeds by a series of examples: variance of the sample median, error rates in a linear discriminant analysis, ratio estimation, estimating regression parameters, etc.",
+    "abstract_source": "crossref"
   }
 ]

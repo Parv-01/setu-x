@@ -1,0 +1,16 @@
+# Experiment E - workload scaling (RQ5, exploratory).
+# Offered load 5 -> 80 req/s, no faults, local mode. Results describe THIS host and these container
+# limits (0.5 CPU per service), not cloud capacity. CPU/memory: run with -DockerStats on the host.
+id: E_scaling
+title: "E - Offered load 5 to 80 req/s (this host)"
+hypotheses: []
+requires_mode: local
+workload: {rate_rps: 5, arrival: poisson, warmup_s: 5, duration_s: 30, max_in_flight: 128}
+runs: 3
+seed: 505
+conditions:
+  - {name: rps-05, rate_rps: 5}
+  - {name: rps-10, rate_rps: 10}
+  - {name: rps-20, rate_rps: 20}
+  - {name: rps-40, rate_rps: 40}
+  - {name: rps-80, rate_rps: 80}

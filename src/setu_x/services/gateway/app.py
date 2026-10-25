@@ -22,6 +22,8 @@ Other endpoints:
     GET /api/placement/current          placement and link matrix this gateway is using right now
     GET /api/resilience/events          retries, fallbacks, breaker transitions/rejections (newest first)
     GET /api/resilience/breakers        current circuit-breaker states
+    POST /api/resilience/reset          experiment isolation: sync placement from the controller now,
+                                        reset breakers + routing state, reseed the backoff-jitter RNG
 """
 from __future__ import annotations
 
@@ -51,6 +53,8 @@ from setu_x.services.gateway.resilient import ServiceOutcome, call_with_resilien
 
 log = logging.getLogger("setu_x.gateway")
 
+EVENT_LOG_SIZE = 20_000  # enough for a 300 s run at 100 rps with retries; truncation is reported, never hidden
+
 SIMULATION_NOTICE = ("Environment labels ending in '-simulated' are logical labels on one Docker host, "
                      "not deployments on that cloud provider.")
 
@@ -59,6 +63,12 @@ class OrderRequest(BaseModel):
     sku: str = Field(pattern=SKU_PATTERN, examples=["SKU-001"])
     quantity: int = Field(ge=1, le=100, examples=[2])
     customer_tier: Tier = "standard"
+
+
+class ResetRequest(BaseModel):
+    seed: int | None = Field(default=None, ge=0, le=2**32 - 1,
+                             description="new seed for backoff jitter; null = keep the current RNG state")
+    sync: bool = Field(default=True, description="fetch the controller placement before resetting")
 
 
 class OrderResponse(BaseModel):
@@ -94,7 +104,7 @@ def build_app(
         raise ConfigError(f"SETU_ENV: gateway environment '{settings.env}' is not defined in environments.yaml")
     owns_client = client is None
     router = Router()
-    events = EventLog(maxlen=2000)
+    events = EventLog(maxlen=EVENT_LOG_SIZE)
     breakers = BreakerRegistry(events, clock=clock)
     rng = random.Random(settings.random_seed)
     simulated_mode = settings.mode == "simulated"
@@ -271,9 +281,23 @@ def build_app(
         return {**sync.info(), "placement": sync.placement.model_dump()}
 
     @app.get("/api/resilience/events", tags=["resilience"])
-    async def resilience_events(limit: int = Query(default=100, ge=1, le=2000),
-                                type: str | None = Query(default=None, max_length=40)) -> dict:  # noqa: A002
-        return {"events": events.recent(limit, type)}
+    async def resilience_events(limit: int = Query(default=100, ge=1, le=EVENT_LOG_SIZE),
+                                type: str | None = Query(default=None, max_length=40),  # noqa: A002
+                                since: int | None = Query(default=None, ge=0)) -> dict:
+        return {"events": events.recent(limit, type, since), "last_seq": events.last_seq,
+                "oldest_seq": events.oldest_seq}
+
+    @app.post("/api/resilience/reset", tags=["resilience"])
+    async def resilience_reset(body: ResetRequest | None = None) -> dict:
+        """Start an experiment run from a known state. Does not touch placement or faults themselves."""
+        body = body or ResetRequest()
+        synced = await sync.sync_once() if body.sync else False
+        breakers.reset("reset via API")
+        router.reset_state()
+        if body.seed is not None:
+            rng.seed(body.seed)
+        events.add("resilience_reset", seed=body.seed, placement_version=sync.version, synced=synced)
+        return {"synced": synced, "seed": body.seed, "events_last_seq": events.last_seq, **sync.info()}
 
     @app.get("/api/resilience/breakers", tags=["resilience"])
     async def resilience_breakers() -> dict:

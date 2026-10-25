@@ -25,11 +25,12 @@ Status: **Phases 2–4 implemented** (services, placement, routing, controller, 
 | `inventory-a` | Deterministic stock check; bounded fault injection (error / slow / hang) | `aws-simulated` | none (internal) | 2, 4 |
 | `inventory-b` | Second inventory replica for fallback and failure-domain experiments | `gcp-simulated` | none | 3–4 |
 | `pricing` | Deterministic price quote; can be made slow or failing; the gateway then returns a *degraded* order using a flagged list price | `azure-simulated` | none | 2, 4 |
-| `controller` | Source of truth for placement, routing and link-delay config; bounded fault control plane; health aggregation; **experiment runner** (load generator); results storage and CSV/JSON export; serves the dashboard; hosts the adapter registry | `local` | `127.0.0.1:8090` | 3, 5, 6 |
+| `controller` | Source of truth for placement, routing and link-delay config; bounded fault control plane; health aggregation; proxies the runner API to the host; serves the dashboard; hosts the adapter registry | `local` | `127.0.0.1:8090` | 3, 5, 6 |
+| `runner` | Experiment runner: open-loop load generator, per-run isolation, records (named volume `setu-results`), validation and summary statistics | `local` | none (reached via the controller) | 5 |
 
 **Why the order logic lives in the gateway.** A separate `orders` hop would add a dependency without testing anything that H1–H5 need. If a deeper call graph is needed later (for example a three-level chain for H4), it can be split out without changing the experiment harness.
 
-**Why the experiment runner lives in the controller.** The dashboard must start bounded experiments, and the runner needs the controller's config and fault APIs. The cost: the load generator shares the host CPU with the system under test. This is recorded as a threat to validity and mitigated with bounded rates and per-run CPU readings where available. A CLI entry point (`python -m setu_x.experiments.runner`) runs the same code from the host or a separate container.
+**Why the experiment runner is its own container (changed in Phase 5).** The Phase 1 design put the runner inside the controller. Phase 4 showed that client-side timing taken outside the Compose network uses a different clock domain on Docker Desktop (`docs/handover.md`, finding 6). So the runner became a separate container on the same network, with its own CPU budget (1.0 CPU), and no host port and no Docker access. The controller proxies its API (`/api/experiments`, `/api/scenarios`) so the dashboard and host scripts can start bounded experiments. The load generator still shares the host's CPUs with the system under test; this is recorded as a threat to validity, and generator lag is recorded per request. A CLI (`python -m setu_x.experiments.cli`) runs the same code inside the runner container.
 
 **Packaging.** One Python package (`setu_x`) and one image. Each container runs a different module (`setu_x.services.gateway`, …). That keeps builds fast and dependencies identical across services. Each service is still a separate process and container with its own health endpoints.
 
@@ -211,14 +212,11 @@ None of these mechanisms guarantees availability. They change *which* failures t
 
 ## 8. Measurement model (Phase 5)
 
+Implemented in Phase 5. The full method, including every definition, is in [`methodology.md`](methodology.md); this section is a summary.
+
 ### 8.1 Records
 
-Each experiment writes `results/<experiment_id>/`:
-
-- `manifest.json`: experiment ID (UTC timestamp + random suffix, checked unique); Git commit or `version`; UTC start and end; scenario file content; random seed; workload parameters; environment, placement and resilience config snapshot; `environment_mode`; image digest and Python/package versions; host CPU count; warnings.
-- `observations.jsonl` and `observations.csv`: one row per request with: `experiment_id, run_index, seq, phase (warmup|measure), request_id, t_send_utc, latency_ms, http_status, outcome, gateway_total_ms, inventory_ms, pricing_ms, inventory_instance, inventory_env, pricing_env, retries, breaker_state_inventory, injected_delay_ms, error_type`.
-- `events.jsonl`: fault start/end, breaker transitions, config changes.
-- `summary.json`: per-run and pooled statistics, plus `validation` (row counts reconcile with summary counts; rejected or flagged rows listed).
+Each experiment writes `results/<experiment_id>/` with `manifest.json`, `observations.jsonl` + `observations.csv` (one row per scheduled request, identical columns), `events.jsonl` (gateway resilience events, controller events and fault scheduling, tagged per run) and `summary.json` (validation, per-run metrics, per-condition summaries, comparisons). Columns, outcome classes and validation rules: `methodology.md` §3.
 
 ### 8.2 Metric definitions
 
@@ -227,18 +225,18 @@ Each experiment writes `results/<experiment_id>/`:
 | total / successful / failed requests | count | rows in the measurement phase; success = outcome ∈ {confirmed, rejected}; `degraded` reported separately | warm-up rows excluded and reported |
 | HTTP status distribution | count per code | histogram of `http_status`; client-side errors (no response) under `error_type` | — |
 | throughput | req/s | successful requests ÷ measurement-window seconds | bounded by the offered load in an open-loop test |
-| latency mean, median, p90, p95, p99 | ms | computed from raw `latency_ms` of measurement-phase rows; percentile = linear interpolation (NumPy default); p99 reported only if n ≥ 1,000 in that run, p95 only if n ≥ 200, otherwise "insufficient samples" | client-observed; includes injected delay |
+| latency mean, median, p90, p95, p99 | ms | computed from raw `latency_ms` (scheduled send → response) of successful measurement-phase rows; percentile = linear interpolation, type 7 [hyndman1996sample]; p90/p95/p99 reported only if n ≥ 100/200/1,000 in that run, otherwise "insufficient samples" | measured by the runner inside the Compose network; includes injected delay |
 | per-dependency latency | ms | `inventory_ms`, `pricing_ms` as measured by the gateway around each call (including retries) | — |
 | timeout / retry counts | count | from gateway resilience events | — |
 | breaker transitions | count, timestamps | from `events.jsonl` | — |
-| recovery time | s | time from fault end until the 1-second rolling success rate first returns to ≥ 95% of the baseline success rate and stays there for 3 s | depends on window choice; reported with the parameters |
-| CPU / memory | % / MiB | `docker stats` samples during the run when available; otherwise "not measured" | sampling interval ~1 s; host-level contention |
+| recovery time | s | time from fault end (actual injection time + duration) until the 1-second rolling success rate first returns to ≥ 95% of the baseline success rate and stays there for 3 s | depends on window choice; includes up to ~1 s of window lag; reported with the parameters |
+| CPU / memory | % / MiB | `docker stats` samples taken on the host by `scripts/run_experiment.ps1 -DockerStats`; otherwise "not measured" | host clock; sampling interval ~1–2 s; host-level contention |
 
 **Across runs:** percentiles are never averaged [promhistograms; papadopoulos2021methodological]. Between-condition comparisons use run-level statistics (median of per-run medians, with a bootstrap 95% CI over runs). Pooled percentiles come from pooled raw rows, labelled as pooled.
 
 ### 8.3 Load generation
 
-The generator is open-loop at a fixed target rate (seeded constant or Poisson arrivals), with a cap on in-flight requests. Requests that cannot be sent because the cap is reached are counted as `generator_dropped`, not silently skipped. Defaults: 5 s warm-up, then 30 s measurement, 3 runs per condition. These are adjustable and bounded (≤ 300 s, ≤ 100 req/s) in dashboard-started experiments.
+The generator is open-loop at a fixed target rate (seeded constant or Poisson arrivals), with a cap on in-flight requests. Requests that cannot be sent because the cap is reached are recorded as `dropped`, not silently skipped. Latency is measured from the scheduled send time; generator lag is recorded per request. Defaults: 5 s warm-up, then 30 s measurement, 3 runs per condition, randomized run order. Scenarios are bounded (≤ 100 req/s, ≤ 300 s per run, ≤ 2 h in total), and before each run the platform is reset and the gateway is synced and reseeded (`methodology.md` §6).
 
 ## 9. Observability
 
@@ -261,16 +259,16 @@ The generator is open-loop at a fixed target rate (seeded constant or Poisson ar
 
 | Exp. | Needs | Provided by |
 |---|---|---|
-| A | load generator, raw records | controller runner, §8 |
+| A | load generator, raw records | `runner` container, §8 |
 | B | per-link injected delay; call mode switch | gateway client wrapper, `call_mode` |
-| C | fault on primary inventory; container stop | service fault middleware; `fault_container.sh` |
+| C | fault on primary inventory; container stop | service fault dependency (scheduled by the runner); `scripts/fault_container.ps1` (manual, from the host) |
 | D | toggle timeout / retries / breaker | `resilience` config |
-| E | stepped offered load; CPU/mem | runner rate steps; `docker stats` sampler |
+| E | stepped offered load; CPU/mem | per-condition `rate_rps`; `run_experiment.ps1 -DockerStats` |
 | F | change placement of pricing/inventory | `placement.yaml` env labels + link matrix |
 | G | secondary replica in another env; fallback toggle | `inventory-b`, `fallback: true/false` |
 | H | user-supplied illustrative unit prices | cost model module, labelled "modeled" |
 
-All eight experiments run on the five containers above. None requires credentials.
+All eight experiments run on the six containers above. None requires credentials.
 
 ## 12. Known architectural limitations
 

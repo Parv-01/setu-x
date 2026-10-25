@@ -250,5 +250,23 @@
    "first_author": "von Kistowski",
    "year": 2018
   }
+ },
+ {
+  "id": "hyndman1996sample",
+  "doi": "10.1080/00031305.1996.10473566",
+  "expect": {
+   "title": "Sample Quantiles in Statistical Packages",
+   "first_author": "Hyndman",
+   "year": 1996
+  }
+ },
+ {
+  "id": "efron1979bootstrap",
+  "doi": "10.1214/aos/1176344552",
+  "expect": {
+   "title": "Bootstrap Methods: Another Look at the Jackknife",
+   "first_author": "Efron",
+   "year": 1979
+  }
  }
 ]

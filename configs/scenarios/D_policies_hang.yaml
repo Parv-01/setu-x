@@ -1,0 +1,31 @@
+# Experiment D (part 1) - resilience policies against an unresponsive dependency (RQ2 / H2).
+# inventory-a hangs from t = 5 s to t = 25 s of a 30 s measurement; fallback OFF so each policy's own
+# effect is visible. Lower rate (10 req/s) and a high in-flight cap because "none" holds requests
+# for up to 10 s.
+#   none                 timeout = outer deadline = 10 s (bounded only by the outer deadline)
+#   timeout              800 ms per attempt, no retries
+#   timeout-retry        800 ms, 2 retries (bound T*(1+r) + backoff, capped by the 3 s outer deadline)
+#   timeout-retry-breaker  as above + circuit breaker (5 consecutive failures, 5 s reset timeout)
+id: D_policies_hang
+title: "D1 - Policies vs an unresponsive dependency"
+hypotheses: [H2]
+requires_mode: local
+workload: {rate_rps: 10, arrival: poisson, warmup_s: 5, duration_s: 30, max_in_flight: 256, request_timeout_s: 15}
+runs: 3
+seed: 404
+defaults:
+  resilience: {fallback: false, circuit_breaker: {enabled: false}, retries: 0}
+conditions:
+  - name: none
+    resilience: {outer_deadline_ms: 10000, timeout_ms: 10000}
+    faults: [{target: inventory-a, mode: hang, at_s: 5, duration_s: 20}]
+  - name: timeout
+    resilience: {timeout_ms: 800}
+    faults: [{target: inventory-a, mode: hang, at_s: 5, duration_s: 20}]
+  - name: timeout-retry
+    resilience: {timeout_ms: 800, retries: 2}
+    faults: [{target: inventory-a, mode: hang, at_s: 5, duration_s: 20}]
+  - name: timeout-retry-breaker
+    resilience: {timeout_ms: 800, retries: 2,
+                 circuit_breaker: {enabled: true, consecutive_failures: 5, reset_timeout_ms: 5000}}
+    faults: [{target: inventory-a, mode: hang, at_s: 5, duration_s: 20}]

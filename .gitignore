@@ -16,6 +16,9 @@ credentials*.json
 
 # Experiment outputs are kept per run under results/<id>/; raw scratch is not committed
 data/
+# Harness smoke runs (acceptance checks, not experiments) are not committed
+results/*-smoke-*/
+results/*.tmp
 
 # OS / editor
 .DS_Store

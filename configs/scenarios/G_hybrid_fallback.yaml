@@ -1,0 +1,34 @@
+# Experiment G - hybrid fallback across simulated environments (RQ4 / H3).
+# The primary inventory replica (aws-simulated, 40 ms link) hangs from t = 10 s to t = 20 s of a 40 s
+# measurement. The secondary is in gcp-simulated (60 ms link). Pricing: azure-simulated, 30 ms.
+#   no-fallback        timeout 800 ms, no fallback
+#   fallback           timeout 800 ms, then the secondary (pays timeout + the longer link)
+#   fallback-breaker   + circuit breaker (5 failures, 5 s reset): skips the primary while open
+# Both "failure domains" are labels on one Docker host: this tests routing logic only.
+id: G_hybrid_fallback
+title: "G - Fallback to a replica in another simulated environment"
+hypotheses: [H3]
+requires_mode: simulated
+workload: {rate_rps: 20, arrival: poisson, warmup_s: 5, duration_s: 40}
+runs: 3
+seed: 707
+defaults:
+  call_mode: parallel
+  resilience: {timeout_ms: 800, retries: 0, circuit_breaker: {enabled: false}}
+  links:
+    local--aws-simulated: 40
+    local--gcp-simulated: 60
+    local--azure-simulated: 30
+    aws-simulated--azure-simulated: 0
+    aws-simulated--gcp-simulated: 0
+    azure-simulated--gcp-simulated: 0
+conditions:
+  - name: no-fallback
+    resilience: {fallback: false}
+    faults: [{target: inventory-a, mode: hang, at_s: 10, duration_s: 10}]
+  - name: fallback
+    resilience: {fallback: true}
+    faults: [{target: inventory-a, mode: hang, at_s: 10, duration_s: 10}]
+  - name: fallback-breaker
+    resilience: {fallback: true, circuit_breaker: {enabled: true, consecutive_failures: 5, reset_timeout_ms: 5000}}
+    faults: [{target: inventory-a, mode: hang, at_s: 10, duration_s: 10}]

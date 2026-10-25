@@ -56,9 +56,19 @@ class EventLog:
         self._events.append(event)
         return event
 
-    def recent(self, limit: int = 100, type_: str | None = None) -> list[dict[str, Any]]:
-        items = [e for e in self._events if type_ is None or e["type"] == type_]
+    def recent(self, limit: int = 100, type_: str | None = None, since: int | None = None) -> list[dict[str, Any]]:
+        """Newest first. `since`: only events with seq > since (experiments fetch a run's events this way)."""
+        items = [e for e in self._events
+                 if (type_ is None or e["type"] == type_) and (since is None or e["seq"] > since)]
         return items[-limit:][::-1]
+
+    @property
+    def last_seq(self) -> int:
+        return self._events[-1]["seq"] if self._events else 0
+
+    @property
+    def oldest_seq(self) -> int | None:
+        return self._events[0]["seq"] if self._events else None
 
     def count(self, type_: str) -> int:
         return sum(1 for e in self._events if e["type"] == type_)

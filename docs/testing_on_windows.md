@@ -114,6 +114,23 @@ pwsh -File scripts\fault_container.ps1 -Service inventory-a -Seconds 20
 $env:SETU_MODE='simulated'; docker compose up -d --no-deps --wait gateway
 ```
 
+## 1e. Phase 5 acceptance (available now)
+
+```powershell
+pwsh -ExecutionPolicy Bypass -File scripts\phase5_acceptance.ps1
+```
+15 checks (D1–D15), about 5–6 minutes:
+- Build, health of all 6 services (the new `runner` has no host port), the full test suite, e2e tests (including a smoke experiment) and lint.
+- All 10 scenario files are valid, and the experiment API is bounded (unknown scenario, path-like names, wrong mode and file path traversal are all refused).
+- The `smoke` scenario runs through `scripts\run_experiment.ps1` and its files are downloaded.
+- **Independent recomputation:** the script recomputes row counts, success rates and medians from `observations.csv` in PowerShell and compares them with the runner's `summary.json`.
+- Every run started from the right placement version. Failures stay inside the actual fault window, and recovery is measured.
+- Only one experiment runs at a time; a stopped experiment keeps its completed runs.
+- **Simulated mode:** the measured difference between a 0 ms and a 100 ms pricing link is 100 ± 25 ms.
+- All containers are still hardened and shut down cleanly; the results volume is kept.
+
+Log: `docs\evidence\phase5_acceptance_windows.log`. Please send it to me. The smoke results land in `results\` (not committed; smoke runs are harness checks, not experiments).
+
 ## 2. Start, inspect and stop the stack (Phase 2, available now)
 
 ```powershell
@@ -168,11 +185,19 @@ End-to-end tests (`-m e2e`) need the stack running (`docker compose up -d`) firs
 
 ## 5. Run one experiment (Phase 5)
 
+The stack must run in the mode the scenario needs (`requires_mode` in the file; the runner refuses a mismatch):
+
 ```powershell
-docker compose exec controller python -m setu_x.experiments.runner --scenario configs/scenarios/A_baseline.yaml
-dir results\    # a new folder named by experiment ID, with manifest.json, observations.csv, summary.json
+docker compose up -d                                              # local: A, C, D, E, smoke
+pwsh -File scripts\run_experiment.ps1 -Scenario A_baseline        # ~6 minutes; progress is printed
+dir results\                                                      # <experiment_id>\ with manifest.json, observations.csv, ...
+
+$env:SETU_MODE='simulated'; docker compose up -d                  # simulated: B, F, G, smoke_simulated
+pwsh -File scripts\run_experiment.ps1 -Scenario F_placement -DockerStats
+Remove-Item Env:SETU_MODE; docker compose up -d                   # back to local mode
 ```
-Or press **Start** on the dashboard (Phase 6).
+
+Ctrl+C asks the runner to stop; completed runs are kept and summarised. `GET http://127.0.0.1:8090/api/scenarios` lists the scenarios with their estimated duration. The method is described in `docs\methodology.md`. The dashboard **Start** button arrives in Phase 6.
 
 ## 6. "Is everything working and complete?" One command (Phase 7)
 

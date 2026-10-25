@@ -108,3 +108,29 @@ def test_fault_via_controller_triggers_fallback_then_clears(gw, ctl):
         assert ctl.delete("/api/faults/inventory-a").json()["cleared"] is True
     body = gw.post("/api/orders", json={"sku": "SKU-002", "quantity": 1}).json()
     assert body["inventory"]["instance"] == "inventory-a" and body["dependencies"][0]["fallback_used"] is False
+
+
+def test_runner_reachable_through_controller(ctl):
+    r = ctl.get("/api/scenarios")
+    assert r.status_code == 200, r.text
+    names = {s["name"]: s for s in r.json()["scenarios"]}
+    assert names["smoke"]["valid"] and names["A_baseline"]["valid"]
+
+
+def test_smoke_experiment_through_controller(ctl):
+    mode = ctl.get("/api/environments").json()["mode"]
+    scenario = "smoke" if mode == "local" else "smoke_simulated"
+    r = ctl.post("/api/experiments", json={"scenario": scenario, "label": "e2e"})
+    assert r.status_code == 202, r.text
+    exp = r.json()["experiment_id"]
+    deadline = time.monotonic() + 120
+    body = {}
+    while time.monotonic() < deadline:
+        body = ctl.get(f"/api/experiments/{exp}").json()
+        if body["status"] in ("completed", "failed", "stopped"):
+            break
+        time.sleep(1)
+    assert body["status"] == "completed", body
+    assert body["validation"]["ok"], body["validation"]
+    csv_text = ctl.get(f"/api/experiments/{exp}/files/observations.csv").text
+    assert csv_text.count("\n") == body["validation"]["rows_csv"] + 1

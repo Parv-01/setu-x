@@ -1,0 +1,20 @@
+# Experiment C - service failure (RQ2).
+# The primary inventory replica fails for a bounded window (t = 10..20 s of a 40 s measurement):
+# 100% injected errors vs an unresponsive (hang) instance. Policies fixed: timeout 800 ms, no retries,
+# breaker off, fallback OFF (so the failure is visible; Experiment G turns fallback on).
+# Faults are application-level (health endpoints keep answering). Stopping the container is a
+# separate, manual variant: scripts/fault_container.ps1 (the runner has no Docker access by design).
+id: C_service_failure
+title: "C - Primary inventory failure: errors vs hang (fallback off)"
+hypotheses: []
+requires_mode: local
+workload: {rate_rps: 20, arrival: poisson, warmup_s: 5, duration_s: 40}
+runs: 3
+seed: 303
+defaults:
+  resilience: {timeout_ms: 800, retries: 0, circuit_breaker: {enabled: false}, fallback: false}
+conditions:
+  - name: error
+    faults: [{target: inventory-a, mode: error, at_s: 10, duration_s: 10}]
+  - name: hang
+    faults: [{target: inventory-a, mode: hang, at_s: 10, duration_s: 10}]

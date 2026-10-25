@@ -28,6 +28,9 @@ RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels \
     pip install --no-index --find-links /wheels setu-x
 # Default configuration baked into the image; compose.yaml mounts ./configs over it (read-only).
 COPY configs ./configs
+# Experiment results directory (the runner mounts the named volume "setu-results" here; a new named
+# volume copies this ownership, so the non-root user can write to it).
+RUN mkdir -p /app/results && chown 10001:10001 /app/results
 USER 10001
 EXPOSE 8000
 CMD ["python", "-m", "setu_x.services.gateway"]
@@ -38,6 +41,8 @@ USER root
 RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels \
     pip install --no-index --find-links /wheels "setu-x[dev]"
 COPY pyproject.toml compose.yaml ./
+# src/ is copied only so `ruff check src tests` can run in this image; tests import the installed package.
+COPY src ./src
 COPY tests ./tests
 USER 10001
 CMD ["pytest", "-p", "no:cacheprovider", "-m", "not e2e"]

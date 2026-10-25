@@ -1,0 +1,14 @@
+# Experiment A - baseline (docs/research_questions.md §4).
+# Reference latency distribution of the unmodified stack and the measurement overhead of the
+# harness itself (no injected delay: local mode; no faults). 60 s x 20 req/s = 1,200 measured
+# requests per run, enough for p99 (n >= 1,000).
+id: A_baseline
+title: "A - Baseline (local mode, no faults)"
+hypotheses: []
+requires_mode: local
+workload: {rate_rps: 20, arrival: poisson, warmup_s: 5, duration_s: 60}
+runs: 5
+seed: 101
+conditions:
+  - name: parallel
+    call_mode: parallel
