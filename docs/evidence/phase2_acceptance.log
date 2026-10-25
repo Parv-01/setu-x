@@ -1,6 +1,6 @@
 SETU-X Phase 2 acceptance
-date_utc: 2026-10-25T08:07:44Z
-git_commit: d5952b8 (working tree may contain uncommitted changes: 16 files)
+date_utc: 2026-10-25T08:12:08Z
+git_commit: ba0df2f (uncommitted files outside docs/evidence: 0)
 docker: client 29.9.2 / server 29.9.2
 compose: 5.6.1
 uname: Linux 6.18.44-fc-v153 x86_64
@@ -8,9 +8,134 @@ uname: Linux 6.18.44-fc-v153 x86_64
 === A1 docker compose config
 >>> A1 PASS - compose configuration valid
 === A2 build images
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.83kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 0.4s
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#3 resolve docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e 0.0s done
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377
+#4 DONE 0.0s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 158B done
+#5 DONE 0.0s
+
+#6 [base 1/2] FROM docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377
+#6 resolve docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377 0.0s done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 1.44kB 0.0s done
+#7 DONE 0.0s
+
+#8 [runtime 1/2] RUN useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin setu
+#8 CACHED
+
+#9 [base 2/2] WORKDIR /app
+#9 CACHED
+
+#10 [builder 3/4] COPY src ./src
+#10 CACHED
+
+#11 [builder 4/4] RUN --mount=type=secret,id=pip_ca,required=false     if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi;     pip wheel --wheel-dir /wheels --constraint requirements/dev.lock ".[dev]"
+#11 CACHED
+
+#12 [builder 1/4] COPY pyproject.toml README.md ./
+#12 CACHED
+
+#13 [builder 2/4] COPY requirements ./requirements
+#13 CACHED
+
+#14 [runtime 2/2] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels setu-x
+#14 CACHED
+
+#15 exporting to image
+#15 exporting layers done
+#15 exporting manifest sha256:0c24401f1a620cf195f9d277e0c40cfa9ef0338fc23d9f7fe9f565a6116ac7e4 done
+#15 exporting config sha256:7e81d517808ae9e80b94b3982808e78cd1048b79d3a1a5731c7051ea24a39b85 done
+#15 exporting attestation manifest sha256:fb82904a35e476994faca98ae57c1fabc80acceb390f4bc298f19dd13a02e7c4 done
+#15 exporting manifest list sha256:d5b4d1482e1bb2ab5ab66f3bb14af31670dc5a214c0700234bd37921e1589243 done
+#15 naming to docker.io/library/setu-x:0.2.0 done
+#15 unpacking to docker.io/library/setu-x:0.2.0 done
+#15 DONE 0.1s
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.83kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 0.1s
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
+#3 resolve docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e 0.0s done
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377
+#4 DONE 0.0s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 158B done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 23.45kB done
+#6 DONE 0.0s
+
+#7 [base 1/2] FROM docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377
+#7 resolve docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377 0.0s done
+#7 DONE 0.0s
+
+#8 [builder 3/4] COPY src ./src
+#8 CACHED
+
+#9 [runtime 1/2] RUN useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin setu
+#9 CACHED
+
+#10 [runtime 2/2] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels setu-x
+#10 CACHED
+
+#11 [test 1/3] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels "setu-x[dev]"
+#11 CACHED
+
+#12 [test 2/3] COPY pyproject.toml ./
+#12 CACHED
+
+#13 [builder 2/4] COPY requirements ./requirements
+#13 CACHED
+
+#14 [builder 1/4] COPY pyproject.toml README.md ./
+#14 CACHED
+
+#15 [base 2/2] WORKDIR /app
+#15 CACHED
+
+#16 [builder 4/4] RUN --mount=type=secret,id=pip_ca,required=false     if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi;     pip wheel --wheel-dir /wheels --constraint requirements/dev.lock ".[dev]"
+#16 CACHED
+
+#17 [test 3/3] COPY tests ./tests
+#17 CACHED
+
+#18 exporting to image
+#18 exporting layers done
+#18 exporting manifest sha256:9bd470f95c2ae37822a09cdb1889fa5093b24a7f1395ff28428aae24e0251cea done
+#18 exporting config sha256:d783f0f0734bce082db9ca7e97bed518d7e40b14b38419e15c685b8f035d1cc9 done
+#18 exporting attestation manifest sha256:e6e3db06cdc6bcade953240a069f958c12140872421ccc936b8d7d182f8906b5 0.0s done
+#18 exporting manifest list sha256:032e0b22b921e42e44a2e10e47f94ee381e3371b22881bf74303ff433f2fddb5 done
+#18 naming to docker.io/library/setu-x-test:0.2.0 done
+#18 unpacking to docker.io/library/setu-x-test:0.2.0 done
+#18 DONE 0.1s
 >>> A2 PASS - images built
-setu-x-test:0.2.0 2b6f9241eb79 273MB
-setu-x:0.2.0 68b71bca9775 219MB
+setu-x-test:0.2.0 032e0b22b921 273MB
+setu-x:0.2.0 d5b4d1482e1b 219MB
 === A3 start stack (up -d --wait)
  Network setu-x_default Creating 
  Network setu-x_default Creating 
@@ -18,50 +143,48 @@ setu-x:0.2.0 68b71bca9775 219MB
  Network setu-x_default Created 
  Container setu-x-pricing-1 Creating 
  Container setu-x-inventory-a-1 Creating 
- Container setu-x-pricing-1 Created 
  Container setu-x-inventory-a-1 Created 
+ Container setu-x-pricing-1 Created 
  Container setu-x-gateway-1 Creating 
  Container setu-x-gateway-1 Created 
- Container setu-x-inventory-a-1 Starting 
  Container setu-x-pricing-1 Starting 
- Container setu-x-inventory-a-1 Started 
+ Container setu-x-inventory-a-1 Starting 
  Container setu-x-pricing-1 Started 
- Container setu-x-pricing-1 Waiting 
+ Container setu-x-inventory-a-1 Started 
  Container setu-x-inventory-a-1 Waiting 
- Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-pricing-1 Waiting 
  Container setu-x-pricing-1 Healthy 
+ Container setu-x-inventory-a-1 Healthy 
  Container setu-x-gateway-1 Starting 
  Container setu-x-gateway-1 Started 
+ Container setu-x-gateway-1 Waiting 
  Container setu-x-inventory-a-1 Waiting 
  Container setu-x-pricing-1 Waiting 
- Container setu-x-gateway-1 Waiting 
- Container setu-x-pricing-1 Healthy 
  Container setu-x-inventory-a-1 Healthy 
-container setu-x-gateway-1 is unhealthy
->>> A3 FAIL - stack did not become healthy
-NAME                   IMAGE          COMMAND                  SERVICE       CREATED          STATUS                                  PORTS
-setu-x-gateway-1       setu-x:0.2.0   "python -m setu_x.se…"   gateway       12 seconds ago   Restarting (2) Less than a second ago   
-setu-x-inventory-a-1   setu-x:0.2.0   "python -m setu_x.se…"   inventory-a   12 seconds ago   Up 11 seconds (healthy)                 8000/tcp
-setu-x-pricing-1       setu-x:0.2.0   "python -m setu_x.se…"   pricing       12 seconds ago   Up 11 seconds (healthy)                 8000/tcp
+ Container setu-x-pricing-1 Healthy 
+ Container setu-x-gateway-1 Healthy 
+>>> A3 PASS - stack started, compose reports healthy
+NAME                   IMAGE          COMMAND                  SERVICE       CREATED          STATUS                    PORTS
+setu-x-gateway-1       setu-x:0.2.0   "python -m setu_x.se…"   gateway       12 seconds ago   Up 5 seconds (healthy)    127.0.0.1:8080->8000/tcp
+setu-x-inventory-a-1   setu-x:0.2.0   "python -m setu_x.se…"   inventory-a   12 seconds ago   Up 11 seconds (healthy)   8000/tcp
+setu-x-pricing-1       setu-x:0.2.0   "python -m setu_x.se…"   pricing       12 seconds ago   Up 11 seconds (healthy)   8000/tcp
 === A4 health status of every service
 inventory-a: healthy
 pricing: healthy
-gateway: unhealthy
->>> A4 FAIL - unhealthy: gateway
+gateway: healthy
+>>> A4 PASS - inventory-a, pricing, gateway healthy
 === A5 health endpoints return documented responses
-gateway live:  
-gateway ready: 
-Error response from daemon: Container 0c4efbd99e0f3e5408209fa8eb98c0a96c05fd8e50313d580f76b1706a0453ff is restarting, wait until the container is running
-Error response from daemon: Container 0c4efbd99e0f3e5408209fa8eb98c0a96c05fd8e50313d580f76b1706a0453ff is restarting, wait until the container is running
-inventory-a ready: 
-pricing ready:     
->>> A5 FAIL - unexpected health body
+gateway live:  {"status":"alive","service":"gateway","instance":"gateway","env":"local","mode":"local","version":"0.2.0"}
+gateway ready: {"status":"ready","checks":{"config":"ok","http_client":"ok"},"service":"gateway","instance":"gateway","env":"local","mode":"local","version":"0.2.0"}
+inventory-a ready: {"status":"ready","checks":{"config":"ok"},"service":"inventory","instance":"inventory-a","env":"aws-simulated","mode":"local","version":"0.2.0"}
+pricing ready:     {"status":"ready","checks":{"config":"ok"},"service":"pricing","instance":"pricing","env":"azure-simulated","mode":"local","version":"0.2.0"}
+>>> A5 PASS - live/ready bodies match documented shape for all services
 === A6 request through the gateway produces the expected result
-HTTP 000 in 0.000580s: 
->>> A6 FAIL - unexpected order response (HTTP 000)
+HTTP 200 in 0.016943s: {"order_id":"ord-9ce0e541b673499d","request_id":"9ce0e541b673499dabfe6445f2e4e49c","trace_id":"b9af4805652f67b9b65aea244c33b8a0","status":"confirmed","sku":"SKU-001","quantity":2,"customer_tier":"standard","inventory":{"available":8,"in_stock":true,"instance":"inventory-a","env":"aws-simulated"},"pricing":{"unit_price_cents":5500,"discount_pct":0,"total_cents":11000,"currency":"DEMO","price_source":"pricing-service","instance":"pricing"},"timings_ms":{"total":11.475,"inventory":11.385,"pricing":10.71},"dependencies":[{"name":"inventory","ok":true,"status_code":200,"error_type":null,"elapsed_ms":11.385,"served_by":"inventory-a@aws-simulated","attempts":1},{"name":"pricing","ok":true,"status_code":200,"error_type":null,"elapsed_ms":10.71,"served_by":"pricing@azure-simulated","attempts":1}],"call_mode":"parallel","environment_mode":"local"}
+>>> A6 PASS - confirmed; available=8, total_cents=11000 (golden values)
 === A7 automated tests (unit + integration) in the test container
- Container setu-x-tests-run-551799359fe8 Creating 
- Container setu-x-tests-run-551799359fe8 Created 
+ Container setu-x-tests-run-0396f32a9e26 Creating 
+ Container setu-x-tests-run-0396f32a9e26 Created 
 ============================= test session starts ==============================
 platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
 rootdir: /app
@@ -78,11 +201,11 @@ tests/unit/test_config.py ...........                                    [ 51%]
 tests/unit/test_domain.py ................................               [ 94%]
 tests/unit/test_ids.py ....                                              [100%]
 
-======================= 74 passed, 4 deselected in 1.29s =======================
+======================= 74 passed, 4 deselected in 1.30s =======================
 >>> A7 PASS - unit + integration tests passed
 === A8 end-to-end tests against the running stack
- Container setu-x-tests-run-ab5546f13442 Creating 
- Container setu-x-tests-run-ab5546f13442 Created 
+ Container setu-x-tests-run-0576c22edfff Creating 
+ Container setu-x-tests-run-0576c22edfff Created 
 ============================= test session starts ==============================
 platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
 rootdir: /app
@@ -92,518 +215,94 @@ plugins: asyncio-1.4.0, anyio-4.15.1
 asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
 collected 78 items / 74 deselected / 4 selected
 
-tests/end_to_end/test_stack.py FFFF                                      [100%]
+tests/end_to_end/test_stack.py ....                                      [100%]
 
-=================================== FAILURES ===================================
-______________________________ test_gateway_ready ______________________________
-
-    @contextlib.contextmanager
-    def map_httpcore_exceptions() -> typing.Iterator[None]:
-        global HTTPCORE_EXC_MAP
-        if len(HTTPCORE_EXC_MAP) == 0:
-            HTTPCORE_EXC_MAP = _load_httpcore_exceptions()
-        try:
->           yield
-
-/usr/local/lib/python3.11/site-packages/httpx/_transports/default.py:101: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-/usr/local/lib/python3.11/site-packages/httpx/_transports/default.py:250: in handle_request
-    resp = self._pool.handle_request(req)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection_pool.py:256: in handle_request
-    raise exc from None
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection_pool.py:236: in handle_request
-    response = connection.handle_request(
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection.py:101: in handle_request
-    raise exc
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection.py:78: in handle_request
-    stream = self._connect(request)
-             ^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection.py:124: in _connect
-    stream = self._network_backend.connect_tcp(**kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpcore/_backends/sync.py:207: in connect_tcp
-    with map_exceptions(exc_map):
-/usr/local/lib/python3.11/contextlib.py:158: in __exit__
-    self.gen.throw(typ, value, traceback)
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-map = {<class 'TimeoutError'>: <class 'httpcore.ConnectTimeout'>, <class 'OSError'>: <class 'httpcore.ConnectError'>}
-
-    @contextlib.contextmanager
-    def map_exceptions(map: ExceptionMapping) -> typing.Iterator[None]:
-        try:
-            yield
-        except Exception as exc:  # noqa: PIE786
-            for from_exc, to_exc in map.items():
-                if isinstance(exc, from_exc):
->                   raise to_exc(exc) from exc
-E                   httpcore.ConnectError: [Errno 111] Connection refused
-
-/usr/local/lib/python3.11/site-packages/httpcore/_exceptions.py:14: ConnectError
-
-The above exception was the direct cause of the following exception:
-
-gw = <httpx.Client object at 0x7fa915cf1690>
-
-    def test_gateway_ready(gw):
->       r = gw.get("/health/ready")
-            ^^^^^^^^^^^^^^^^^^^^^^^
-
-tests/end_to_end/test_stack.py:27: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:1053: in get
-    return self.request(
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:825: in request
-    return self.send(request, auth=auth, follow_redirects=follow_redirects)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:914: in send
-    response = self._send_handling_auth(
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:942: in _send_handling_auth
-    response = self._send_handling_redirects(
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:979: in _send_handling_redirects
-    response = self._send_single_request(request)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:1014: in _send_single_request
-    response = transport.handle_request(request)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpx/_transports/default.py:249: in handle_request
-    with map_httpcore_exceptions():
-/usr/local/lib/python3.11/contextlib.py:158: in __exit__
-    self.gen.throw(typ, value, traceback)
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-    @contextlib.contextmanager
-    def map_httpcore_exceptions() -> typing.Iterator[None]:
-        global HTTPCORE_EXC_MAP
-        if len(HTTPCORE_EXC_MAP) == 0:
-            HTTPCORE_EXC_MAP = _load_httpcore_exceptions()
-        try:
-            yield
-        except Exception as exc:
-            mapped_exc = None
-    
-            for from_exc, to_exc in HTTPCORE_EXC_MAP.items():
-                if not isinstance(exc, from_exc):
-                    continue
-                # We want to map to the most specific exception we can find.
-                # Eg if `exc` is an `httpcore.ReadTimeout`, we want to map to
-                # `httpx.ReadTimeout`, not just `httpx.TimeoutException`.
-                if mapped_exc is None or issubclass(to_exc, mapped_exc):
-                    mapped_exc = to_exc
-    
-            if mapped_exc is None:  # pragma: no cover
-                raise
-    
-            message = str(exc)
->           raise mapped_exc(message) from exc
-E           httpx.ConnectError: [Errno 111] Connection refused
-
-/usr/local/lib/python3.11/site-packages/httpx/_transports/default.py:118: ConnectError
-_________________________ test_all_dependencies_ready __________________________
-
-    @contextlib.contextmanager
-    def map_httpcore_exceptions() -> typing.Iterator[None]:
-        global HTTPCORE_EXC_MAP
-        if len(HTTPCORE_EXC_MAP) == 0:
-            HTTPCORE_EXC_MAP = _load_httpcore_exceptions()
-        try:
->           yield
-
-/usr/local/lib/python3.11/site-packages/httpx/_transports/default.py:101: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-/usr/local/lib/python3.11/site-packages/httpx/_transports/default.py:250: in handle_request
-    resp = self._pool.handle_request(req)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection_pool.py:256: in handle_request
-    raise exc from None
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection_pool.py:236: in handle_request
-    response = connection.handle_request(
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection.py:101: in handle_request
-    raise exc
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection.py:78: in handle_request
-    stream = self._connect(request)
-             ^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection.py:124: in _connect
-    stream = self._network_backend.connect_tcp(**kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpcore/_backends/sync.py:207: in connect_tcp
-    with map_exceptions(exc_map):
-/usr/local/lib/python3.11/contextlib.py:158: in __exit__
-    self.gen.throw(typ, value, traceback)
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-map = {<class 'TimeoutError'>: <class 'httpcore.ConnectTimeout'>, <class 'OSError'>: <class 'httpcore.ConnectError'>}
-
-    @contextlib.contextmanager
-    def map_exceptions(map: ExceptionMapping) -> typing.Iterator[None]:
-        try:
-            yield
-        except Exception as exc:  # noqa: PIE786
-            for from_exc, to_exc in map.items():
-                if isinstance(exc, from_exc):
->                   raise to_exc(exc) from exc
-E                   httpcore.ConnectError: [Errno 111] Connection refused
-
-/usr/local/lib/python3.11/site-packages/httpcore/_exceptions.py:14: ConnectError
-
-The above exception was the direct cause of the following exception:
-
-gw = <httpx.Client object at 0x7fa915cf1690>
-
-    def test_all_dependencies_ready(gw):
->       deps = gw.get("/health/dependencies").json()["dependencies"]
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-tests/end_to_end/test_stack.py:32: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:1053: in get
-    return self.request(
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:825: in request
-    return self.send(request, auth=auth, follow_redirects=follow_redirects)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:914: in send
-    response = self._send_handling_auth(
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:942: in _send_handling_auth
-    response = self._send_handling_redirects(
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:979: in _send_handling_redirects
-    response = self._send_single_request(request)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:1014: in _send_single_request
-    response = transport.handle_request(request)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpx/_transports/default.py:249: in handle_request
-    with map_httpcore_exceptions():
-/usr/local/lib/python3.11/contextlib.py:158: in __exit__
-    self.gen.throw(typ, value, traceback)
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-    @contextlib.contextmanager
-    def map_httpcore_exceptions() -> typing.Iterator[None]:
-        global HTTPCORE_EXC_MAP
-        if len(HTTPCORE_EXC_MAP) == 0:
-            HTTPCORE_EXC_MAP = _load_httpcore_exceptions()
-        try:
-            yield
-        except Exception as exc:
-            mapped_exc = None
-    
-            for from_exc, to_exc in HTTPCORE_EXC_MAP.items():
-                if not isinstance(exc, from_exc):
-                    continue
-                # We want to map to the most specific exception we can find.
-                # Eg if `exc` is an `httpcore.ReadTimeout`, we want to map to
-                # `httpx.ReadTimeout`, not just `httpx.TimeoutException`.
-                if mapped_exc is None or issubclass(to_exc, mapped_exc):
-                    mapped_exc = to_exc
-    
-            if mapped_exc is None:  # pragma: no cover
-                raise
-    
-            message = str(exc)
->           raise mapped_exc(message) from exc
-E           httpx.ConnectError: [Errno 111] Connection refused
-
-/usr/local/lib/python3.11/site-packages/httpx/_transports/default.py:118: ConnectError
-__________________ test_order_confirmed_with_expected_values ___________________
-
-    @contextlib.contextmanager
-    def map_httpcore_exceptions() -> typing.Iterator[None]:
-        global HTTPCORE_EXC_MAP
-        if len(HTTPCORE_EXC_MAP) == 0:
-            HTTPCORE_EXC_MAP = _load_httpcore_exceptions()
-        try:
->           yield
-
-/usr/local/lib/python3.11/site-packages/httpx/_transports/default.py:101: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-/usr/local/lib/python3.11/site-packages/httpx/_transports/default.py:250: in handle_request
-    resp = self._pool.handle_request(req)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection_pool.py:256: in handle_request
-    raise exc from None
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection_pool.py:236: in handle_request
-    response = connection.handle_request(
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection.py:101: in handle_request
-    raise exc
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection.py:78: in handle_request
-    stream = self._connect(request)
-             ^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection.py:124: in _connect
-    stream = self._network_backend.connect_tcp(**kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpcore/_backends/sync.py:207: in connect_tcp
-    with map_exceptions(exc_map):
-/usr/local/lib/python3.11/contextlib.py:158: in __exit__
-    self.gen.throw(typ, value, traceback)
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-map = {<class 'TimeoutError'>: <class 'httpcore.ConnectTimeout'>, <class 'OSError'>: <class 'httpcore.ConnectError'>}
-
-    @contextlib.contextmanager
-    def map_exceptions(map: ExceptionMapping) -> typing.Iterator[None]:
-        try:
-            yield
-        except Exception as exc:  # noqa: PIE786
-            for from_exc, to_exc in map.items():
-                if isinstance(exc, from_exc):
->                   raise to_exc(exc) from exc
-E                   httpcore.ConnectError: [Errno 111] Connection refused
-
-/usr/local/lib/python3.11/site-packages/httpcore/_exceptions.py:14: ConnectError
-
-The above exception was the direct cause of the following exception:
-
-gw = <httpx.Client object at 0x7fa915cf1690>
-
-    def test_order_confirmed_with_expected_values(gw):
->       r = gw.post("/api/orders", json={"sku": "SKU-001", "quantity": 2, "customer_tier": "standard"},
-                    headers={"X-Request-ID": "e2e-stack-1"})
-
-tests/end_to_end/test_stack.py:37: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:1144: in post
-    return self.request(
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:825: in request
-    return self.send(request, auth=auth, follow_redirects=follow_redirects)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:914: in send
-    response = self._send_handling_auth(
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:942: in _send_handling_auth
-    response = self._send_handling_redirects(
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:979: in _send_handling_redirects
-    response = self._send_single_request(request)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:1014: in _send_single_request
-    response = transport.handle_request(request)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpx/_transports/default.py:249: in handle_request
-    with map_httpcore_exceptions():
-/usr/local/lib/python3.11/contextlib.py:158: in __exit__
-    self.gen.throw(typ, value, traceback)
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-    @contextlib.contextmanager
-    def map_httpcore_exceptions() -> typing.Iterator[None]:
-        global HTTPCORE_EXC_MAP
-        if len(HTTPCORE_EXC_MAP) == 0:
-            HTTPCORE_EXC_MAP = _load_httpcore_exceptions()
-        try:
-            yield
-        except Exception as exc:
-            mapped_exc = None
-    
-            for from_exc, to_exc in HTTPCORE_EXC_MAP.items():
-                if not isinstance(exc, from_exc):
-                    continue
-                # We want to map to the most specific exception we can find.
-                # Eg if `exc` is an `httpcore.ReadTimeout`, we want to map to
-                # `httpx.ReadTimeout`, not just `httpx.TimeoutException`.
-                if mapped_exc is None or issubclass(to_exc, mapped_exc):
-                    mapped_exc = to_exc
-    
-            if mapped_exc is None:  # pragma: no cover
-                raise
-    
-            message = str(exc)
->           raise mapped_exc(message) from exc
-E           httpx.ConnectError: [Errno 111] Connection refused
-
-/usr/local/lib/python3.11/site-packages/httpx/_transports/default.py:118: ConnectError
-__________________________ test_rejected_and_invalid ___________________________
-
-    @contextlib.contextmanager
-    def map_httpcore_exceptions() -> typing.Iterator[None]:
-        global HTTPCORE_EXC_MAP
-        if len(HTTPCORE_EXC_MAP) == 0:
-            HTTPCORE_EXC_MAP = _load_httpcore_exceptions()
-        try:
->           yield
-
-/usr/local/lib/python3.11/site-packages/httpx/_transports/default.py:101: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-/usr/local/lib/python3.11/site-packages/httpx/_transports/default.py:250: in handle_request
-    resp = self._pool.handle_request(req)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection_pool.py:256: in handle_request
-    raise exc from None
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection_pool.py:236: in handle_request
-    response = connection.handle_request(
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection.py:101: in handle_request
-    raise exc
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection.py:78: in handle_request
-    stream = self._connect(request)
-             ^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpcore/_sync/connection.py:124: in _connect
-    stream = self._network_backend.connect_tcp(**kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpcore/_backends/sync.py:207: in connect_tcp
-    with map_exceptions(exc_map):
-/usr/local/lib/python3.11/contextlib.py:158: in __exit__
-    self.gen.throw(typ, value, traceback)
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-map = {<class 'TimeoutError'>: <class 'httpcore.ConnectTimeout'>, <class 'OSError'>: <class 'httpcore.ConnectError'>}
-
-    @contextlib.contextmanager
-    def map_exceptions(map: ExceptionMapping) -> typing.Iterator[None]:
-        try:
-            yield
-        except Exception as exc:  # noqa: PIE786
-            for from_exc, to_exc in map.items():
-                if isinstance(exc, from_exc):
->                   raise to_exc(exc) from exc
-E                   httpcore.ConnectError: [Errno 111] Connection refused
-
-/usr/local/lib/python3.11/site-packages/httpcore/_exceptions.py:14: ConnectError
-
-The above exception was the direct cause of the following exception:
-
-gw = <httpx.Client object at 0x7fa915cf1690>
-
-    def test_rejected_and_invalid(gw):
->       assert gw.post("/api/orders", json={"sku": "SKU-001", "quantity": 9}).status_code == 409
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-tests/end_to_end/test_stack.py:47: 
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:1144: in post
-    return self.request(
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:825: in request
-    return self.send(request, auth=auth, follow_redirects=follow_redirects)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:914: in send
-    response = self._send_handling_auth(
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:942: in _send_handling_auth
-    response = self._send_handling_redirects(
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:979: in _send_handling_redirects
-    response = self._send_single_request(request)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpx/_client.py:1014: in _send_single_request
-    response = transport.handle_request(request)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/usr/local/lib/python3.11/site-packages/httpx/_transports/default.py:249: in handle_request
-    with map_httpcore_exceptions():
-/usr/local/lib/python3.11/contextlib.py:158: in __exit__
-    self.gen.throw(typ, value, traceback)
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
-
-    @contextlib.contextmanager
-    def map_httpcore_exceptions() -> typing.Iterator[None]:
-        global HTTPCORE_EXC_MAP
-        if len(HTTPCORE_EXC_MAP) == 0:
-            HTTPCORE_EXC_MAP = _load_httpcore_exceptions()
-        try:
-            yield
-        except Exception as exc:
-            mapped_exc = None
-    
-            for from_exc, to_exc in HTTPCORE_EXC_MAP.items():
-                if not isinstance(exc, from_exc):
-                    continue
-                # We want to map to the most specific exception we can find.
-                # Eg if `exc` is an `httpcore.ReadTimeout`, we want to map to
-                # `httpx.ReadTimeout`, not just `httpx.TimeoutException`.
-                if mapped_exc is None or issubclass(to_exc, mapped_exc):
-                    mapped_exc = to_exc
-    
-            if mapped_exc is None:  # pragma: no cover
-                raise
-    
-            message = str(exc)
->           raise mapped_exc(message) from exc
-E           httpx.ConnectError: [Errno 111] Connection refused
-
-/usr/local/lib/python3.11/site-packages/httpx/_transports/default.py:118: ConnectError
-=========================== short test summary info ============================
-FAILED tests/end_to_end/test_stack.py::test_gateway_ready - httpx.ConnectErro...
-FAILED tests/end_to_end/test_stack.py::test_all_dependencies_ready - httpx.Co...
-FAILED tests/end_to_end/test_stack.py::test_order_confirmed_with_expected_values
-FAILED tests/end_to_end/test_stack.py::test_rejected_and_invalid - httpx.Conn...
-======================= 4 failed, 74 deselected in 0.38s =======================
-
->>> A8 FAIL - e2e tests failed
+======================= 4 passed, 74 deselected in 0.18s =======================
+>>> A8 PASS - e2e tests passed
 === A9 stopped dependency -> bounded 503, then recovery
  Container setu-x-inventory-a-1 Stopping 
  Container setu-x-inventory-a-1 Stopped 
-inventory stopped: HTTP 000 in 0.000094s: 
+inventory stopped: HTTP 503 in 0.034225s: {"error":{"code":"dependency_unavailable","message":"inventory unavailable (connect_error)","request_id":"297317d530804eb0b34a20de18962de1","details":{"dependencies":[{"name":"inventory","ok":false,"status_code":null,"error_type":"connect_error","elapsed_ms":27.957,"served_by":null,"attempts":1},{"name":"pricing","ok":true,"status_code":200,"error_type":null,"elapsed_ms":6.905,"served_by":"pricing@azure-simulated","attempts":1}],"timings_ms":{"total":28.069}}}}
  Container setu-x-inventory-a-1 Starting 
  Container setu-x-inventory-a-1 Started 
-after restart: HTTP 000 in 0.002490s
->>> A9 FAIL - stop: HTTP 000 in 0.000094s; recovery: HTTP 000
+after restart: HTTP 200 in 0.015096s
+>>> A9 PASS - 503 dependency_unavailable in 0.034225s (bound 3.5s = outer deadline 3s + slack); recovered to 200
 === A10 unresponsive (paused) dependency -> 503 cut by timeout, no hang
  Container setu-x-inventory-a-1 Paused 
-inventory paused: HTTP 000 in 0.001517s: 
+inventory paused: HTTP 503 in 0.806694s: {"error":{"code":"dependency_unavailable","message":"inventory unavailable (timeout)","request_id":"2443e92743844619a2eb7e5e1fc29760","details":{"dependencies":[{"name":"inventory","ok":false,"status_code":null,"error_type":"timeout","elapsed_ms":801.21,"served_by":null,"attempts":1},{"name":"pricing","ok":true,"status_code":200,"error_type":null,"elapsed_ms":2.598,"served_by":"pricing@azure-simulated","attempts":1}],"timings_ms":{"total":801.286}}}}
  Container setu-x-inventory-a-1 Unpaused 
->>> A10 FAIL - paused: HTTP 000 in 0.001517s
+>>> A10 PASS - 503 (timeout) in 0.806694s; expected ~0.8s per-attempt timeout (bound < 1.6s)
 === A11 pricing stopped -> degraded order with flagged list price
  Container setu-x-pricing-1 Stopping 
  Container setu-x-pricing-1 Stopped 
-pricing stopped: HTTP 000 in 0.000930s: 
+pricing stopped: HTTP 200 in 0.031759s: {"order_id":"ord-39429f006dd74f2c","request_id":"39429f006dd74f2c81c9b4cb7e4cd32f","trace_id":"d54921ac1c3b9675b945d3462f2bc7a4","status":"degraded","sku":"SKU-001","quantity":2,"customer_tier":"standard","inventory":{"available":8,"in_stock":true,"instance":"inventory-a","env":"aws-simulated"},"pricing":{"unit_price_cents":5500,"discount_pct":0,"total_cents":11000,"currency":"DEMO","price_source":"fallback-list-price","instance":null},"timings_ms":{"total":27.288,"inventory":7.7,"pricing":26.553},"dependencies":[{"name":"inventory","ok":true,"status_code":200,"error_type":null,"elapsed_ms":7.7,"served_by":"inventory-a@aws-simulated","attempts":1},{"name":"pricing","ok":false,"status_code":null,"error_type":"connect_error","elapsed_ms":26.553,"served_by":null,"attempts":1}],"call_mode":"parallel","environment_mode":"local"}
  Container setu-x-pricing-1 Starting 
  Container setu-x-pricing-1 Started 
->>> A11 FAIL - HTTP 000
+>>> A11 PASS - degraded with fallback-list-price in 0.031759s
 === A12 container hardening and limits (read back from docker inspect)
 inventory-a: user=10001 ro=true capdrop=[ALL] nanocpus=500000000 mem=268435456 secopt=[no-new-privileges:true] privileged=false
 pricing: user=10001 ro=true capdrop=[ALL] nanocpus=500000000 mem=268435456 secopt=[no-new-privileges:true] privileged=false
 gateway: user=10001 ro=true capdrop=[ALL] nanocpus=500000000 mem=268435456 secopt=[no-new-privileges:true] privileged=false
-no public port '8000' published for 0c4efbd99e0f3e5408209fa8eb98c0a96c05fd8e50313d580f76b1706a0453ff
-gateway port binding: 
->>> A12 FAIL - hardening mismatch: gateway-port
+gateway port binding: 127.0.0.1:8080
+>>> A12 PASS - non-root, read-only rootfs, cap_drop ALL, no-new-privileges, 0.5 CPU / 256MiB, port on 127.0.0.1
 === A13 graceful stop (SIGTERM -> exit 0) and clean restart
  Container setu-x-gateway-1 Stopping 
  Container setu-x-gateway-1 Stopped 
  Container setu-x-pricing-1 Stopping 
  Container setu-x-inventory-a-1 Stopping 
- Container setu-x-pricing-1 Stopped 
  Container setu-x-inventory-a-1 Stopped 
-exit codes: inventory-a=0 pricing=0 gateway=2
->>> A13 FAIL - exit codes: inventory-a=0 pricing=0 gateway=2; post-restart HTTP 000
+ Container setu-x-pricing-1 Stopped 
+exit codes: inventory-a=0 pricing=0 gateway=0
+gateway-1  | {"ts": "2026-10-25T08:12:40.484+00:00", "level": "INFO", "logger": "uvicorn.error", "service": "gateway", "instance": "gateway", "env": "local", "event": "Shutting down"}
+gateway-1  | {"ts": "2026-10-25T08:12:40.584+00:00", "level": "INFO", "logger": "uvicorn.error", "service": "gateway", "instance": "gateway", "env": "local", "event": "Waiting for application shutdown."}
+gateway-1  | {"ts": "2026-10-25T08:12:40.585+00:00", "level": "INFO", "logger": "uvicorn.error", "service": "gateway", "instance": "gateway", "env": "local", "event": "Application shutdown complete."}
+gateway-1  | {"ts": "2026-10-25T08:12:40.585+00:00", "level": "INFO", "logger": "uvicorn.error", "service": "gateway", "instance": "gateway", "env": "local", "event": "Finished server process [1]"}
+>>> A13 PASS - all services exited 0 on SIGTERM; restarted healthy; order HTTP 200
 === A14 down removes everything; up again from scratch works
  Container setu-x-gateway-1 Stopping 
  Container setu-x-gateway-1 Stopped 
  Container setu-x-gateway-1 Removing 
  Container setu-x-gateway-1 Removed 
- Container setu-x-inventory-a-1 Stopping 
  Container setu-x-pricing-1 Stopping 
- Container setu-x-pricing-1 Stopped 
- Container setu-x-pricing-1 Removing 
- Container setu-x-pricing-1 Removed 
+ Container setu-x-inventory-a-1 Stopping 
  Container setu-x-inventory-a-1 Stopped 
  Container setu-x-inventory-a-1 Removing 
  Container setu-x-inventory-a-1 Removed 
+ Container setu-x-pricing-1 Stopped 
+ Container setu-x-pricing-1 Removing 
+ Container setu-x-pricing-1 Removed 
  Network setu-x_default Removing 
  Network setu-x_default Removed 
  Container setu-x-gateway-1 Stopping 
  Container setu-x-gateway-1 Stopped 
  Container setu-x-gateway-1 Removing 
  Container setu-x-gateway-1 Removed 
- Container setu-x-pricing-1 Stopping 
  Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-pricing-1 Stopping 
  Container setu-x-inventory-a-1 Stopped 
  Container setu-x-inventory-a-1 Removing 
- Container setu-x-inventory-a-1 Removed 
  Container setu-x-pricing-1 Stopped 
  Container setu-x-pricing-1 Removing 
+ Container setu-x-inventory-a-1 Removed 
  Container setu-x-pricing-1 Removed 
  Network setu-x_default Removing 
  Network setu-x_default Removed 
->>> A14 FAIL - containers left=0; HTTP 000
+>>> A14 PASS - down left 0 containers; fresh up served HTTP 200; down again
 
 ================ SUMMARY ================
 A1   PASS compose configuration valid
 A2   PASS images built
-A3   FAIL stack did not become healthy
-A4   FAIL unhealthy: gateway
-A5   FAIL unexpected health body
-A6   FAIL unexpected order response (HTTP 000)
+A3   PASS stack started, compose reports healthy
+A4   PASS inventory-a, pricing, gateway healthy
+A5   PASS live/ready bodies match documented shape for all services
+A6   PASS confirmed; available=8, total_cents=11000 (golden values)
 A7   PASS unit + integration tests passed
-A8   FAIL e2e tests failed
-A9   FAIL stop: HTTP 000 in 0.000094s; recovery: HTTP 000
-A10  FAIL paused: HTTP 000 in 0.001517s
-A11  FAIL HTTP 000
-A12  FAIL hardening mismatch: gateway-port
-A13  FAIL exit codes: inventory-a=0 pricing=0 gateway=2; post-restart HTTP 000
-A14  FAIL containers left=0; HTTP 000
-checks: 14  failed: 11
-PHASE 2 ACCEPTANCE: FAIL
+A8   PASS e2e tests passed
+A9   PASS 503 dependency_unavailable in 0.034225s (bound 3.5s = outer deadline 3s + slack); recovered to 200
+A10  PASS 503 (timeout) in 0.806694s; expected ~0.8s per-attempt timeout (bound < 1.6s)
+A11  PASS degraded with fallback-list-price in 0.031759s
+A12  PASS non-root, read-only rootfs, cap_drop ALL, no-new-privileges, 0.5 CPU / 256MiB, port on 127.0.0.1
+A13  PASS all services exited 0 on SIGTERM; restarted healthy; order HTTP 200
+A14  PASS down left 0 containers; fresh up served HTTP 200; down again
+checks: 14  failed: 0
+PHASE 2 ACCEPTANCE: PASS

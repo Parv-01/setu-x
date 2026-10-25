@@ -1,0 +1,1 @@
+gateway-1  | {"ts": "2026-10-25T08:13:05.760+00:00", "level": "INFO", "logger": "setu_x.http", "service": "gateway", "instance": "gateway", "env": "local", "event": "http_request", "request_id": "3b1b0faa5f174dd4950640e82040a8d4", "trace_id": "9b48a1e01e36316b451bc75bedac98dc", "method": "POST", "path": "/api/orders", "status": 200, "duration_ms": 13.504}

@@ -1,6 +1,6 @@
 SETU-X Phase 2 acceptance (PowerShell)
-date_utc: 2026-10-25T08:06:14Z
-git_commit: d5952b8
+date_utc: 2026-10-25T08:13:18Z
+git_commit: ba0df2f
 powershell: 7.6.8 on linux
 docker: client 29.9.2 / server 29.9.2
 compose: 5.6.1
@@ -17,7 +17,7 @@ $ /tmp/claude-0/-home-claude/3c5ce73b-5f63-53d9-a7b3-6574ae9d3afa/scratchpad/san
 #1 DONE 0.0s
 
 #2 resolve image config for docker-image://docker.io/docker/dockerfile:1
-#2 DONE 0.8s
+#2 DONE 0.4s
 
 #3 docker-image://docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
 #3 resolve docker.io/docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e 0.0s done
@@ -35,196 +35,39 @@ $ /tmp/claude-0/-home-claude/3c5ce73b-5f63-53d9-a7b3-6574ae9d3afa/scratchpad/san
 #6 DONE 0.0s
 
 #7 [internal] load build context
-#7 transferring context: 3.23kB done
+#7 transferring context: 1.44kB done
 #7 DONE 0.0s
 
-#8 [base 2/2] WORKDIR /app
+#8 [builder 3/4] COPY src ./src
 #8 CACHED
 
-#9 [builder 1/4] COPY pyproject.toml README.md ./
+#9 [builder 4/4] RUN --mount=type=secret,id=pip_ca,required=false     if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi;     pip wheel --wheel-dir /wheels --constraint requirements/dev.lock ".[dev]"
 #9 CACHED
 
-#10 [builder 2/4] COPY requirements ./requirements
+#10 [base 2/2] WORKDIR /app
 #10 CACHED
 
-#11 [builder 3/4] COPY src ./src
-#11 DONE 0.0s
+#11 [builder 1/4] COPY pyproject.toml README.md ./
+#11 CACHED
 
-#12 [builder 4/4] RUN --mount=type=secret,id=pip_ca,required=false     if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi;     pip wheel --wheel-dir /wheels --constraint requirements/dev.lock ".[dev]"
-#12 1.096 Processing /app
-#12 1.098   Installing build dependencies: started
-#12 3.158   Installing build dependencies: finished with status 'done'
-#12 3.160   Getting requirements to build wheel: started
-#12 3.611   Getting requirements to build wheel: finished with status 'done'
-#12 3.614   Preparing metadata (pyproject.toml): started
-#12 4.050   Preparing metadata (pyproject.toml): finished with status 'done'
-#12 4.160 Collecting fastapi==0.162.0 (from setu-x==0.2.0)
-#12 4.210   Downloading fastapi-0.162.0-py3-none-any.whl.metadata (26 kB)
-#12 4.242 Collecting uvicorn==0.54.0 (from setu-x==0.2.0)
-#12 4.248   Downloading uvicorn-0.54.0-py3-none-any.whl.metadata (6.6 kB)
-#12 4.271 Collecting httpx==0.28.1 (from setu-x==0.2.0)
-#12 4.278   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
-#12 4.376 Collecting pydantic==2.14.1 (from setu-x==0.2.0)
-#12 4.383   Downloading pydantic-2.14.1-py3-none-any.whl.metadata (133 kB)
-#12 4.384      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 133.0/133.0 kB 411.5 MB/s eta 0:00:00
-#12 4.420 Collecting pyyaml==6.0.3 (from setu-x==0.2.0)
-#12 4.425   Downloading pyyaml-6.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
-#12 4.494 Collecting starlette>=0.46.0 (from fastapi==0.162.0->setu-x==0.2.0)
-#12 4.501   Downloading starlette-1.10.0-py3-none-any.whl.metadata (6.6 kB)
-#12 4.526 Collecting typing-extensions>=4.8.0 (from fastapi==0.162.0->setu-x==0.2.0)
-#12 4.532   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
-#12 4.545 Collecting typing-inspection>=0.4.2 (from fastapi==0.162.0->setu-x==0.2.0)
-#12 4.551   Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
-#12 4.564 Collecting annotated-doc>=0.0.2 (from fastapi==0.162.0->setu-x==0.2.0)
-#12 4.571   Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
-#12 4.596 Collecting opentelemetry-api>=1.44.0 (from fastapi==0.162.0->setu-x==0.2.0)
-#12 4.604   Downloading opentelemetry_api-1.45.1-py3-none-any.whl.metadata (1.4 kB)
-#12 4.632 Collecting anyio (from httpx==0.28.1->setu-x==0.2.0)
-#12 4.638   Downloading anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
-#12 4.660 Collecting certifi (from httpx==0.28.1->setu-x==0.2.0)
-#12 4.667   Downloading certifi-2026.10.23-py3-none-any.whl.metadata (2.5 kB)
-#12 4.687 Collecting httpcore==1.* (from httpx==0.28.1->setu-x==0.2.0)
-#12 4.692   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
-#12 4.709 Collecting idna (from httpx==0.28.1->setu-x==0.2.0)
-#12 4.717   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
-#12 4.733 Collecting annotated-types>=0.6.0 (from pydantic==2.14.1->setu-x==0.2.0)
-#12 4.740   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
-#12 5.572 Collecting pydantic-core==2.50.1 (from pydantic==2.14.1->setu-x==0.2.0)
-#12 5.580   Downloading pydantic_core-2.50.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.5 kB)
-#12 5.609 Collecting click>=7.0 (from uvicorn==0.54.0->setu-x==0.2.0)
-#12 5.615   Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
-#12 5.628 Collecting h11>=0.8 (from uvicorn==0.54.0->setu-x==0.2.0)
-#12 5.634   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
-#12 5.685 Collecting pytest==9.1.1 (from setu-x==0.2.0)
-#12 5.691   Downloading pytest-9.1.1-py3-none-any.whl.metadata (7.6 kB)
-#12 5.713 Collecting pytest-asyncio==1.4.0 (from setu-x==0.2.0)
-#12 5.720   Downloading pytest_asyncio-1.4.0-py3-none-any.whl.metadata (4.1 kB)
-#12 6.131 Collecting ruff==0.17.2 (from setu-x==0.2.0)
-#12 6.139   Downloading ruff-0.17.2-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (20 kB)
-#12 6.159 Collecting iniconfig>=1.0.1 (from pytest==9.1.1->setu-x==0.2.0)
-#12 6.165   Downloading iniconfig-2.3.1-py3-none-any.whl.metadata (2.8 kB)
-#12 6.186 Collecting packaging>=22 (from pytest==9.1.1->setu-x==0.2.0)
-#12 6.191   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
-#12 6.208 Collecting pluggy<2,>=1.5 (from pytest==9.1.1->setu-x==0.2.0)
-#12 6.216   Downloading pluggy-1.7.0-py3-none-any.whl.metadata (5.0 kB)
-#12 6.238 Collecting pygments>=2.7.2 (from pytest==9.1.1->setu-x==0.2.0)
-#12 6.243   Downloading pygments-2.21.0-py3-none-any.whl.metadata (2.5 kB)
-#12 6.318 Downloading fastapi-0.162.0-py3-none-any.whl (148 kB)
-#12 6.321    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 148.9/148.9 kB 204.2 MB/s eta 0:00:00
-#12 6.327 Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
-#12 6.329    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 73.5/73.5 kB 256.4 MB/s eta 0:00:00
-#12 6.338 Downloading pydantic-2.14.1-py3-none-any.whl (488 kB)
-#12 6.343    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 488.1/488.1 kB 207.8 MB/s eta 0:00:00
-#12 6.350 Downloading pyyaml-6.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (806 kB)
-#12 6.355    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 806.6/806.6 kB 226.3 MB/s eta 0:00:00
-#12 6.360 Downloading uvicorn-0.54.0-py3-none-any.whl (87 kB)
-#12 6.362    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 87.4/87.4 kB 284.2 MB/s eta 0:00:00
-#12 6.369 Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
-#12 6.370    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 78.8/78.8 kB 288.7 MB/s eta 0:00:00
-#12 6.381 Downloading pydantic_core-2.50.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.2 MB)
-#12 6.395    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 176.3 MB/s eta 0:00:00
-#12 6.402 Downloading pytest-9.1.1-py3-none-any.whl (386 kB)
-#12 6.406    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 386.5/386.5 kB 161.1 MB/s eta 0:00:00
-#12 6.413 Downloading pytest_asyncio-1.4.0-py3-none-any.whl (16 kB)
-#12 6.422 Downloading ruff-0.17.2-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (10.5 MB)
-#12 6.479    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.5/10.5 MB 186.4 MB/s eta 0:00:00
-#12 6.486 Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
-#12 6.492 Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
-#12 6.497 Downloading click-8.5.0-py3-none-any.whl (125 kB)
-#12 6.500    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 125.3/125.3 kB 251.1 MB/s eta 0:00:00
-#12 6.504 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
-#12 6.510 Downloading iniconfig-2.3.1-py3-none-any.whl (7.6 kB)
-#12 6.516 Downloading opentelemetry_api-1.45.1-py3-none-any.whl (60 kB)
-#12 6.518    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 60.3/60.3 kB 221.0 MB/s eta 0:00:00
-#12 6.523 Downloading packaging-26.3-py3-none-any.whl (129 kB)
-#12 6.526    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 130.0/130.0 kB 92.4 MB/s eta 0:00:00
-#12 6.531 Downloading pluggy-1.7.0-py3-none-any.whl (27 kB)
-#12 6.551 Downloading pygments-2.21.0-py3-none-any.whl (1.3 MB)
-#12 6.559    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.3/1.3 MB 171.6 MB/s eta 0:00:00
-#12 6.564 Downloading starlette-1.10.0-py3-none-any.whl (80 kB)
-#12 6.567    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 80.6/80.6 kB 73.8 MB/s eta 0:00:00
-#12 6.572 Downloading anyio-4.15.1-py3-none-any.whl (132 kB)
-#12 6.575    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 132.1/132.1 kB 277.0 MB/s eta 0:00:00
-#12 6.580 Downloading idna-3.20-py3-none-any.whl (69 kB)
-#12 6.582    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 69.6/69.6 kB 287.0 MB/s eta 0:00:00
-#12 6.588 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
-#12 6.590    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 45.6/45.6 kB 283.3 MB/s eta 0:00:00
-#12 6.596 Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
-#12 6.602 Downloading certifi-2026.10.23-py3-none-any.whl (135 kB)
-#12 6.603    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 135.1/135.1 kB 237.5 MB/s eta 0:00:00
-#12 6.631 Saved /wheels/fastapi-0.162.0-py3-none-any.whl
-#12 6.631 Saved /wheels/httpx-0.28.1-py3-none-any.whl
-#12 6.634 Saved /wheels/pydantic-2.14.1-py3-none-any.whl
-#12 6.638 Saved /wheels/pyyaml-6.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
-#12 6.638 Saved /wheels/uvicorn-0.54.0-py3-none-any.whl
-#12 6.639 Saved /wheels/httpcore-1.0.9-py3-none-any.whl
-#12 6.648 Saved /wheels/pydantic_core-2.50.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-#12 6.649 Saved /wheels/pytest-9.1.1-py3-none-any.whl
-#12 6.650 Saved /wheels/pytest_asyncio-1.4.0-py3-none-any.whl
-#12 6.692 Saved /wheels/ruff-0.17.2-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-#12 6.693 Saved /wheels/annotated_doc-0.0.5-py3-none-any.whl
-#12 6.693 Saved /wheels/annotated_types-0.8.0-py3-none-any.whl
-#12 6.694 Saved /wheels/click-8.5.0-py3-none-any.whl
-#12 6.694 Saved /wheels/h11-0.16.0-py3-none-any.whl
-#12 6.694 Saved /wheels/iniconfig-2.3.1-py3-none-any.whl
-#12 6.695 Saved /wheels/opentelemetry_api-1.45.1-py3-none-any.whl
-#12 6.696 Saved /wheels/packaging-26.3-py3-none-any.whl
-#12 6.696 Saved /wheels/pluggy-1.7.0-py3-none-any.whl
-#12 6.701 Saved /wheels/pygments-2.21.0-py3-none-any.whl
-#12 6.702 Saved /wheels/starlette-1.10.0-py3-none-any.whl
-#12 6.703 Saved /wheels/anyio-4.15.1-py3-none-any.whl
-#12 6.703 Saved /wheels/idna-3.20-py3-none-any.whl
-#12 6.703 Saved /wheels/typing_extensions-4.16.0-py3-none-any.whl
-#12 6.704 Saved /wheels/typing_inspection-0.4.4-py3-none-any.whl
-#12 6.704 Saved /wheels/certifi-2026.10.23-py3-none-any.whl
-#12 6.777 Building wheels for collected packages: setu-x
-#12 6.778   Building wheel for setu-x (pyproject.toml): started
-#12 7.324   Building wheel for setu-x (pyproject.toml): finished with status 'done'
-#12 7.325   Created wheel for setu-x: filename=setu_x-0.2.0-py3-none-any.whl size=17829 sha256=7e9f4f178d727a94afc7d5e06874355b40baebe447b2362fe7908067fbb40a11
-#12 7.326   Stored in directory: /tmp/pip-ephem-wheel-cache-6m82dx6m/wheels/57/0f/98/bb57b2b57b95807699b822a35c022f139d38a02c27922f27ce
-#12 7.328 Successfully built setu-x
-#12 DONE 7.6s
+#12 [builder 2/4] COPY requirements ./requirements
+#12 CACHED
 
 #13 [runtime 1/2] RUN useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin setu
 #13 CACHED
 
 #14 [runtime 2/2] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels setu-x
-#14 1.036 Looking in links: /wheels
-#14 1.044 Processing /wheels/setu_x-0.2.0-py3-none-any.whl
-#14 1.054 Processing /wheels/fastapi-0.162.0-py3-none-any.whl (from setu-x)
-#14 1.059 Processing /wheels/uvicorn-0.54.0-py3-none-any.whl (from setu-x)
-#14 1.064 Processing /wheels/httpx-0.28.1-py3-none-any.whl (from setu-x)
-#14 1.068 Processing /wheels/pydantic-2.14.1-py3-none-any.whl (from setu-x)
-#14 1.074 Processing /wheels/pyyaml-6.0.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (from setu-x)
-#14 1.096 Processing /wheels/starlette-1.10.0-py3-none-any.whl (from fastapi==0.162.0->setu-x)
-#14 1.102 Processing /wheels/typing_extensions-4.16.0-py3-none-any.whl (from fastapi==0.162.0->setu-x)
-#14 1.107 Processing /wheels/typing_inspection-0.4.4-py3-none-any.whl (from fastapi==0.162.0->setu-x)
-#14 1.112 Processing /wheels/annotated_doc-0.0.5-py3-none-any.whl (from fastapi==0.162.0->setu-x)
-#14 1.116 Processing /wheels/opentelemetry_api-1.45.1-py3-none-any.whl (from fastapi==0.162.0->setu-x)
-#14 1.126 Processing /wheels/anyio-4.15.1-py3-none-any.whl (from httpx==0.28.1->setu-x)
-#14 1.131 Processing /wheels/certifi-2026.10.23-py3-none-any.whl (from httpx==0.28.1->setu-x)
-#14 1.135 Processing /wheels/httpcore-1.0.9-py3-none-any.whl (from httpx==0.28.1->setu-x)
-#14 1.140 Processing /wheels/idna-3.20-py3-none-any.whl (from httpx==0.28.1->setu-x)
-#14 1.149 Processing /wheels/annotated_types-0.8.0-py3-none-any.whl (from pydantic==2.14.1->setu-x)
-#14 1.154 Processing /wheels/pydantic_core-2.50.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (from pydantic==2.14.1->setu-x)
-#14 1.168 Processing /wheels/click-8.5.0-py3-none-any.whl (from uvicorn==0.54.0->setu-x)
-#14 1.173 Processing /wheels/h11-0.16.0-py3-none-any.whl (from uvicorn==0.54.0->setu-x)
-#14 1.312 Installing collected packages: typing-extensions, pyyaml, idna, h11, click, certifi, annotated-types, annotated-doc, uvicorn, typing-inspection, pydantic-core, opentelemetry-api, httpcore, anyio, starlette, pydantic, httpx, fastapi, setu-x
-#14 2.196 Successfully installed annotated-doc-0.0.5 annotated-types-0.8.0 anyio-4.15.1 certifi-2026.10.23 click-8.5.0 fastapi-0.162.0 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.20 opentelemetry-api-1.45.1 pydantic-2.14.1 pydantic-core-2.50.1 pyyaml-6.0.3 setu-x-0.2.0 starlette-1.10.0 typing-extensions-4.16.0 typing-inspection-0.4.4 uvicorn-0.54.0
-#14 2.196 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-#14 DONE 2.3s
+#14 CACHED
 
 #15 exporting to image
-#15 exporting layers
-#15 exporting layers 0.7s done
-#15 exporting manifest sha256:5a7d132401c4fcb847246b703dc330ee1a1a3799202cf0ffcf2d0cc3086cc57f 0.0s done
-#15 exporting config sha256:706abba7f56756ee60e7e00bfbcb36230ea587b692c55444ea0ed1b602100ac7 done
-#15 exporting attestation manifest sha256:174a18008a86ad64c5cdb5aea3dc905b166776c4793fe7c2c314f6e514ab1d09 done
-#15 exporting manifest list sha256:68b71bca977516ee1491fc163b7c6a3745a3b7aa7edd1c0ffce556141e9e2930 done
+#15 exporting layers done
+#15 exporting manifest sha256:0c24401f1a620cf195f9d277e0c40cfa9ef0338fc23d9f7fe9f565a6116ac7e4 done
+#15 exporting config sha256:7e81d517808ae9e80b94b3982808e78cd1048b79d3a1a5731c7051ea24a39b85 done
+#15 exporting attestation manifest sha256:6a9e7a9fa64361c5580061c0e2cb579e4d080059b7276d7819d3251f94d92fef done
+#15 exporting manifest list sha256:23a8b3893dd8efa22f98e53e1efbf1ebe63424b710372ac166f9f34d53031669 done
 #15 naming to docker.io/library/setu-x:0.2.0 done
-#15 unpacking to docker.io/library/setu-x:0.2.0
-#15 unpacking to docker.io/library/setu-x:0.2.0 0.2s done
-#15 DONE 0.9s
+#15 unpacking to docker.io/library/setu-x:0.2.0 done
+#15 DONE 0.1s
 #0 building with "default" instance using docker driver
 
 #1 [internal] load build definition from Dockerfile
@@ -253,13 +96,13 @@ $ /tmp/claude-0/-home-claude/3c5ce73b-5f63-53d9-a7b3-6574ae9d3afa/scratchpad/san
 #7 resolve docker.io/library/python:3.11-slim@sha256:b7a9e5f6a93d6d4a31f129bbd4bdee69efccb6ded0fb230d78aafaf37af98377 0.0s done
 #7 DONE 0.0s
 
-#8 [builder 3/4] COPY src ./src
+#8 [test 2/3] COPY pyproject.toml ./
 #8 CACHED
 
-#9 [base 2/2] WORKDIR /app
+#9 [builder 3/4] COPY src ./src
 #9 CACHED
 
-#10 [builder 1/4] COPY pyproject.toml README.md ./
+#10 [runtime 2/2] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels setu-x
 #10 CACHED
 
 #11 [builder 2/4] COPY requirements ./requirements
@@ -268,62 +111,30 @@ $ /tmp/claude-0/-home-claude/3c5ce73b-5f63-53d9-a7b3-6574ae9d3afa/scratchpad/san
 #12 [builder 4/4] RUN --mount=type=secret,id=pip_ca,required=false     if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi;     pip wheel --wheel-dir /wheels --constraint requirements/dev.lock ".[dev]"
 #12 CACHED
 
-#13 [runtime 1/2] RUN useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin setu
+#13 [test 1/3] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels "setu-x[dev]"
 #13 CACHED
 
-#14 [runtime 2/2] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels setu-x
+#14 [base 2/2] WORKDIR /app
 #14 CACHED
 
-#15 [test 1/3] RUN --mount=type=bind,from=builder,source=/wheels,target=/wheels     pip install --no-index --find-links /wheels "setu-x[dev]"
-#15 0.948 Looking in links: /wheels
-#15 0.949 Requirement already satisfied: setu-x[dev] in /usr/local/lib/python3.11/site-packages (0.2.0)
-#15 0.956 Requirement already satisfied: fastapi==0.162.0 in /usr/local/lib/python3.11/site-packages (from setu-x[dev]) (0.162.0)
-#15 0.957 Requirement already satisfied: uvicorn==0.54.0 in /usr/local/lib/python3.11/site-packages (from setu-x[dev]) (0.54.0)
-#15 0.958 Requirement already satisfied: httpx==0.28.1 in /usr/local/lib/python3.11/site-packages (from setu-x[dev]) (0.28.1)
-#15 0.960 Requirement already satisfied: pydantic==2.14.1 in /usr/local/lib/python3.11/site-packages (from setu-x[dev]) (2.14.1)
-#15 0.961 Requirement already satisfied: pyyaml==6.0.3 in /usr/local/lib/python3.11/site-packages (from setu-x[dev]) (6.0.3)
-#15 0.971 Processing /wheels/pytest-9.1.1-py3-none-any.whl (from setu-x[dev])
-#15 0.980 Processing /wheels/pytest_asyncio-1.4.0-py3-none-any.whl (from setu-x[dev])
-#15 0.984 Processing /wheels/ruff-0.17.2-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (from setu-x[dev])
-#15 1.014 Requirement already satisfied: starlette>=0.46.0 in /usr/local/lib/python3.11/site-packages (from fastapi==0.162.0->setu-x[dev]) (1.10.0)
-#15 1.015 Requirement already satisfied: typing-extensions>=4.8.0 in /usr/local/lib/python3.11/site-packages (from fastapi==0.162.0->setu-x[dev]) (4.16.0)
-#15 1.016 Requirement already satisfied: typing-inspection>=0.4.2 in /usr/local/lib/python3.11/site-packages (from fastapi==0.162.0->setu-x[dev]) (0.4.4)
-#15 1.017 Requirement already satisfied: annotated-doc>=0.0.2 in /usr/local/lib/python3.11/site-packages (from fastapi==0.162.0->setu-x[dev]) (0.0.5)
-#15 1.017 Requirement already satisfied: opentelemetry-api>=1.44.0 in /usr/local/lib/python3.11/site-packages (from fastapi==0.162.0->setu-x[dev]) (1.45.1)
-#15 1.023 Requirement already satisfied: anyio in /usr/local/lib/python3.11/site-packages (from httpx==0.28.1->setu-x[dev]) (4.15.1)
-#15 1.023 Requirement already satisfied: certifi in /usr/local/lib/python3.11/site-packages (from httpx==0.28.1->setu-x[dev]) (2026.10.23)
-#15 1.025 Requirement already satisfied: httpcore==1.* in /usr/local/lib/python3.11/site-packages (from httpx==0.28.1->setu-x[dev]) (1.0.9)
-#15 1.025 Requirement already satisfied: idna in /usr/local/lib/python3.11/site-packages (from httpx==0.28.1->setu-x[dev]) (3.20)
-#15 1.029 Requirement already satisfied: annotated-types>=0.6.0 in /usr/local/lib/python3.11/site-packages (from pydantic==2.14.1->setu-x[dev]) (0.8.0)
-#15 1.030 Requirement already satisfied: pydantic-core==2.50.1 in /usr/local/lib/python3.11/site-packages (from pydantic==2.14.1->setu-x[dev]) (2.50.1)
-#15 1.040 Processing /wheels/iniconfig-2.3.1-py3-none-any.whl (from pytest==9.1.1->setu-x[dev])
-#15 1.041 Requirement already satisfied: packaging>=22 in /usr/local/lib/python3.11/site-packages (from pytest==9.1.1->setu-x[dev]) (26.3)
-#15 1.045 Processing /wheels/pluggy-1.7.0-py3-none-any.whl (from pytest==9.1.1->setu-x[dev])
-#15 1.049 Processing /wheels/pygments-2.21.0-py3-none-any.whl (from pytest==9.1.1->setu-x[dev])
-#15 1.063 Requirement already satisfied: click>=7.0 in /usr/local/lib/python3.11/site-packages (from uvicorn==0.54.0->setu-x[dev]) (8.5.0)
-#15 1.064 Requirement already satisfied: h11>=0.8 in /usr/local/lib/python3.11/site-packages (from uvicorn==0.54.0->setu-x[dev]) (0.16.0)
-#15 1.203 Installing collected packages: ruff, pygments, pluggy, iniconfig, pytest, pytest-asyncio
-#15 2.144 Successfully installed iniconfig-2.3.1 pluggy-1.7.0 pygments-2.21.0 pytest-9.1.1 pytest-asyncio-1.4.0 ruff-0.17.2
-#15 2.144 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
-#15 DONE 2.3s
+#15 [runtime 1/2] RUN useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin setu
+#15 CACHED
 
-#16 [test 2/3] COPY pyproject.toml ./
-#16 DONE 0.0s
+#16 [builder 1/4] COPY pyproject.toml README.md ./
+#16 CACHED
 
 #17 [test 3/3] COPY tests ./tests
-#17 DONE 0.0s
+#17 CACHED
 
 #18 exporting to image
-#18 exporting layers
-#18 exporting layers 1.3s done
-#18 exporting manifest sha256:9acc60cc412fe4f16be289576bece613d2b66a5543e1643a459123f008665f64 done
-#18 exporting config sha256:24f2948bc49f4956de84aa0e01c765eff2fe8eae672d171b70113ade9db78d80 done
-#18 exporting attestation manifest sha256:f3c3731883054da9d7b7f63a5b9d84d22af0abe376be01eb72afb23df371acad done
-#18 exporting manifest list sha256:2b6f9241eb79831d3778ba4113ba95db7eed04213acf054d62fd348ce9a10ec7 done
+#18 exporting layers done
+#18 exporting manifest sha256:9bd470f95c2ae37822a09cdb1889fa5093b24a7f1395ff28428aae24e0251cea done
+#18 exporting config sha256:d783f0f0734bce082db9ca7e97bed518d7e40b14b38419e15c685b8f035d1cc9 done
+#18 exporting attestation manifest sha256:013fb382550267228a762cd1f342ae34c72b497e76bf9b77177e372b46f80eba done
+#18 exporting manifest list sha256:e2b42b30b1a44489ef1b06fcb7aa8adf90a3a97e49a744e4a7327cb8c0e93d26 done
 #18 naming to docker.io/library/setu-x-test:0.2.0 done
-#18 unpacking to docker.io/library/setu-x-test:0.2.0
-#18 unpacking to docker.io/library/setu-x-test:0.2.0 0.3s done
-#18 DONE 1.6s
+#18 unpacking to docker.io/library/setu-x-test:0.2.0 done
+#18 DONE 0.0s
 >>> A2 PASS - images built
 === A3 start stack (up -d --wait)
 $ docker compose up -d --wait --wait-timeout 120
@@ -331,33 +142,33 @@ $ docker compose up -d --wait --wait-timeout 120
  Network setu-x_default Creating 
  Network setu-x_default Created 
  Network setu-x_default Created 
- Container setu-x-pricing-1 Creating 
  Container setu-x-inventory-a-1 Creating 
- Container setu-x-inventory-a-1 Created 
+ Container setu-x-pricing-1 Creating 
  Container setu-x-pricing-1 Created 
+ Container setu-x-inventory-a-1 Created 
  Container setu-x-gateway-1 Creating 
  Container setu-x-gateway-1 Created 
- Container setu-x-inventory-a-1 Starting 
  Container setu-x-pricing-1 Starting 
- Container setu-x-inventory-a-1 Started 
+ Container setu-x-inventory-a-1 Starting 
  Container setu-x-pricing-1 Started 
- Container setu-x-pricing-1 Waiting 
+ Container setu-x-inventory-a-1 Started 
  Container setu-x-inventory-a-1 Waiting 
- Container setu-x-inventory-a-1 Healthy 
+ Container setu-x-pricing-1 Waiting 
  Container setu-x-pricing-1 Healthy 
+ Container setu-x-inventory-a-1 Healthy 
  Container setu-x-gateway-1 Starting 
  Container setu-x-gateway-1 Started 
- Container setu-x-inventory-a-1 Waiting 
  Container setu-x-pricing-1 Waiting 
  Container setu-x-gateway-1 Waiting 
+ Container setu-x-inventory-a-1 Waiting 
  Container setu-x-inventory-a-1 Healthy 
  Container setu-x-pricing-1 Healthy 
  Container setu-x-gateway-1 Healthy
 $ docker compose ps
 NAME                   IMAGE          COMMAND                  SERVICE       CREATED          STATUS                    PORTS
-setu-x-gateway-1       setu-x:0.2.0   "python -m setu_x.se…"   gateway       12 seconds ago   Up 5 seconds (healthy)    127.0.0.1:8080->8000/tcp
-setu-x-inventory-a-1   setu-x:0.2.0   "python -m setu_x.se…"   inventory-a   12 seconds ago   Up 11 seconds (healthy)   8000/tcp
-setu-x-pricing-1       setu-x:0.2.0   "python -m setu_x.se…"   pricing       12 seconds ago   Up 11 seconds (healthy)   8000/tcp
+setu-x-gateway-1       setu-x:0.2.0   "python -m setu_x.se…"   gateway       11 seconds ago   Up 5 seconds (healthy)    127.0.0.1:8080->8000/tcp
+setu-x-inventory-a-1   setu-x:0.2.0   "python -m setu_x.se…"   inventory-a   11 seconds ago   Up 11 seconds (healthy)   8000/tcp
+setu-x-pricing-1       setu-x:0.2.0   "python -m setu_x.se…"   pricing       11 seconds ago   Up 11 seconds (healthy)   8000/tcp
 >>> A3 PASS - stack started, compose reports healthy
 === A4 health status of every service
 inventory-a: healthy
@@ -371,12 +182,12 @@ inventory-a ready: {"status":"ready","checks":{"config":"ok"},"service":"invento
 pricing ready: {"status":"ready","checks":{"config":"ok"},"service":"pricing","instance":"pricing","env":"azure-simulated","mode":"local","version":"0.2.0"}
 >>> A5 PASS - live/ready bodies match documented shape for all services
 === A6 request through the gateway produces the expected result
-HTTP 200 in 0.041s: {"order_id":"ord-0ed685d4fa974a3a","request_id":"0ed685d4fa974a3aba0d78a5c6dddd97","trace_id":"668c851aee755de77ad729f7074505d2","status":"confirmed","sku":"SKU-001","quantity":2,"customer_tier":"standard","inventory":{"available":8,"in_stock":true,"instance":"inventory-a","env":"aws-simulated"},"pricing":{"unit_price_cents":5500,"discount_pct":0,"total_cents":11000,"currency":"DEMO","price_source":"pricing-service","instance":"pricing"},"timings_ms":{"total":13.544,"inventory":12.968,"pricing":12.621},"dependencies":[{"name":"inventory","ok":true,"status_code":200,"error_type":null,"elapsed_ms":12.968,"served_by":"inventory-a@aws-simulated","attempts":1},{"name":"pricing","ok":true,"status_code":200,"error_type":null,"elapsed_ms":12.621,"served_by":"pricing@azure-simulated","attempts":1}],"call_mode":"parallel","environment_mode":"local"}
+HTTP 200 in 0.032s: {"order_id":"ord-f2d16088462b4298","request_id":"f2d16088462b42989e86026a82a2ef4d","trace_id":"2847e81e71d0db1773c4fca1f1a58b7c","status":"confirmed","sku":"SKU-001","quantity":2,"customer_tier":"standard","inventory":{"available":8,"in_stock":true,"instance":"inventory-a","env":"aws-simulated"},"pricing":{"unit_price_cents":5500,"discount_pct":0,"total_cents":11000,"currency":"DEMO","price_source":"pricing-service","instance":"pricing"},"timings_ms":{"total":14.535,"inventory":11.441,"pricing":13.857},"dependencies":[{"name":"inventory","ok":true,"status_code":200,"error_type":null,"elapsed_ms":11.441,"served_by":"inventory-a@aws-simulated","attempts":1},{"name":"pricing","ok":true,"status_code":200,"error_type":null,"elapsed_ms":13.857,"served_by":"pricing@azure-simulated","attempts":1}],"call_mode":"parallel","environment_mode":"local"}
 >>> A6 PASS - confirmed; available=8, total_cents=11000 (golden values)
 === A7 automated tests (unit + integration) in the test container
 $ docker compose --profile test run --rm tests
- Container setu-x-tests-run-f31e5c215cf3 Creating 
- Container setu-x-tests-run-f31e5c215cf3 Created 
+ Container setu-x-tests-run-b8433a409888 Creating 
+ Container setu-x-tests-run-b8433a409888 Created 
 ============================= test session starts ==============================
 platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
 rootdir: /app
@@ -393,12 +204,12 @@ tests/unit/test_config.py ...........                                    [ 51%]
 tests/unit/test_domain.py ................................               [ 94%]
 tests/unit/test_ids.py ....                                              [100%]
 
-======================= 74 passed, 4 deselected in 1.31s =======================
+======================= 74 passed, 4 deselected in 1.30s =======================
 >>> A7 PASS - unit + integration tests passed
 === A8 end-to-end tests against the running stack
 $ docker compose --profile test run --rm tests pytest -p no:cacheprovider -m e2e
- Container setu-x-tests-run-02ed5407d5fe Creating 
- Container setu-x-tests-run-02ed5407d5fe Created 
+ Container setu-x-tests-run-138a65469388 Creating 
+ Container setu-x-tests-run-138a65469388 Created 
 ============================= test session starts ==============================
 platform linux -- Python 3.11.17, pytest-9.1.1, pluggy-1.7.0
 rootdir: /app
@@ -410,30 +221,30 @@ collected 78 items / 74 deselected / 4 selected
 
 tests/end_to_end/test_stack.py ....                                      [100%]
 
-======================= 4 passed, 74 deselected in 0.11s =======================
+======================= 4 passed, 74 deselected in 0.12s =======================
 >>> A8 PASS - e2e tests passed
 === A9 stopped dependency -> bounded 503, then recovery
 $ docker compose stop inventory-a
  Container setu-x-inventory-a-1 Stopping 
  Container setu-x-inventory-a-1 Stopped
-inventory stopped: HTTP 503 in 0.035s: {"error":{"code":"dependency_unavailable","message":"inventory unavailable (connect_error)","request_id":"45cb0d70cf7e40219a5f33772be56bcd","details":{"dependencies":[{"name":"inventory","ok":false,"status_code":null,"error_type":"connect_error","elapsed_ms":28.074,"served_by":null,"attempts":1},{"name":"pricing","ok":true,"status_code":200,"error_type":null,"elapsed_ms":5.988,"served_by":"pricing@azure-simulated","attempts":1}],"timings_ms":{"total":28.162}}}}
+inventory stopped: HTTP 503 in 0.036s: {"error":{"code":"dependency_unavailable","message":"inventory unavailable (connect_error)","request_id":"b29d4e5dc7a84e609cb5bc9816c8021c","details":{"dependencies":[{"name":"inventory","ok":false,"status_code":null,"error_type":"connect_error","elapsed_ms":28.091,"served_by":null,"attempts":1},{"name":"pricing","ok":true,"status_code":200,"error_type":null,"elapsed_ms":3.189,"served_by":"pricing@azure-simulated","attempts":1}],"timings_ms":{"total":28.188}}}}
 $ docker compose start inventory-a
  Container setu-x-inventory-a-1 Starting 
  Container setu-x-inventory-a-1 Started
-after restart: HTTP 200 in 0.027s
->>> A9 PASS - 503 dependency_unavailable in 0.035s (bound 3.5s); recovered to HTTP 200
+after restart: HTTP 200 in 0.017s
+>>> A9 PASS - 503 dependency_unavailable in 0.036s (bound 3.5s); recovered to HTTP 200
 === A10 unresponsive (paused) dependency -> 503 cut by timeout, no hang
 $ docker compose pause inventory-a
  Container setu-x-inventory-a-1 Paused
-inventory paused: HTTP 503 in 0.808s: {"error":{"code":"dependency_unavailable","message":"inventory unavailable (timeout)","request_id":"4b228e2deae945bbab9ddbf3989359fe","details":{"dependencies":[{"name":"inventory","ok":false,"status_code":null,"error_type":"timeout","elapsed_ms":802.124,"served_by":null,"attempts":1},{"name":"pricing","ok":true,"status_code":200,"error_type":null,"elapsed_ms":2.208,"served_by":"pricing@azure-simulated","attempts":1}],"timings_ms":{"total":802.195}}}}
+inventory paused: HTTP 503 in 0.807s: {"error":{"code":"dependency_unavailable","message":"inventory unavailable (timeout)","request_id":"ac20a64337c9483aa3f750f10ef83014","details":{"dependencies":[{"name":"inventory","ok":false,"status_code":null,"error_type":"timeout","elapsed_ms":802.117,"served_by":null,"attempts":1},{"name":"pricing","ok":true,"status_code":200,"error_type":null,"elapsed_ms":2.512,"served_by":"pricing@azure-simulated","attempts":1}],"timings_ms":{"total":802.195}}}}
 $ docker compose unpause inventory-a
  Container setu-x-inventory-a-1 Unpaused
->>> A10 PASS - 503 (timeout) in 0.808s; expected ~0.8s per-attempt timeout (bound < 1.6s)
+>>> A10 PASS - 503 (timeout) in 0.807s; expected ~0.8s per-attempt timeout (bound < 1.6s)
 === A11 pricing stopped -> degraded order with flagged list price
 $ docker compose stop pricing
  Container setu-x-pricing-1 Stopping 
  Container setu-x-pricing-1 Stopped
-pricing stopped: HTTP 200 in 0.035s: {"order_id":"ord-1299c7902ec64ba3","request_id":"1299c7902ec64ba3a1ec531e18788f10","trace_id":"c99d69ef607a54fd0c39b3b119620e2e","status":"degraded","sku":"SKU-001","quantity":2,"customer_tier":"standard","inventory":{"available":8,"in_stock":true,"instance":"inventory-a","env":"aws-simulated"},"pricing":{"unit_price_cents":5500,"discount_pct":0,"total_cents":11000,"currency":"DEMO","price_source":"fallback-list-price","instance":null},"timings_ms":{"total":29.131,"inventory":12.633,"pricing":28.348},"dependencies":[{"name":"inventory","ok":true,"status_code":200,"error_type":null,"elapsed_ms":12.633,"served_by":"inventory-a@aws-simulated","attempts":1},{"name":"pricing","ok":false,"status_code":null,"error_type":"connect_error","elapsed_ms":28.348,"served_by":null,"attempts":1}],"call_mode":"parallel","environment_mode":"local"}
+pricing stopped: HTTP 200 in 0.035s: {"order_id":"ord-ef7b270dd4ec4467","request_id":"ef7b270dd4ec4467b54c23df8d75627b","trace_id":"96ea1ece0726b197f80071025d71d78b","status":"degraded","sku":"SKU-001","quantity":2,"customer_tier":"standard","inventory":{"available":8,"in_stock":true,"instance":"inventory-a","env":"aws-simulated"},"pricing":{"unit_price_cents":5500,"discount_pct":0,"total_cents":11000,"currency":"DEMO","price_source":"fallback-list-price","instance":null},"timings_ms":{"total":25.711,"inventory":7.753,"pricing":25.094},"dependencies":[{"name":"inventory","ok":true,"status_code":200,"error_type":null,"elapsed_ms":7.753,"served_by":"inventory-a@aws-simulated","attempts":1},{"name":"pricing","ok":false,"status_code":null,"error_type":"connect_error","elapsed_ms":25.094,"served_by":null,"attempts":1}],"call_mode":"parallel","environment_mode":"local"}
 $ docker compose start pricing
  Container setu-x-pricing-1 Starting 
  Container setu-x-pricing-1 Started
@@ -448,8 +259,8 @@ gateway port binding: 127.0.0.1:8080
 $ docker compose stop
  Container setu-x-gateway-1 Stopping 
  Container setu-x-gateway-1 Stopped 
- Container setu-x-pricing-1 Stopping 
  Container setu-x-inventory-a-1 Stopping 
+ Container setu-x-pricing-1 Stopping 
  Container setu-x-inventory-a-1 Stopped 
  Container setu-x-pricing-1 Stopped
 exit codes: gateway=0 inventory-a=0 pricing=0
@@ -460,14 +271,14 @@ $ docker compose down
  Container setu-x-gateway-1 Stopped 
  Container setu-x-gateway-1 Removing 
  Container setu-x-gateway-1 Removed 
- Container setu-x-inventory-a-1 Stopping 
  Container setu-x-pricing-1 Stopping 
- Container setu-x-inventory-a-1 Stopped 
- Container setu-x-inventory-a-1 Removing 
- Container setu-x-inventory-a-1 Removed 
+ Container setu-x-inventory-a-1 Stopping 
  Container setu-x-pricing-1 Stopped 
  Container setu-x-pricing-1 Removing 
+ Container setu-x-inventory-a-1 Stopped 
+ Container setu-x-inventory-a-1 Removing 
  Container setu-x-pricing-1 Removed 
+ Container setu-x-inventory-a-1 Removed 
  Network setu-x_default Removing 
  Network setu-x_default Removed
 $ docker compose down
@@ -496,8 +307,8 @@ A5   PASS live/ready bodies match documented shape for all services
 A6   PASS confirmed; available=8, total_cents=11000 (golden values)
 A7   PASS unit + integration tests passed
 A8   PASS e2e tests passed
-A9   PASS 503 dependency_unavailable in 0.035s (bound 3.5s); recovered to HTTP 200
-A10  PASS 503 (timeout) in 0.808s; expected ~0.8s per-attempt timeout (bound < 1.6s)
+A9   PASS 503 dependency_unavailable in 0.036s (bound 3.5s); recovered to HTTP 200
+A10  PASS 503 (timeout) in 0.807s; expected ~0.8s per-attempt timeout (bound < 1.6s)
 A11  PASS degraded with fallback-list-price in 0.035s
 A12  PASS non-root, read-only rootfs, cap_drop ALL, no-new-privileges, 0.5 CPU / 256MiB, port on 127.0.0.1
 A13  PASS all services exited 0 on SIGTERM; restarted; order HTTP 200
