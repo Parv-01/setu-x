@@ -75,4 +75,4 @@ pwsh -ExecutionPolicy Bypass -File scripts/verify.ps1            # Phase 7: ever
 - **Code** (`src/`, `scripts/`, `dashboard/`, `tests/`, `configs/`, `Dockerfile`, `compose.yaml`, `Makefile`, `.github/`): [Apache License 2.0](LICENSE). See also [`NOTICE`](NOTICE).
 - **Documentation, figures, presentation and experiment results** (`docs/`, `presentation/`, `results/`, this README's text): [Creative Commons Attribution 4.0 International](LICENSES/CC-BY-4.0.txt).
 
-Copyright 2026 Parv Agarwal. Independent mini-project, not an officially endorsed IIT Patna project.
+Copyright 2026 Parv Agarwal. Independent mini-project
