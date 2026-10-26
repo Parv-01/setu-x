@@ -12,7 +12,7 @@ SETU-X is a local-first experimental platform. It shows how a small containerize
 
 **Author:** Parv Agarwal, Junior Research Associate (Technical), AI NLP ML Research Laboratory, IIT Patna. Independent mini-project, not an officially endorsed IIT Patna project.
 
-**Status:** Phase 8 of 11 complete. Experiment results from one Windows machine are in [`results/`](results/) and the analysis is in [`docs/findings.md`](docs/findings.md); they describe that machine only. Dashboard at http://127.0.0.1:8090/. Six services: gateway, controller, inventory-a, inventory-b, pricing, runner. Real AWS/Azure/GCP integration is **not implemented** (adapters validate configuration only; see [`docs/cloud_setup.md`](docs/cloud_setup.md)). Progress: [`docs/handover.md`](docs/handover.md).
+**Status:** complete (all phases, 0–10). Experiment results from one Windows PC are in [`results/`](results/) and the analysis is in [`docs/findings.md`](docs/findings.md); they describe that machine only. Final five-slide deck: [`presentation/setu_x.pptx`](presentation/setu_x.pptx) ([PDF render](presentation/setu_x.pdf), [voiceover](presentation/voiceover.md)). Dashboard at http://127.0.0.1:8090/. Six services: gateway, controller, inventory-a, inventory-b, pricing, runner. Real AWS/Azure/GCP integration is **not implemented** (adapters validate configuration only; see [`docs/cloud_setup.md`](docs/cloud_setup.md)). Handover: [`docs/handover.md`](docs/handover.md).
 
 ## Quick start (Docker only)
 

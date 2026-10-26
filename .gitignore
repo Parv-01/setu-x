@@ -28,3 +28,4 @@ Thumbs.db
 !.vscode/extensions.json
 .idea/
 .ruff_cache/
+presentation/node_modules/

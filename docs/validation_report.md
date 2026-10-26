@@ -1,6 +1,6 @@
 # Validation Report (Phase 7)
 
-**Scope.** This report covers what has been executed and verified for SETU-X up to the end of Phase 8: the application, the experiment harness, the dashboard and the experiment campaign. The experimental findings themselves are in `docs/findings.md`. Every "PASS" below names the log that shows it. A check that was not executed is listed as not executed, never as passing.
+**Scope.** This report covers what has been executed and verified for SETU-X up to the end of Phase 10 (final): the application, the experiment harness, the dashboard and the experiment campaign. The experimental findings themselves are in `docs/findings.md`. Every "PASS" below names the log that shows it. A check that was not executed is listed as not executed, never as passing.
 
 **Versions.**
 - Code: SETU-X 0.6.0, verified on commit `21a0ba6` (Linux; the first verify run on `eb4d2f0` also passed 18/18).
@@ -52,6 +52,9 @@ In the build workspace, `docker compose build` cannot run (it needs host network
 | 5 Experiment harness | PASS 15/15 | Run 1: 14/15 (check bug, below); re-run PASS 15/15. Injected 100 ms measured as +106.8 ms |
 | 6 Dashboard | Run 1: 14/15 (test not updated, below); re-run PASS 15/15 | PASS 15/15, including 24 browser-test executions in local and simulated mode |
 | 7 Clean-checkout verification | PASS 18/18 | PASS 18/18 |
+| 8 Experiment campaign | — | 8/8 experiments completed and validated (64.8 min); re-validated in the workspace by `analyze_results.py` |
+| 9 GitHub readiness | All CI steps run locally (337 passed, JS 7/7, e2e 10/10, hygiene, docs) | CI on GitHub: PASS (both jobs) |
+| 10 Presentation and voiceover | Deck validated and rendered; voiceover check PASS | — |
 
 Regression runs: Phase 2 on Phase 3, Phase 3 on Phase 4, Phase 4 on Phase 5, Phase 5 on Phase 6, all PASS (`docs/evidence/*_regression_*.log`).
 
@@ -83,7 +86,7 @@ Regression runs: Phase 2 on Phase 3, Phase 3 on Phase 4, Phase 4 on Phase 5, Pha
 | All commands in the README tested | Met | V17: 20 commands. Most were executed in the run; the per-phase acceptance commands are backed by PASS logs. Where the workspace could not run a README command as written (see §1), the log says so |
 | No credentials, private keys or fabricated experimental results | Met | V2; the only committed results are the 8 Phase 8 experiments, re-validated from the records by `scripts/analyze_results.py` |
 
-## 5. Deliverable checklist (project brief §15): status at the end of Phase 7
+## 5. Deliverable checklist (project brief §15): final status (end of Phase 10)
 
 | Item | Status |
 |---|---|
@@ -97,10 +100,11 @@ Regression runs: Phase 2 on Phase 3, Phase 3 on Phase 4, Phase 4 on Phase 5, Pha
 | Actual experiment artifacts; evidence-based analysis | Met: `results/2026102*/`, `results/analysis/`, `docs/findings.md` |
 | Limitations and threats to validity | Met: `docs/findings.md` (threats to validity), §6 below and `docs/methodology.md` §10 |
 | Unit, integration, end-to-end tests; clean startup and shutdown; validated exports; validation report | Done (this report) |
-| Security and secret checks | Done (V2 in `verify.ps1`); repeated in CI in Phase 9 |
-| GitHub Actions workflow | **Phase 9** |
-| Editable `.pptx`, citations, results, under 30 minutes, render check | **Phase 10** (a 6-slide progress deck exists; it is not the final 5-slide deck) |
-| `voiceover.md` | **Phase 11** (written only after the deck is final) |
+| Security and secret checks | Done: V2 in `verify.ps1`, and `scripts/repo_check.py` in CI |
+| GitHub Actions workflow | Done: `.github/workflows/ci.yml`. First run on GitHub (commit `0bea98b`, 2026-10-26): both jobs passed (checks; Compose stack + e2e) |
+| License | Done: Apache-2.0 (code), CC BY 4.0 (docs, figures, presentation, results) |
+| Editable `.pptx`, citations, results, render check | Done: `presentation/setu_x.pptx` (5 slides, asserted by `build_deck.js`), 13 numbered references, native charts and figures built from `results/analysis/`, two genuine dashboard captures; validated with the OOXML checker, rendered through LibreOffice (`setu_x.pdf`) and inspected slide by slide |
+| `voiceover.md` | Done after the deck was final: 831 words ≈ 5.5–5.9 min, one section per slide, titles match (`presentation/check_voiceover.py` PASS); also in the speaker notes |
 
 ## 6. Defects found during development (all fixed, with evidence kept)
 
@@ -117,7 +121,7 @@ Regression runs: Phase 2 on Phase 3, Phase 3 on Phase 4, Phase 4 on Phase 5, Pha
 | 6 | Dashboard success messages were wiped by the refresh that followed them; optional parts rendered as "null" | code | browser tests / screenshots | `put()` helper; refresh without clearing |
 | 6 | e2e test still expected 4 services after the runner joined `/api/services` | test | acceptance E5 | test updated |
 
-## 7. Known limitations (none blocks Phase 8)
+## 7. Known limitations
 
 | Limitation | Severity | Effect | Mitigation |
 |---|---|---|---|

@@ -1,0 +1,8 @@
+{
+  "name": "setu-x-presentation",
+  "private": true,
+  "description": "Generator for presentation/setu_x.pptx (node build_deck.js)",
+  "license": "Apache-2.0",
+  "scripts": { "build": "node build_deck.js" },
+  "dependencies": { "pptxgenjs": "4.0.1" }
+}
