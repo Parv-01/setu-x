@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import html
 import json
+import os
 import re
 import sys
 import time
@@ -22,7 +23,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CANDIDATES = ROOT / "docs" / "research" / "reference_candidates.json"
 OUT = ROOT / "docs" / "research" / "doi_verification.json"
-UA = "setu-x-reference-check/0.1 (mailto:parv.nlpiitp@gmail.com)"
+# Crossref asks for a contact address ("polite pool"). It is read from the environment so no
+# personal address is stored in the repository: set SETU_CROSSREF_MAILTO=<your address>.
+_MAILTO = os.environ.get("SETU_CROSSREF_MAILTO", "").strip()
+UA = "setu-x-reference-check/0.1" + (f" (mailto:{_MAILTO})" if _MAILTO else "")
 
 
 def fetch_json(url: str) -> dict | None:

@@ -1,0 +1,97 @@
+# Continuous integration for SETU-X. Local mode only: no cloud credentials, secrets or
+# deployments are used or needed. Third-party actions are pinned to commit SHAs.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      browser:
+        description: "Also run the Playwright dashboard tests (pulls a ~3.5 GB image)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: lint, unit/contract/integration tests, repo hygiene
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1  # v7.1.0
+        with:
+          node-version: "22"
+      - name: Install (pinned by requirements/dev.lock)
+        run: python -m pip install -e ".[dev]" -c requirements/dev.lock
+      - name: Repository hygiene (secrets, credential files, unvalidated results)
+        run: python scripts/repo_check.py
+      - name: Lint
+        run: ruff check --no-cache src tests scripts
+      - name: Config validation (good configs pass, bad fixtures fail)
+        run: |
+          python -m setu_x.config_check configs
+          if python -m setu_x.config_check tests/fixtures/bad_config; then
+            echo "bad_config fixture was accepted"; exit 1
+          fi
+      - name: Unit, contract and integration tests
+        run: python -m pytest -p no:cacheprovider -m "not e2e and not browser"
+      - name: Dashboard JS tests
+        run: node --test dashboard/tests/*.test.mjs
+      - name: Docs and bibliography check
+        run: python scripts/check_docs.py
+
+  stack:
+    name: Docker Compose stack + e2e (local mode)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    needs: checks
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Validate compose.yaml
+        run: docker compose config --quiet
+      - name: Build and start (waits for health checks)
+        run: docker compose up --build -d --wait
+      - name: Published ports are bound to 127.0.0.1 only
+        run: |
+          docker compose ps --format json | python3 -c '
+          import json, sys
+          bad = []
+          for line in sys.stdin:
+              line = line.strip()
+              if not line:
+                  continue
+              items = json.loads(line)
+              for svc in (items if isinstance(items, list) else [items]):
+                  name = svc.get("Service")
+                  for p in svc.get("Publishers") or []:
+                      if p.get("PublishedPort") and p.get("URL") not in ("127.0.0.1", "::1"):
+                          bad.append(f"{name}: {p}")
+          print("\n".join(bad) or "all published ports on loopback")
+          sys.exit(1 if bad else 0)'
+      - name: End-to-end tests
+        run: docker compose --profile test run --rm --build tests pytest -p no:cacheprovider -m e2e
+      - name: Browser tests (manual runs only)
+        if: github.event_name == 'workflow_dispatch' && inputs.browser
+        run: docker compose --profile browser run --rm browser-tests
+      - name: Service logs on failure
+        if: failure()
+        run: docker compose logs --tail=200
+      - name: Tear down
+        if: always()
+        run: docker compose down -v --remove-orphans

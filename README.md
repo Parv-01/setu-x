@@ -64,8 +64,10 @@ pwsh -ExecutionPolicy Bypass -File scripts/verify.ps1            # Phase 7: ever
 - Literature review: [`docs/literature_review.md`](docs/literature_review.md), bibliography [`docs/references.bib`](docs/references.bib)
 - Implementation plan: [`docs/implementation_plan.md`](docs/implementation_plan.md)
 - Real-cloud status and plan: [`docs/cloud_setup.md`](docs/cloud_setup.md)
+- Experimental findings: [`docs/findings.md`](docs/findings.md)
+- CI, security and release: [`.github/workflows/ci.yml`](.github/workflows/ci.yml), [`SECURITY.md`](SECURITY.md), [`docs/release_checklist.md`](docs/release_checklist.md), [`CITATION.cff`](CITATION.cff)
 - Windows + VS Code testing: [`docs/testing_on_windows.md`](docs/testing_on_windows.md)
 
 ## License
 
-Not yet chosen (Phase 9). Until then, all rights reserved by the author.
+Not yet chosen: this is the author's decision (options in [`docs/release_checklist.md`](docs/release_checklist.md)). Until then, all rights reserved by the author.

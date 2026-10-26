@@ -2,8 +2,8 @@
 
 Resume from this file if work is interrupted. Updated at every phase boundary.
 
-**Last updated:** 2026-10-26 (Phase 8 complete; Phase 9 starting)
-**Current phase:** Phase 8 complete: Windows campaign (8/8 experiments, records validated), analysis and `docs/findings.md`. Phase 9 (GitHub readiness) next.
+**Last updated:** 2026-10-26 (Phase 9 in progress)
+**Current phase:** Phase 8 complete: Windows campaign (8/8 experiments, records validated), analysis and `docs/findings.md`. Phase 9 (GitHub readiness): CI workflow, repository check, SECURITY.md, CITATION.cff, Dependabot and release checklist done and tested locally. Waiting on Parv for the license choice, the repository name, the e-mail-in-history decision and permission to push.
 
 ## Completed
 
@@ -117,6 +117,12 @@ Second defect found by the Phase 4 regression run (C7 failed once, then passed o
 - Local test run without Docker: `pip install -e .[dev] -c requirements/dev.lock`, then `python -m pytest -m 'not e2e'`.
 - PowerShell 7.6.8: `<scratchpad>/pwsh/pwsh`, symlinked to `/usr/local/bin/pwsh` (needed because the acceptance script calls `pwsh` for `fault_container.ps1`).
 - Sync: **use a new archive file name for every sync** (reusing a name once delivered a stale copy despite reporting success) and compare `sha256sum` on both sides. Then tar → `device_commit_files` to `.p0\setu-x-<phase>.tgz` → on the device: `tar --overwrite --exclude='setu-x/.git/objects/*'`, then `tar --skip-old-files … 'setu-x/.git/objects'`, then `git fsck`.
+
+## Phase 9 status
+
+- Added: `.github/workflows/ci.yml` (checks + stack jobs; actions pinned to SHAs, read-only token), `.github/dependabot.yml`, `scripts/repo_check.py` (Python port of verify V2; proven to catch a planted key, a password literal, a tracked `.env` and an incomplete results directory), `SECURITY.md`, `CITATION.cff` (validated with cffconvert), `docs/release_checklist.md`.
+- `scripts/verify_references.py` no longer contains an e-mail address (`SETU_CROSSREF_MAILTO`).
+- Executed locally: every `checks` step in a fresh venv (337 passed, 1 skipped; JS 7/7; ruff, hygiene and docs pass), plus from `stack`: the port assertion and e2e (10 passed). `actionlint` clean. Not executed: the workflow on GitHub (needs a push).
 
 ## Next commands (Phase 9)
 

@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use SETU-X or its results, please cite it as below."
+title: "SETU-X: a local-first experimental platform for microservices across heterogeneous (simulated) cloud environments"
+type: software
+authors:
+  - family-names: Agarwal
+    given-names: Parv
+version: 0.6.0
+abstract: >-
+  A Docker-first microservices testbed with a gateway, replicated services, simulated
+  AWS/Azure/GCP environment labels, bounded fault injection, retries, timeouts, circuit
+  breakers, cross-environment fallback, an open-loop experiment harness with run-level
+  statistics, and a dashboard. Results describe one machine; real cloud providers were not used.
+keywords:
+  - microservices
+  - multi-cloud
+  - resilience
+  - circuit breaker
+  - fault injection
+  - experiment methodology
