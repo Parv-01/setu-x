@@ -1,0 +1,114 @@
+{
+  "campaign": "20261026T081408Z",
+  "label": "phase8 campaign 20261026T081408Z",
+  "git_commit": "bfe122c",
+  "uncommitted": [],
+  "os": "Microsoft Windows 10.0.26300",
+  "logical_cpus_host": 20,
+  "docker_server": "29.4.2",
+  "docker_os": "Docker Desktop",
+  "docker_cpus": 20,
+  "docker_mem_gib": 7.59,
+  "compose": "5.1.3",
+  "powershell": "7.6.8",
+  "scenarios_local": [
+    "A_baseline",
+    "C_service_failure",
+    "D_policies_hang",
+    "D_retries_transient",
+    "E_scaling"
+  ],
+  "scenarios_simulated": [
+    "B_network_delay",
+    "F_placement",
+    "G_hybrid_fallback"
+  ],
+  "quick": false,
+  "experiments": [
+    {
+      "scenario": "A_baseline",
+      "mode": "local",
+      "exit_code": 0,
+      "dir": "results\\20261026T081511Z-A_baseline-d47b42",
+      "experiment_id": "20261026T081511Z-A_baseline-d47b42",
+      "status": "completed",
+      "validation_ok": true,
+      "warnings": 0
+    },
+    {
+      "scenario": "C_service_failure",
+      "mode": "local",
+      "exit_code": 0,
+      "dir": "results\\20261026T082045Z-C_service_failure-08f3cb",
+      "experiment_id": "20261026T082045Z-C_service_failure-08f3cb",
+      "status": "completed",
+      "validation_ok": true,
+      "warnings": 0
+    },
+    {
+      "scenario": "D_policies_hang",
+      "mode": "local",
+      "exit_code": 0,
+      "dir": "results\\20261026T082525Z-D_policies_hang-929ca0",
+      "experiment_id": "20261026T082525Z-D_policies_hang-929ca0",
+      "status": "completed",
+      "validation_ok": true,
+      "warnings": 0
+    },
+    {
+      "scenario": "D_retries_transient",
+      "mode": "local",
+      "exit_code": 0,
+      "dir": "results\\20261026T083440Z-D_retries_transient-2022ef",
+      "experiment_id": "20261026T083440Z-D_retries_transient-2022ef",
+      "status": "completed",
+      "validation_ok": true,
+      "warnings": 0
+    },
+    {
+      "scenario": "E_scaling",
+      "mode": "local",
+      "exit_code": 0,
+      "dir": "results\\20261026T084007Z-E_scaling-c1fe8e",
+      "experiment_id": "20261026T084007Z-E_scaling-c1fe8e",
+      "status": "completed",
+      "validation_ok": true,
+      "warnings": 0
+    },
+    {
+      "scenario": "B_network_delay",
+      "mode": "simulated",
+      "exit_code": 0,
+      "dir": "results\\20261026T084953Z-B_network_delay-8d6c60",
+      "experiment_id": "20261026T084953Z-B_network_delay-8d6c60",
+      "status": "completed",
+      "validation_ok": true,
+      "warnings": 0
+    },
+    {
+      "scenario": "F_placement",
+      "mode": "simulated",
+      "exit_code": 0,
+      "dir": "results\\20261026T090427Z-F_placement-60bad3",
+      "experiment_id": "20261026T090427Z-F_placement-60bad3",
+      "status": "completed",
+      "validation_ok": true,
+      "warnings": 0
+    },
+    {
+      "scenario": "G_hybrid_fallback",
+      "mode": "simulated",
+      "exit_code": 0,
+      "dir": "results\\20261026T091145Z-G_hybrid_fallback-08be77",
+      "experiment_id": "20261026T091145Z-G_hybrid_fallback-08be77",
+      "status": "completed",
+      "validation_ok": true,
+      "warnings": 0
+    }
+  ],
+  "cpu_model": "13th Gen Intel(R) Core(TM) i5-13500",
+  "on_battery": false,
+  "power_plan": "Power Scheme GUID: 381b4222-f694-41f0-9685-ff5bb260df2e  (Balanced)",
+  "finished_utc": "2026-10-26T09:19:04.0224824Z",
+  "duration_min": 64.8
+}

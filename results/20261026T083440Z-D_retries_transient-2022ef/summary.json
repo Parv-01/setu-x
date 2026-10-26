@@ -1,0 +1,2022 @@
+{
+  "experiment_id": "20261026T083440Z-D_retries_transient-2022ef",
+  "scenario_id": "D_retries_transient",
+  "status": "completed",
+  "environment_mode": "local",
+  "git_commit": "bfe122c",
+  "measurement_window_s": 30.0,
+  "warmup_s": 5.0,
+  "runs_completed": 9,
+  "runs_planned": 9,
+  "validation": {
+    "rows_jsonl": 6224,
+    "rows_csv": 6224,
+    "rows_valid": 6224,
+    "rows_flagged": 0,
+    "flagged": [],
+    "rows_scheduled": 6224,
+    "problems": [],
+    "ok": true
+  },
+  "per_run": [
+    {
+      "run_id": "retries-1-r0",
+      "condition": "retries-1",
+      "run_index": 0,
+      "seed": 405011222,
+      "measure_rows": 543,
+      "warmup_rows": 94,
+      "sent": 543,
+      "outcomes": {
+        "confirmed": 437,
+        "unavailable": 106
+      },
+      "http_status": {
+        "200": 437,
+        "503": 106
+      },
+      "error_types": {
+        "dependency_unavailable": 106
+      },
+      "ok": 437,
+      "available": 437,
+      "failed": 106,
+      "generator_dropped": 0,
+      "success_rate": 0.804788,
+      "availability": 0.804788,
+      "failure_rate": 0.195212,
+      "offered_rps": 18.1,
+      "throughput_ok_rps": 14.567,
+      "latency_ok_ms": {
+        "n": 437,
+        "mean": 31.117,
+        "min": 6.219,
+        "max": 204.784,
+        "stdev": 24.504,
+        "p50": 22.021,
+        "p90": 66.164,
+        "p95": 74.745,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "latency_responded_ms": {
+        "n": 543,
+        "mean": 35.812,
+        "min": 6.219,
+        "max": 204.784,
+        "stdev": 27.412,
+        "p50": 24.672,
+        "p90": 69.363,
+        "p95": 77.388,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "service_latency_ok_ms": {
+        "n": 437,
+        "mean": 30.077,
+        "min": 5.456,
+        "max": 203.994,
+        "stdev": 24.503,
+        "p50": 20.972,
+        "p90": 64.835,
+        "p95": 73.7,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "send_lag_ms": {
+        "n": 543,
+        "mean": 1.028,
+        "min": 0.158,
+        "max": 2.708,
+        "stdev": 0.516,
+        "p50": 0.936,
+        "p90": 1.748,
+        "p95": 2.149,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "inventory_ms": {
+        "n": 437,
+        "mean": 20.351,
+        "min": 2.398,
+        "max": 184.173,
+        "stdev": 21.961,
+        "p50": 10.772,
+        "p90": 53.529,
+        "p95": 62.272,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "pricing_ms": {
+        "n": 437,
+        "mean": 8.273,
+        "min": 2.02,
+        "max": 81.678,
+        "stdev": 8.068,
+        "p50": 7.73,
+        "p90": 11.553,
+        "p95": 13.988,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "injected_delay_ms_mean": 0.0,
+      "retries": 234,
+      "fallback_requests": 0,
+      "breaker_rejections": 0,
+      "inventory_instances": {
+        "inventory-a": 437
+      },
+      "recovery": [
+        {
+          "fault_at_s": 0.0005,
+          "fault_end_s": 31.0,
+          "window_s": 1.0,
+          "hold_s": 3.0,
+          "threshold": 0.95,
+          "baseline_success_rate": null,
+          "impacted": null,
+          "recovery_s": null,
+          "note": "no requests before the fault: baseline undefined"
+        }
+      ]
+    },
+    {
+      "run_id": "retries-1-r1",
+      "condition": "retries-1",
+      "run_index": 1,
+      "seed": 405011323,
+      "measure_rows": 578,
+      "warmup_rows": 97,
+      "sent": 578,
+      "outcomes": {
+        "confirmed": 444,
+        "unavailable": 134
+      },
+      "http_status": {
+        "200": 444,
+        "503": 134
+      },
+      "error_types": {
+        "dependency_unavailable": 134
+      },
+      "ok": 444,
+      "available": 444,
+      "failed": 134,
+      "generator_dropped": 0,
+      "success_rate": 0.768166,
+      "availability": 0.768166,
+      "failure_rate": 0.231834,
+      "offered_rps": 19.267,
+      "throughput_ok_rps": 14.8,
+      "latency_ok_ms": {
+        "n": 444,
+        "mean": 32.292,
+        "min": 5.88,
+        "max": 186.241,
+        "stdev": 26.211,
+        "p50": 22.63,
+        "p90": 67.441,
+        "p95": 77.423,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "latency_responded_ms": {
+        "n": 578,
+        "mean": 38.364,
+        "min": 5.88,
+        "max": 192.332,
+        "stdev": 27.745,
+        "p50": 28.038,
+        "p90": 71.937,
+        "p95": 81.462,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "service_latency_ok_ms": {
+        "n": 444,
+        "mean": 31.262,
+        "min": 5.317,
+        "max": 185.937,
+        "stdev": 26.237,
+        "p50": 21.486,
+        "p90": 65.802,
+        "p95": 76.763,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "send_lag_ms": {
+        "n": 578,
+        "mean": 1.047,
+        "min": 0.115,
+        "max": 4.01,
+        "stdev": 0.518,
+        "p50": 0.976,
+        "p90": 1.735,
+        "p95": 2.092,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "inventory_ms": {
+        "n": 444,
+        "mean": 21.615,
+        "min": 2.364,
+        "max": 163.029,
+        "stdev": 22.673,
+        "p50": 11.264,
+        "p90": 55.905,
+        "p95": 64.079,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "pricing_ms": {
+        "n": 444,
+        "mean": 8.39,
+        "min": 1.966,
+        "max": 85.022,
+        "stdev": 9.573,
+        "p50": 7.099,
+        "p90": 11.772,
+        "p95": 14.718,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "injected_delay_ms_mean": 0.0,
+      "retries": 280,
+      "fallback_requests": 0,
+      "breaker_rejections": 0,
+      "inventory_instances": {
+        "inventory-a": 444
+      },
+      "recovery": [
+        {
+          "fault_at_s": 0.0012,
+          "fault_end_s": 31.001,
+          "window_s": 1.0,
+          "hold_s": 3.0,
+          "threshold": 0.95,
+          "baseline_success_rate": null,
+          "impacted": null,
+          "recovery_s": null,
+          "note": "no requests before the fault: baseline undefined"
+        }
+      ]
+    },
+    {
+      "run_id": "retries-1-r2",
+      "condition": "retries-1",
+      "run_index": 2,
+      "seed": 405011424,
+      "measure_rows": 569,
+      "warmup_rows": 107,
+      "sent": 569,
+      "outcomes": {
+        "confirmed": 417,
+        "unavailable": 152
+      },
+      "http_status": {
+        "200": 417,
+        "503": 152
+      },
+      "error_types": {
+        "dependency_unavailable": 152
+      },
+      "ok": 417,
+      "available": 417,
+      "failed": 152,
+      "generator_dropped": 0,
+      "success_rate": 0.732865,
+      "availability": 0.732865,
+      "failure_rate": 0.267135,
+      "offered_rps": 18.967,
+      "throughput_ok_rps": 13.9,
+      "latency_ok_ms": {
+        "n": 417,
+        "mean": 34.779,
+        "min": 6.189,
+        "max": 198.259,
+        "stdev": 31.45,
+        "p50": 22.262,
+        "p90": 69.092,
+        "p95": 99.361,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "latency_responded_ms": {
+        "n": 569,
+        "mean": 39.966,
+        "min": 6.189,
+        "max": 198.259,
+        "stdev": 31.111,
+        "p50": 31.455,
+        "p90": 74.203,
+        "p95": 94.83,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "service_latency_ok_ms": {
+        "n": 417,
+        "mean": 33.618,
+        "min": 4.946,
+        "max": 196.884,
+        "stdev": 31.223,
+        "p50": 20.952,
+        "p90": 68.16,
+        "p95": 97.569,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "send_lag_ms": {
+        "n": 569,
+        "mean": 1.126,
+        "min": 0.111,
+        "max": 29.188,
+        "stdev": 1.476,
+        "p50": 0.952,
+        "p90": 1.835,
+        "p95": 2.183,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "inventory_ms": {
+        "n": 417,
+        "mean": 22.956,
+        "min": 2.216,
+        "max": 190.696,
+        "stdev": 25.649,
+        "p50": 11.246,
+        "p90": 59.517,
+        "p95": 69.646,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "pricing_ms": {
+        "n": 417,
+        "mean": 8.793,
+        "min": 2.15,
+        "max": 90.445,
+        "stdev": 10.002,
+        "p50": 6.808,
+        "p90": 12.657,
+        "p95": 16.094,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "injected_delay_ms_mean": 0.0,
+      "retries": 294,
+      "fallback_requests": 0,
+      "breaker_rejections": 0,
+      "inventory_instances": {
+        "inventory-a": 417
+      },
+      "recovery": [
+        {
+          "fault_at_s": 0.0019,
+          "fault_end_s": 31.002,
+          "window_s": 1.0,
+          "hold_s": 3.0,
+          "threshold": 0.95,
+          "baseline_success_rate": null,
+          "impacted": null,
+          "recovery_s": null,
+          "note": "no requests before the fault: baseline undefined"
+        }
+      ]
+    },
+    {
+      "run_id": "retries-2-r2",
+      "condition": "retries-2",
+      "run_index": 2,
+      "seed": 405021431,
+      "measure_rows": 627,
+      "warmup_rows": 103,
+      "sent": 627,
+      "outcomes": {
+        "confirmed": 546,
+        "unavailable": 81
+      },
+      "http_status": {
+        "200": 546,
+        "503": 81
+      },
+      "error_types": {
+        "dependency_unavailable": 81
+      },
+      "ok": 546,
+      "available": 546,
+      "failed": 81,
+      "generator_dropped": 0,
+      "success_rate": 0.870813,
+      "availability": 0.870813,
+      "failure_rate": 0.129187,
+      "offered_rps": 20.9,
+      "throughput_ok_rps": 18.2,
+      "latency_ok_ms": {
+        "n": 546,
+        "mean": 45.472,
+        "min": 5.852,
+        "max": 357.918,
+        "stdev": 45.737,
+        "p50": 26.905,
+        "p90": 108.009,
+        "p95": 131.37,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "latency_responded_ms": {
+        "n": 627,
+        "mean": 55.29,
+        "min": 5.852,
+        "max": 358.33,
+        "stdev": 52.892,
+        "p50": 34.767,
+        "p90": 127.171,
+        "p95": 148.887,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "service_latency_ok_ms": {
+        "n": 546,
+        "mean": 44.389,
+        "min": 4.92,
+        "max": 357.495,
+        "stdev": 45.774,
+        "p50": 25.712,
+        "p90": 106.54,
+        "p95": 130.702,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "send_lag_ms": {
+        "n": 627,
+        "mean": 1.069,
+        "min": 0.141,
+        "max": 4.434,
+        "stdev": 0.562,
+        "p50": 0.983,
+        "p90": 1.792,
+        "p95": 2.142,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "inventory_ms": {
+        "n": 546,
+        "mean": 33.874,
+        "min": 2.56,
+        "max": 298.293,
+        "stdev": 40.787,
+        "p50": 12.483,
+        "p90": 95.16,
+        "p95": 111.549,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "pricing_ms": {
+        "n": 546,
+        "mean": 9.467,
+        "min": 2.107,
+        "max": 189.867,
+        "stdev": 15.872,
+        "p50": 6.828,
+        "p90": 12.367,
+        "p95": 15.718,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "injected_delay_ms_mean": 0.0,
+      "retries": 473,
+      "fallback_requests": 0,
+      "breaker_rejections": 0,
+      "inventory_instances": {
+        "inventory-a": 546
+      },
+      "recovery": [
+        {
+          "fault_at_s": 0.0015,
+          "fault_end_s": 31.002,
+          "window_s": 1.0,
+          "hold_s": 3.0,
+          "threshold": 0.95,
+          "baseline_success_rate": null,
+          "impacted": null,
+          "recovery_s": null,
+          "note": "no requests before the fault: baseline undefined"
+        }
+      ]
+    },
+    {
+      "run_id": "retries-0-r1",
+      "condition": "retries-0",
+      "run_index": 1,
+      "seed": 405001316,
+      "measure_rows": 611,
+      "warmup_rows": 109,
+      "sent": 611,
+      "outcomes": {
+        "confirmed": 315,
+        "unavailable": 296
+      },
+      "http_status": {
+        "200": 315,
+        "503": 296
+      },
+      "error_types": {
+        "dependency_unavailable": 296
+      },
+      "ok": 315,
+      "available": 315,
+      "failed": 296,
+      "generator_dropped": 0,
+      "success_rate": 0.515548,
+      "availability": 0.515548,
+      "failure_rate": 0.484452,
+      "offered_rps": 20.367,
+      "throughput_ok_rps": 10.5,
+      "latency_ok_ms": {
+        "n": 315,
+        "mean": 18.963,
+        "min": 6.003,
+        "max": 82.221,
+        "stdev": 12.631,
+        "p50": 16.456,
+        "p90": 34.815,
+        "p95": 45.216,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "latency_responded_ms": {
+        "n": 611,
+        "mean": 19.554,
+        "min": 5.561,
+        "max": 125.473,
+        "stdev": 13.84,
+        "p50": 16.621,
+        "p90": 33.665,
+        "p95": 49.953,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "service_latency_ok_ms": {
+        "n": 315,
+        "mean": 17.905,
+        "min": 5.321,
+        "max": 81.831,
+        "stdev": 12.52,
+        "p50": 15.118,
+        "p90": 33.232,
+        "p95": 43.471,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "send_lag_ms": {
+        "n": 611,
+        "mean": 1.034,
+        "min": 0.148,
+        "max": 11.441,
+        "stdev": 0.746,
+        "p50": 0.93,
+        "p90": 1.758,
+        "p95": 2.042,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "inventory_ms": {
+        "n": 315,
+        "mean": 9.203,
+        "min": 2.49,
+        "max": 64.487,
+        "stdev": 8.699,
+        "p50": 7.182,
+        "p90": 14.299,
+        "p95": 21.844,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "pricing_ms": {
+        "n": 315,
+        "mean": 7.602,
+        "min": 2.213,
+        "max": 64.185,
+        "stdev": 6.865,
+        "p50": 6.132,
+        "p90": 11.556,
+        "p95": 15.478,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "injected_delay_ms_mean": 0.0,
+      "retries": 0,
+      "fallback_requests": 0,
+      "breaker_rejections": 0,
+      "inventory_instances": {
+        "inventory-a": 315
+      },
+      "recovery": [
+        {
+          "fault_at_s": 0.0004,
+          "fault_end_s": 31.0,
+          "window_s": 1.0,
+          "hold_s": 3.0,
+          "threshold": 0.95,
+          "baseline_success_rate": null,
+          "impacted": null,
+          "recovery_s": null,
+          "note": "no requests before the fault: baseline undefined"
+        }
+      ]
+    },
+    {
+      "run_id": "retries-0-r2",
+      "condition": "retries-0",
+      "run_index": 2,
+      "seed": 405001417,
+      "measure_rows": 593,
+      "warmup_rows": 98,
+      "sent": 593,
+      "outcomes": {
+        "confirmed": 297,
+        "unavailable": 296
+      },
+      "http_status": {
+        "200": 297,
+        "503": 296
+      },
+      "error_types": {
+        "dependency_unavailable": 296
+      },
+      "ok": 297,
+      "available": 297,
+      "failed": 296,
+      "generator_dropped": 0,
+      "success_rate": 0.500843,
+      "availability": 0.500843,
+      "failure_rate": 0.499157,
+      "offered_rps": 19.767,
+      "throughput_ok_rps": 9.9,
+      "latency_ok_ms": {
+        "n": 297,
+        "mean": 28.113,
+        "min": 4.977,
+        "max": 272.597,
+        "stdev": 39.695,
+        "p50": 16.576,
+        "p90": 48.623,
+        "p95": 93.7,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "latency_responded_ms": {
+        "n": 593,
+        "mean": 27.689,
+        "min": 4.977,
+        "max": 296.134,
+        "stdev": 41.477,
+        "p50": 16.471,
+        "p90": 45.116,
+        "p95": 93.899,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "service_latency_ok_ms": {
+        "n": 297,
+        "mean": 27.103,
+        "min": 4.807,
+        "max": 271.224,
+        "stdev": 39.596,
+        "p50": 15.814,
+        "p90": 47.013,
+        "p95": 92.721,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "send_lag_ms": {
+        "n": 593,
+        "mean": 1.017,
+        "min": 0.047,
+        "max": 3.371,
+        "stdev": 0.55,
+        "p50": 0.941,
+        "p90": 1.844,
+        "p95": 2.158,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "inventory_ms": {
+        "n": 297,
+        "mean": 14.696,
+        "min": 2.468,
+        "max": 192.776,
+        "stdev": 24.823,
+        "p50": 8.129,
+        "p90": 22.299,
+        "p95": 74.808,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "pricing_ms": {
+        "n": 297,
+        "mean": 13.766,
+        "min": 2.147,
+        "max": 190.035,
+        "stdev": 24.22,
+        "p50": 6.85,
+        "p90": 24.047,
+        "p95": 74.62,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "injected_delay_ms_mean": 0.0,
+      "retries": 0,
+      "fallback_requests": 0,
+      "breaker_rejections": 0,
+      "inventory_instances": {
+        "inventory-a": 297
+      },
+      "recovery": [
+        {
+          "fault_at_s": 0.0006,
+          "fault_end_s": 31.001,
+          "window_s": 1.0,
+          "hold_s": 3.0,
+          "threshold": 0.95,
+          "baseline_success_rate": null,
+          "impacted": null,
+          "recovery_s": null,
+          "note": "no requests before the fault: baseline undefined"
+        }
+      ]
+    },
+    {
+      "run_id": "retries-2-r1",
+      "condition": "retries-2",
+      "run_index": 1,
+      "seed": 405021330,
+      "measure_rows": 578,
+      "warmup_rows": 97,
+      "sent": 578,
+      "outcomes": {
+        "confirmed": 508,
+        "unavailable": 70
+      },
+      "http_status": {
+        "200": 508,
+        "503": 70
+      },
+      "error_types": {
+        "dependency_unavailable": 70
+      },
+      "ok": 508,
+      "available": 508,
+      "failed": 70,
+      "generator_dropped": 0,
+      "success_rate": 0.878893,
+      "availability": 0.878893,
+      "failure_rate": 0.121107,
+      "offered_rps": 19.267,
+      "throughput_ok_rps": 16.933,
+      "latency_ok_ms": {
+        "n": 508,
+        "mean": 59.276,
+        "min": 5.989,
+        "max": 551.326,
+        "stdev": 80.379,
+        "p50": 27.708,
+        "p90": 142.027,
+        "p95": 194.504,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "latency_responded_ms": {
+        "n": 578,
+        "mean": 69.36,
+        "min": 5.989,
+        "max": 795.65,
+        "stdev": 91.068,
+        "p50": 38.139,
+        "p90": 151.01,
+        "p95": 197.237,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "service_latency_ok_ms": {
+        "n": 508,
+        "mean": 58.254,
+        "min": 5.324,
+        "max": 550.092,
+        "stdev": 80.4,
+        "p50": 26.878,
+        "p90": 141.572,
+        "p95": 194.046,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "send_lag_ms": {
+        "n": 578,
+        "mean": 1.022,
+        "min": 0.099,
+        "max": 4.052,
+        "stdev": 0.546,
+        "p50": 0.94,
+        "p90": 1.795,
+        "p95": 2.069,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "inventory_ms": {
+        "n": 508,
+        "mean": 43.661,
+        "min": 2.525,
+        "max": 511.185,
+        "stdev": 64.415,
+        "p50": 14.396,
+        "p90": 108.578,
+        "p95": 140.429,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "pricing_ms": {
+        "n": 508,
+        "mean": 11.95,
+        "min": 2.175,
+        "max": 309.54,
+        "stdev": 25.72,
+        "p50": 5.76,
+        "p90": 15.027,
+        "p95": 45.712,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "injected_delay_ms_mean": 0.0,
+      "retries": 424,
+      "fallback_requests": 0,
+      "breaker_rejections": 0,
+      "inventory_instances": {
+        "inventory-a": 508
+      },
+      "recovery": [
+        {
+          "fault_at_s": 0.0005,
+          "fault_end_s": 31.0,
+          "window_s": 1.0,
+          "hold_s": 3.0,
+          "threshold": 0.95,
+          "baseline_success_rate": null,
+          "impacted": null,
+          "recovery_s": null,
+          "note": "no requests before the fault: baseline undefined"
+        }
+      ]
+    },
+    {
+      "run_id": "retries-2-r0",
+      "condition": "retries-2",
+      "run_index": 0,
+      "seed": 405021229,
+      "measure_rows": 627,
+      "warmup_rows": 112,
+      "sent": 627,
+      "outcomes": {
+        "confirmed": 550,
+        "unavailable": 77
+      },
+      "http_status": {
+        "200": 550,
+        "503": 77
+      },
+      "error_types": {
+        "dependency_unavailable": 77
+      },
+      "ok": 550,
+      "available": 550,
+      "failed": 77,
+      "generator_dropped": 0,
+      "success_rate": 0.877193,
+      "availability": 0.877193,
+      "failure_rate": 0.122807,
+      "offered_rps": 20.9,
+      "throughput_ok_rps": 18.333,
+      "latency_ok_ms": {
+        "n": 550,
+        "mean": 53.878,
+        "min": 5.587,
+        "max": 655.122,
+        "stdev": 65.148,
+        "p50": 28.19,
+        "p90": 138.492,
+        "p95": 170.739,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "latency_responded_ms": {
+        "n": 627,
+        "mean": 62.313,
+        "min": 5.587,
+        "max": 655.122,
+        "stdev": 68.635,
+        "p50": 37.61,
+        "p90": 147.239,
+        "p95": 183.482,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "service_latency_ok_ms": {
+        "n": 550,
+        "mean": 52.877,
+        "min": 5.175,
+        "max": 654.11,
+        "stdev": 65.126,
+        "p50": 27.162,
+        "p90": 137.76,
+        "p95": 169.847,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "send_lag_ms": {
+        "n": 627,
+        "mean": 0.989,
+        "min": 0.112,
+        "max": 3.883,
+        "stdev": 0.486,
+        "p50": 0.932,
+        "p90": 1.576,
+        "p95": 1.873,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "inventory_ms": {
+        "n": 550,
+        "mean": 40.716,
+        "min": 2.304,
+        "max": 586.646,
+        "stdev": 57.171,
+        "p50": 14.218,
+        "p90": 103.866,
+        "p95": 150.921,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "pricing_ms": {
+        "n": 550,
+        "mean": 10.693,
+        "min": 2.229,
+        "max": 182.665,
+        "stdev": 17.555,
+        "p50": 7.002,
+        "p90": 14.318,
+        "p95": 34.201,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "injected_delay_ms_mean": 0.0,
+      "retries": 477,
+      "fallback_requests": 0,
+      "breaker_rejections": 0,
+      "inventory_instances": {
+        "inventory-a": 550
+      },
+      "recovery": [
+        {
+          "fault_at_s": 0.0005,
+          "fault_end_s": 31.0,
+          "window_s": 1.0,
+          "hold_s": 3.0,
+          "threshold": 0.95,
+          "baseline_success_rate": null,
+          "impacted": null,
+          "recovery_s": null,
+          "note": "no requests before the fault: baseline undefined"
+        }
+      ]
+    },
+    {
+      "run_id": "retries-0-r0",
+      "condition": "retries-0",
+      "run_index": 0,
+      "seed": 405001215,
+      "measure_rows": 573,
+      "warmup_rows": 108,
+      "sent": 573,
+      "outcomes": {
+        "confirmed": 289,
+        "unavailable": 284
+      },
+      "http_status": {
+        "200": 289,
+        "503": 284
+      },
+      "error_types": {
+        "dependency_unavailable": 284
+      },
+      "ok": 289,
+      "available": 289,
+      "failed": 284,
+      "generator_dropped": 0,
+      "success_rate": 0.504363,
+      "availability": 0.504363,
+      "failure_rate": 0.495637,
+      "offered_rps": 19.1,
+      "throughput_ok_rps": 9.633,
+      "latency_ok_ms": {
+        "n": 289,
+        "mean": 27.667,
+        "min": 6.103,
+        "max": 277.202,
+        "stdev": 36.872,
+        "p50": 17.515,
+        "p90": 54.712,
+        "p95": 103.215,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "latency_responded_ms": {
+        "n": 573,
+        "mean": 27.996,
+        "min": 5.863,
+        "max": 277.202,
+        "stdev": 35.845,
+        "p50": 17.855,
+        "p90": 57.108,
+        "p95": 100.943,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "service_latency_ok_ms": {
+        "n": 289,
+        "mean": 26.627,
+        "min": 5.62,
+        "max": 276.744,
+        "stdev": 36.86,
+        "p50": 16.469,
+        "p90": 54.319,
+        "p95": 102.024,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "send_lag_ms": {
+        "n": 573,
+        "mean": 1.027,
+        "min": 0.127,
+        "max": 6.935,
+        "stdev": 0.577,
+        "p50": 0.955,
+        "p90": 1.665,
+        "p95": 2.037,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "inventory_ms": {
+        "n": 289,
+        "mean": 13.014,
+        "min": 2.62,
+        "max": 202.269,
+        "stdev": 21.476,
+        "p50": 8.266,
+        "p90": 15.491,
+        "p95": 50.48,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "pricing_ms": {
+        "n": 289,
+        "mean": 12.871,
+        "min": 2.439,
+        "max": 200.263,
+        "stdev": 22.699,
+        "p50": 6.945,
+        "p90": 15.689,
+        "p95": 64.651,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ]
+      },
+      "injected_delay_ms_mean": 0.0,
+      "retries": 0,
+      "fallback_requests": 0,
+      "breaker_rejections": 0,
+      "inventory_instances": {
+        "inventory-a": 289
+      },
+      "recovery": [
+        {
+          "fault_at_s": 0.0008,
+          "fault_end_s": 31.001,
+          "window_s": 1.0,
+          "hold_s": 3.0,
+          "threshold": 0.95,
+          "baseline_success_rate": null,
+          "impacted": null,
+          "recovery_s": null,
+          "note": "no requests before the fault: baseline undefined"
+        }
+      ]
+    }
+  ],
+  "conditions": {
+    "retries-0": {
+      "runs": 3,
+      "run_level": {
+        "median_latency_ok_ms": {
+          "per_run": [
+            16.456,
+            16.576,
+            17.515
+          ],
+          "n": 3,
+          "median": 16.576,
+          "min": 16.456,
+          "max": 17.515,
+          "median_ci95": [
+            16.456,
+            17.515
+          ]
+        },
+        "p90_latency_ok_ms": {
+          "per_run": [
+            34.815,
+            48.623,
+            54.712
+          ],
+          "n": 3,
+          "median": 48.623,
+          "min": 34.815,
+          "max": 54.712,
+          "median_ci95": [
+            34.815,
+            54.712
+          ]
+        },
+        "p95_latency_ok_ms": {
+          "per_run": [
+            45.216,
+            93.7,
+            103.215
+          ],
+          "n": 3,
+          "median": 93.7,
+          "min": 45.216,
+          "max": 103.215,
+          "median_ci95": [
+            45.216,
+            103.215
+          ]
+        },
+        "p99_latency_ok_ms": {
+          "per_run": [
+            null,
+            null,
+            null
+          ],
+          "n": 0,
+          "median": null,
+          "min": null,
+          "max": null,
+          "median_ci95": null,
+          "note": "some runs had too few samples for this statistic"
+        },
+        "mean_latency_ok_ms": {
+          "per_run": [
+            18.963,
+            28.113,
+            27.667
+          ],
+          "n": 3,
+          "median": 27.667,
+          "min": 18.963,
+          "max": 28.113,
+          "median_ci95": [
+            18.963,
+            28.113
+          ]
+        },
+        "success_rate": {
+          "per_run": [
+            0.515548,
+            0.500843,
+            0.504363
+          ],
+          "n": 3,
+          "median": 0.504363,
+          "min": 0.500843,
+          "max": 0.515548,
+          "median_ci95": [
+            0.500843,
+            0.515548
+          ]
+        },
+        "availability": {
+          "per_run": [
+            0.515548,
+            0.500843,
+            0.504363
+          ],
+          "n": 3,
+          "median": 0.504363,
+          "min": 0.500843,
+          "max": 0.515548,
+          "median_ci95": [
+            0.500843,
+            0.515548
+          ]
+        },
+        "throughput_ok_rps": {
+          "per_run": [
+            10.5,
+            9.9,
+            9.633
+          ],
+          "n": 3,
+          "median": 9.9,
+          "min": 9.633,
+          "max": 10.5,
+          "median_ci95": [
+            9.633,
+            10.5
+          ]
+        },
+        "median_inventory_ms": {
+          "per_run": [
+            7.182,
+            8.129,
+            8.266
+          ],
+          "n": 3,
+          "median": 8.129,
+          "min": 7.182,
+          "max": 8.266,
+          "median_ci95": [
+            7.182,
+            8.266
+          ]
+        },
+        "median_pricing_ms": {
+          "per_run": [
+            6.132,
+            6.85,
+            6.945
+          ],
+          "n": 3,
+          "median": 6.85,
+          "min": 6.132,
+          "max": 6.945,
+          "median_ci95": [
+            6.132,
+            6.945
+          ]
+        },
+        "retries": {
+          "per_run": [
+            0,
+            0,
+            0
+          ],
+          "n": 3,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median_ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "fallback_requests": {
+          "per_run": [
+            0,
+            0,
+            0
+          ],
+          "n": 3,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median_ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "breaker_rejections": {
+          "per_run": [
+            0,
+            0,
+            0
+          ],
+          "n": 3,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median_ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "generator_dropped": {
+          "per_run": [
+            0,
+            0,
+            0
+          ],
+          "n": 3,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median_ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "recovery_s": {
+          "per_run": [
+            null,
+            null,
+            null
+          ],
+          "n": 0,
+          "median": null,
+          "median_ci95": null,
+          "not_recovered": 3
+        }
+      },
+      "pooled_latency_ok_ms": {
+        "n": 901,
+        "mean": 24.771,
+        "min": 4.977,
+        "max": 277.202,
+        "stdev": 32.049,
+        "p50": 16.786,
+        "p90": 41.687,
+        "p95": 69.695,
+        "p99": null,
+        "insufficient": [
+          "p99"
+        ],
+        "label": "POOLED across runs: descriptive only, requests are not independent"
+      }
+    },
+    "retries-1": {
+      "runs": 3,
+      "run_level": {
+        "median_latency_ok_ms": {
+          "per_run": [
+            22.021,
+            22.63,
+            22.262
+          ],
+          "n": 3,
+          "median": 22.262,
+          "min": 22.021,
+          "max": 22.63,
+          "median_ci95": [
+            22.021,
+            22.63
+          ]
+        },
+        "p90_latency_ok_ms": {
+          "per_run": [
+            66.164,
+            67.441,
+            69.092
+          ],
+          "n": 3,
+          "median": 67.441,
+          "min": 66.164,
+          "max": 69.092,
+          "median_ci95": [
+            66.164,
+            69.092
+          ]
+        },
+        "p95_latency_ok_ms": {
+          "per_run": [
+            74.745,
+            77.423,
+            99.361
+          ],
+          "n": 3,
+          "median": 77.423,
+          "min": 74.745,
+          "max": 99.361,
+          "median_ci95": [
+            74.745,
+            99.361
+          ]
+        },
+        "p99_latency_ok_ms": {
+          "per_run": [
+            null,
+            null,
+            null
+          ],
+          "n": 0,
+          "median": null,
+          "min": null,
+          "max": null,
+          "median_ci95": null,
+          "note": "some runs had too few samples for this statistic"
+        },
+        "mean_latency_ok_ms": {
+          "per_run": [
+            31.117,
+            32.292,
+            34.779
+          ],
+          "n": 3,
+          "median": 32.292,
+          "min": 31.117,
+          "max": 34.779,
+          "median_ci95": [
+            31.117,
+            34.779
+          ]
+        },
+        "success_rate": {
+          "per_run": [
+            0.804788,
+            0.768166,
+            0.732865
+          ],
+          "n": 3,
+          "median": 0.768166,
+          "min": 0.732865,
+          "max": 0.804788,
+          "median_ci95": [
+            0.732865,
+            0.804788
+          ]
+        },
+        "availability": {
+          "per_run": [
+            0.804788,
+            0.768166,
+            0.732865
+          ],
+          "n": 3,
+          "median": 0.768166,
+          "min": 0.732865,
+          "max": 0.804788,
+          "median_ci95": [
+            0.732865,
+            0.804788
+          ]
+        },
+        "throughput_ok_rps": {
+          "per_run": [
+            14.567,
+            14.8,
+            13.9
+          ],
+          "n": 3,
+          "median": 14.567,
+          "min": 13.9,
+          "max": 14.8,
+          "median_ci95": [
+            13.9,
+            14.8
+          ]
+        },
+        "median_inventory_ms": {
+          "per_run": [
+            10.772,
+            11.264,
+            11.246
+          ],
+          "n": 3,
+          "median": 11.246,
+          "min": 10.772,
+          "max": 11.264,
+          "median_ci95": [
+            10.772,
+            11.264
+          ]
+        },
+        "median_pricing_ms": {
+          "per_run": [
+            7.73,
+            7.099,
+            6.808
+          ],
+          "n": 3,
+          "median": 7.099,
+          "min": 6.808,
+          "max": 7.73,
+          "median_ci95": [
+            6.808,
+            7.73
+          ]
+        },
+        "retries": {
+          "per_run": [
+            234,
+            280,
+            294
+          ],
+          "n": 3,
+          "median": 280.0,
+          "min": 234.0,
+          "max": 294.0,
+          "median_ci95": [
+            234.0,
+            294.0
+          ]
+        },
+        "fallback_requests": {
+          "per_run": [
+            0,
+            0,
+            0
+          ],
+          "n": 3,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median_ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "breaker_rejections": {
+          "per_run": [
+            0,
+            0,
+            0
+          ],
+          "n": 3,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median_ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "generator_dropped": {
+          "per_run": [
+            0,
+            0,
+            0
+          ],
+          "n": 3,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median_ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "recovery_s": {
+          "per_run": [
+            null,
+            null,
+            null
+          ],
+          "n": 0,
+          "median": null,
+          "median_ci95": null,
+          "not_recovered": 3
+        }
+      },
+      "pooled_latency_ok_ms": {
+        "n": 1298,
+        "mean": 32.695,
+        "min": 5.88,
+        "max": 204.784,
+        "stdev": 27.496,
+        "p50": 22.299,
+        "p90": 67.784,
+        "p95": 78.062,
+        "p99": 146.937,
+        "insufficient": [],
+        "label": "POOLED across runs: descriptive only, requests are not independent"
+      }
+    },
+    "retries-2": {
+      "runs": 3,
+      "run_level": {
+        "median_latency_ok_ms": {
+          "per_run": [
+            26.905,
+            27.708,
+            28.19
+          ],
+          "n": 3,
+          "median": 27.708,
+          "min": 26.905,
+          "max": 28.19,
+          "median_ci95": [
+            26.905,
+            28.19
+          ]
+        },
+        "p90_latency_ok_ms": {
+          "per_run": [
+            108.009,
+            142.027,
+            138.492
+          ],
+          "n": 3,
+          "median": 138.492,
+          "min": 108.009,
+          "max": 142.027,
+          "median_ci95": [
+            108.009,
+            142.027
+          ]
+        },
+        "p95_latency_ok_ms": {
+          "per_run": [
+            131.37,
+            194.504,
+            170.739
+          ],
+          "n": 3,
+          "median": 170.739,
+          "min": 131.37,
+          "max": 194.504,
+          "median_ci95": [
+            131.37,
+            194.504
+          ]
+        },
+        "p99_latency_ok_ms": {
+          "per_run": [
+            null,
+            null,
+            null
+          ],
+          "n": 0,
+          "median": null,
+          "min": null,
+          "max": null,
+          "median_ci95": null,
+          "note": "some runs had too few samples for this statistic"
+        },
+        "mean_latency_ok_ms": {
+          "per_run": [
+            45.472,
+            59.276,
+            53.878
+          ],
+          "n": 3,
+          "median": 53.878,
+          "min": 45.472,
+          "max": 59.276,
+          "median_ci95": [
+            45.472,
+            59.276
+          ]
+        },
+        "success_rate": {
+          "per_run": [
+            0.870813,
+            0.878893,
+            0.877193
+          ],
+          "n": 3,
+          "median": 0.877193,
+          "min": 0.870813,
+          "max": 0.878893,
+          "median_ci95": [
+            0.870813,
+            0.878893
+          ]
+        },
+        "availability": {
+          "per_run": [
+            0.870813,
+            0.878893,
+            0.877193
+          ],
+          "n": 3,
+          "median": 0.877193,
+          "min": 0.870813,
+          "max": 0.878893,
+          "median_ci95": [
+            0.870813,
+            0.878893
+          ]
+        },
+        "throughput_ok_rps": {
+          "per_run": [
+            18.2,
+            16.933,
+            18.333
+          ],
+          "n": 3,
+          "median": 18.2,
+          "min": 16.933,
+          "max": 18.333,
+          "median_ci95": [
+            16.933,
+            18.333
+          ]
+        },
+        "median_inventory_ms": {
+          "per_run": [
+            12.483,
+            14.396,
+            14.218
+          ],
+          "n": 3,
+          "median": 14.218,
+          "min": 12.483,
+          "max": 14.396,
+          "median_ci95": [
+            12.483,
+            14.396
+          ]
+        },
+        "median_pricing_ms": {
+          "per_run": [
+            6.828,
+            5.76,
+            7.002
+          ],
+          "n": 3,
+          "median": 6.828,
+          "min": 5.76,
+          "max": 7.002,
+          "median_ci95": [
+            5.76,
+            7.002
+          ]
+        },
+        "retries": {
+          "per_run": [
+            473,
+            424,
+            477
+          ],
+          "n": 3,
+          "median": 473.0,
+          "min": 424.0,
+          "max": 477.0,
+          "median_ci95": [
+            424.0,
+            477.0
+          ]
+        },
+        "fallback_requests": {
+          "per_run": [
+            0,
+            0,
+            0
+          ],
+          "n": 3,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median_ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "breaker_rejections": {
+          "per_run": [
+            0,
+            0,
+            0
+          ],
+          "n": 3,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median_ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "generator_dropped": {
+          "per_run": [
+            0,
+            0,
+            0
+          ],
+          "n": 3,
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0,
+          "median_ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "recovery_s": {
+          "per_run": [
+            null,
+            null,
+            null
+          ],
+          "n": 0,
+          "median": null,
+          "median_ci95": null,
+          "not_recovered": 3
+        }
+      },
+      "pooled_latency_ok_ms": {
+        "n": 1604,
+        "mean": 52.726,
+        "min": 5.587,
+        "max": 655.122,
+        "stdev": 65.117,
+        "p50": 27.822,
+        "p90": 125.436,
+        "p95": 167.318,
+        "p99": 342.916,
+        "insufficient": [],
+        "label": "POOLED across runs: descriptive only, requests are not independent"
+      }
+    }
+  },
+  "comparisons": {
+    "reference": "retries-0",
+    "method": "difference of medians of run-level statistics; 95% percentile-bootstrap CI over runs (B=2000, seeded)",
+    "results": [
+      {
+        "condition": "retries-1",
+        "reference": "retries-0",
+        "metric": "median_latency_ok_ms",
+        "difference_of_medians": 5.686,
+        "ci95": [
+          4.506,
+          6.174
+        ],
+        "n_condition": 3,
+        "n_reference": 3
+      },
+      {
+        "condition": "retries-1",
+        "reference": "retries-0",
+        "metric": "success_rate",
+        "difference_of_medians": 0.263803,
+        "ci95": [
+          0.217317,
+          0.303945
+        ],
+        "n_condition": 3,
+        "n_reference": 3
+      },
+      {
+        "condition": "retries-1",
+        "reference": "retries-0",
+        "metric": "availability",
+        "difference_of_medians": 0.263803,
+        "ci95": [
+          0.217317,
+          0.303945
+        ],
+        "n_condition": 3,
+        "n_reference": 3
+      },
+      {
+        "condition": "retries-2",
+        "reference": "retries-0",
+        "metric": "median_latency_ok_ms",
+        "difference_of_medians": 11.132,
+        "ci95": [
+          9.39,
+          11.734
+        ],
+        "n_condition": 3,
+        "n_reference": 3
+      },
+      {
+        "condition": "retries-2",
+        "reference": "retries-0",
+        "metric": "success_rate",
+        "difference_of_medians": 0.37283,
+        "ci95": [
+          0.355265,
+          0.37805
+        ],
+        "n_condition": 3,
+        "n_reference": 3
+      },
+      {
+        "condition": "retries-2",
+        "reference": "retries-0",
+        "metric": "availability",
+        "difference_of_medians": 0.37283,
+        "ci95": [
+          0.355265,
+          0.37805
+        ],
+        "n_condition": 3,
+        "n_reference": 3
+      }
+    ]
+  },
+  "notes": [
+    "latency = scheduled send time -> response, measured inside the Compose network (open-loop)",
+    "percentiles are type-7 linear interpolation; p90/p95/p99 need n >= 100/200/1000 per run",
+    "per-run percentiles are never averaged; pooled values are labelled POOLED",
+    "success = confirmed or rejected; availability additionally counts degraded",
+    "recovery_s is measured from fault end (actual injection time + duration) with the rolling window and hold time given per fault",
+    "simulated environments are labels on one Docker host, not cloud deployments"
+  ],
+  "warnings": []
+}

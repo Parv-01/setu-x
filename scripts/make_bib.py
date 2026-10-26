@@ -64,7 +64,8 @@ def main() -> int:
         n += 1
     out.append("\n% Non-DOI sources (preprints, technical reports, official documentation).\n\n")
     for m in json.loads((RES / "manual_references.json").read_text(encoding="utf-8")):
-        kind = {"online": "misc", "techreport": "techreport", "misc": "misc", "inproceedings": "inproceedings"}[m["type"]]
+        kind = {"online": "misc", "techreport": "techreport", "misc": "misc",
+                "inproceedings": "inproceedings"}[m["type"]]
         venue_field = {"techreport": "institution", "inproceedings": "booktitle"}.get(kind, "howpublished")
         fields = {
             "title": "{" + esc(m["title"]) + "}",

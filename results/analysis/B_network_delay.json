@@ -1,0 +1,275 @@
+{
+  "experiment": {
+    "experiment_id": "20261026T084953Z-B_network_delay-8d6c60",
+    "scenario": "B_network_delay",
+    "status": "completed",
+    "validation_ok": true,
+    "git_commit": "bfe122c",
+    "mode": "simulated",
+    "runs_completed": 24,
+    "overrides": {},
+    "warnings": []
+  },
+  "modes": {
+    "seq": [
+      {
+        "d_ms": 0,
+        "median_latency": {
+          "per_run": [
+            78.272,
+            76.18,
+            72.682
+          ],
+          "n_runs": 3,
+          "median": 76.18,
+          "ci95": [
+            72.682,
+            78.272
+          ]
+        },
+        "shift_vs_d0": {
+          "difference": 0.0,
+          "ci95": [
+            -5.59,
+            5.59
+          ],
+          "n": [
+            3,
+            3
+          ]
+        }
+      },
+      {
+        "d_ms": 25,
+        "median_latency": {
+          "per_run": [
+            105.827,
+            102.732,
+            101.005
+          ],
+          "n_runs": 3,
+          "median": 102.732,
+          "ci95": [
+            101.005,
+            105.827
+          ]
+        },
+        "shift_vs_d0": {
+          "difference": 26.552,
+          "ci95": [
+            22.733,
+            33.145
+          ],
+          "n": [
+            3,
+            3
+          ]
+        }
+      },
+      {
+        "d_ms": 50,
+        "median_latency": {
+          "per_run": [
+            127.466,
+            130.411,
+            126.069
+          ],
+          "n_runs": 3,
+          "median": 127.466,
+          "ci95": [
+            126.069,
+            130.411
+          ]
+        },
+        "shift_vs_d0": {
+          "difference": 51.286,
+          "ci95": [
+            47.797,
+            57.729
+          ],
+          "n": [
+            3,
+            3
+          ]
+        }
+      },
+      {
+        "d_ms": 100,
+        "median_latency": {
+          "per_run": [
+            179.032,
+            179.0,
+            179.035
+          ],
+          "n_runs": 3,
+          "median": 179.032,
+          "ci95": [
+            179.0,
+            179.035
+          ]
+        },
+        "shift_vs_d0": {
+          "difference": 102.852,
+          "ci95": [
+            100.728,
+            106.353
+          ],
+          "n": [
+            3,
+            3
+          ]
+        }
+      }
+    ],
+    "par": [
+      {
+        "d_ms": 0,
+        "median_latency": {
+          "per_run": [
+            69.854,
+            61.502,
+            62.717
+          ],
+          "n_runs": 3,
+          "median": 62.717,
+          "ci95": [
+            61.502,
+            69.854
+          ]
+        },
+        "shift_vs_d0": {
+          "difference": 0.0,
+          "ci95": [
+            -8.352,
+            8.352
+          ],
+          "n": [
+            3,
+            3
+          ]
+        }
+      },
+      {
+        "d_ms": 25,
+        "median_latency": {
+          "per_run": [
+            68.709,
+            68.221,
+            69.948
+          ],
+          "n_runs": 3,
+          "median": 68.709,
+          "ci95": [
+            68.221,
+            69.948
+          ]
+        },
+        "shift_vs_d0": {
+          "difference": 5.992,
+          "ci95": [
+            -1.633,
+            8.446
+          ],
+          "n": [
+            3,
+            3
+          ]
+        }
+      },
+      {
+        "d_ms": 50,
+        "median_latency": {
+          "per_run": [
+            70.687,
+            67.318,
+            73.559
+          ],
+          "n_runs": 3,
+          "median": 70.687,
+          "ci95": [
+            67.318,
+            73.559
+          ]
+        },
+        "shift_vs_d0": {
+          "difference": 7.97,
+          "ci95": [
+            -2.536,
+            12.057
+          ],
+          "n": [
+            3,
+            3
+          ]
+        }
+      },
+      {
+        "d_ms": 100,
+        "median_latency": {
+          "per_run": [
+            119.434,
+            118.445,
+            119.626
+          ],
+          "n_runs": 3,
+          "median": 119.434,
+          "ci95": [
+            118.445,
+            119.626
+          ]
+        },
+        "shift_vs_d0": {
+          "difference": 56.717,
+          "ci95": [
+            48.591,
+            58.124
+          ],
+          "n": [
+            3,
+            3
+          ]
+        }
+      }
+    ]
+  },
+  "figure": "B_network_delay.png",
+  "H1": {
+    "baseline_run_range_ms": 5.590000000000003,
+    "checks": [
+      {
+        "d_ms": 25,
+        "seq_shift": 26.552,
+        "seq_shift_ci95": [
+          22.733,
+          33.145
+        ],
+        "par_shift": 5.992,
+        "seq_shift_minus_d": 1.552,
+        "par_smaller_than_seq": true
+      },
+      {
+        "d_ms": 50,
+        "seq_shift": 51.286,
+        "seq_shift_ci95": [
+          47.797,
+          57.729
+        ],
+        "par_shift": 7.97,
+        "seq_shift_minus_d": 1.286,
+        "par_smaller_than_seq": true
+      },
+      {
+        "d_ms": 100,
+        "seq_shift": 102.852,
+        "seq_shift_ci95": [
+          100.728,
+          106.353
+        ],
+        "par_shift": 56.717,
+        "seq_shift_minus_d": 2.852,
+        "par_smaller_than_seq": true
+      }
+    ],
+    "criterion": "rejected if |seq shift \u2212 d| exceeds the run-to-run variability of the baseline (95% CI over runs), or the parallel shift is not smaller than the sequential one"
+  }
+}

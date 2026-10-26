@@ -1,0 +1,145 @@
+{
+  "experiment": {
+    "experiment_id": "20261026T090427Z-F_placement-60bad3",
+    "scenario": "F_placement",
+    "status": "completed",
+    "validation_ok": true,
+    "git_commit": "bfe122c",
+    "mode": "simulated",
+    "runs_completed": 12,
+    "overrides": {},
+    "warnings": []
+  },
+  "placements": {
+    "distributed": {
+      "median_latency": {
+        "per_run": [
+          101.03,
+          97.891,
+          99.146
+        ],
+        "n_runs": 3,
+        "median": 99.146,
+        "ci95": [
+          97.891,
+          101.03
+        ]
+      },
+      "improvement_vs_distributed": {
+        "difference": 0.0,
+        "ci95": [
+          -3.139,
+          3.139
+        ],
+        "n": [
+          3,
+          3
+        ]
+      }
+    },
+    "pricing-local": {
+      "median_latency": {
+        "per_run": [
+          66.769,
+          67.852,
+          68.911
+        ],
+        "n_runs": 3,
+        "median": 67.852,
+        "ci95": [
+          66.769,
+          68.911
+        ]
+      },
+      "improvement_vs_distributed": {
+        "difference": 31.294,
+        "ci95": [
+          28.98,
+          34.261
+        ],
+        "n": [
+          3,
+          3
+        ]
+      }
+    },
+    "inventory-local": {
+      "median_latency": {
+        "per_run": [
+          98.474,
+          101.549,
+          98.719
+        ],
+        "n_runs": 3,
+        "median": 98.719,
+        "ci95": [
+          98.474,
+          101.549
+        ]
+      },
+      "improvement_vs_distributed": {
+        "difference": 0.427,
+        "ci95": [
+          -3.658,
+          2.556
+        ],
+        "n": [
+          3,
+          3
+        ]
+      }
+    },
+    "both-local": {
+      "median_latency": {
+        "per_run": [
+          14.668,
+          18.64,
+          19.07
+        ],
+        "n_runs": 3,
+        "median": 18.64,
+        "ci95": [
+          14.668,
+          19.07
+        ]
+      },
+      "improvement_vs_distributed": {
+        "difference": 80.506,
+        "ci95": [
+          78.821,
+          86.362
+        ],
+        "n": [
+          3,
+          3
+        ]
+      }
+    }
+  },
+  "figure": "F_placement.png",
+  "H4": {
+    "pricing_local_improvement": {
+      "difference": 31.294,
+      "ci95": [
+        28.98,
+        34.261
+      ],
+      "n": [
+        3,
+        3
+      ]
+    },
+    "inventory_local_improvement": {
+      "difference": 0.427,
+      "ci95": [
+        -3.658,
+        2.556
+      ],
+      "n": [
+        3,
+        3
+      ]
+    },
+    "criterion": "rejected if moving the non-critical dependency (inventory, 50 ms link) improves the median comparably to moving the critical one (pricing, 80 ms link)"
+  }
+}

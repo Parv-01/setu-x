@@ -1,0 +1,933 @@
+{
+  "experiment_id": "20261026T082525Z-D_policies_hang-929ca0",
+  "label": "phase8 campaign 20261026T081408Z",
+  "title": "D1 - Policies vs an unresponsive dependency",
+  "hypotheses": [
+    "H2"
+  ],
+  "scenario_id": "D_policies_hang",
+  "scenario_file": "configs/scenarios/D_policies_hang.yaml",
+  "scenario_sha256": "8ec70a8c44fc6319624bc563809d233b42e5bc542907f00cf5bdf1b27a572a48",
+  "scenario_text": "# Experiment D (part 1) - resilience policies against an unresponsive dependency (RQ2 / H2).\n# inventory-a hangs from t = 5 s to t = 25 s of a 40 s measurement (15 s after the fault to observe recovery,\n# including the breaker's 5 s reset timeout); fallback OFF so each policy's own\n# effect is visible. Lower rate (10 req/s) and a high in-flight cap because \"none\" holds requests\n# for up to 10 s.\n#   none                 timeout = outer deadline = 10 s (bounded only by the outer deadline)\n#   timeout              800 ms per attempt, no retries\n#   timeout-retry        800 ms, 2 retries (bound T*(1+r) + backoff, capped by the 3 s outer deadline)\n#   timeout-retry-breaker  as above + circuit breaker (5 consecutive failures, 5 s reset timeout)\nid: D_policies_hang\ntitle: \"D1 - Policies vs an unresponsive dependency\"\nhypotheses: [H2]\nrequires_mode: local\nworkload: {rate_rps: 10, arrival: poisson, warmup_s: 5, duration_s: 40, max_in_flight: 256, request_timeout_s: 15}\nruns: 3\nseed: 404\ndefaults:\n  resilience: {fallback: false, circuit_breaker: {enabled: false}, retries: 0}\nconditions:\n  - name: none\n    resilience: {outer_deadline_ms: 10000, timeout_ms: 10000}\n    faults: [{target: inventory-a, mode: hang, at_s: 5, duration_s: 20}]\n  - name: timeout\n    resilience: {timeout_ms: 800}\n    faults: [{target: inventory-a, mode: hang, at_s: 5, duration_s: 20}]\n  - name: timeout-retry\n    resilience: {timeout_ms: 800, retries: 2}\n    faults: [{target: inventory-a, mode: hang, at_s: 5, duration_s: 20}]\n  - name: timeout-retry-breaker\n    resilience: {timeout_ms: 800, retries: 2,\n                 circuit_breaker: {enabled: true, consecutive_failures: 5, reset_timeout_ms: 5000}}\n    faults: [{target: inventory-a, mode: hang, at_s: 5, duration_s: 20}]\n",
+  "scenario": {
+    "id": "D_policies_hang",
+    "title": "D1 - Policies vs an unresponsive dependency",
+    "hypotheses": [
+      "H2"
+    ],
+    "description": "",
+    "requires_mode": "local",
+    "workload": {
+      "rate_rps": 10.0,
+      "arrival": "poisson",
+      "warmup_s": 5.0,
+      "duration_s": 40.0,
+      "max_in_flight": 256,
+      "request_timeout_s": 15.0,
+      "skus": [
+        "SKU-002"
+      ],
+      "quantity": 1,
+      "customer_tier": "standard"
+    },
+    "runs": 3,
+    "order": "randomized",
+    "seed": 404,
+    "cooldown_s": 1.0,
+    "recovery_window_s": 1.0,
+    "recovery_hold_s": 3.0,
+    "recovery_threshold": 0.95,
+    "defaults": {
+      "call_mode": null,
+      "resilience": {
+        "fallback": false,
+        "circuit_breaker": {
+          "enabled": false
+        },
+        "retries": 0
+      },
+      "routing": {},
+      "instance_env": {},
+      "instance_enabled": {},
+      "instance_weight": {},
+      "links": {},
+      "rate_rps": null
+    },
+    "conditions": [
+      {
+        "name": "none",
+        "description": "",
+        "rate_rps": null,
+        "call_mode": null,
+        "resilience": {
+          "fallback": false,
+          "circuit_breaker": {
+            "enabled": false
+          },
+          "retries": 0,
+          "outer_deadline_ms": 10000,
+          "timeout_ms": 10000
+        },
+        "routing": {},
+        "instance_env": {},
+        "instance_enabled": {},
+        "instance_weight": {},
+        "links": {},
+        "faults": [
+          {
+            "mode": "hang",
+            "duration_s": 20.0,
+            "probability": 1.0,
+            "delay_ms": 0,
+            "error_status": 503,
+            "seed": null,
+            "target": "inventory-a",
+            "at_s": 5.0
+          }
+        ]
+      },
+      {
+        "name": "timeout",
+        "description": "",
+        "rate_rps": null,
+        "call_mode": null,
+        "resilience": {
+          "fallback": false,
+          "circuit_breaker": {
+            "enabled": false
+          },
+          "retries": 0,
+          "timeout_ms": 800
+        },
+        "routing": {},
+        "instance_env": {},
+        "instance_enabled": {},
+        "instance_weight": {},
+        "links": {},
+        "faults": [
+          {
+            "mode": "hang",
+            "duration_s": 20.0,
+            "probability": 1.0,
+            "delay_ms": 0,
+            "error_status": 503,
+            "seed": null,
+            "target": "inventory-a",
+            "at_s": 5.0
+          }
+        ]
+      },
+      {
+        "name": "timeout-retry",
+        "description": "",
+        "rate_rps": null,
+        "call_mode": null,
+        "resilience": {
+          "fallback": false,
+          "circuit_breaker": {
+            "enabled": false
+          },
+          "retries": 2,
+          "timeout_ms": 800
+        },
+        "routing": {},
+        "instance_env": {},
+        "instance_enabled": {},
+        "instance_weight": {},
+        "links": {},
+        "faults": [
+          {
+            "mode": "hang",
+            "duration_s": 20.0,
+            "probability": 1.0,
+            "delay_ms": 0,
+            "error_status": 503,
+            "seed": null,
+            "target": "inventory-a",
+            "at_s": 5.0
+          }
+        ]
+      },
+      {
+        "name": "timeout-retry-breaker",
+        "description": "",
+        "rate_rps": null,
+        "call_mode": null,
+        "resilience": {
+          "fallback": false,
+          "circuit_breaker": {
+            "enabled": true,
+            "consecutive_failures": 5,
+            "reset_timeout_ms": 5000
+          },
+          "retries": 2,
+          "timeout_ms": 800
+        },
+        "routing": {},
+        "instance_env": {},
+        "instance_enabled": {},
+        "instance_weight": {},
+        "links": {},
+        "faults": [
+          {
+            "mode": "hang",
+            "duration_s": 20.0,
+            "probability": 1.0,
+            "delay_ms": 0,
+            "error_status": 503,
+            "seed": null,
+            "target": "inventory-a",
+            "at_s": 5.0
+          }
+        ]
+      }
+    ]
+  },
+  "overrides": {},
+  "overrides_note": null,
+  "git_commit": "bfe122c",
+  "setu_x_version": "0.6.0",
+  "python": "3.11.17",
+  "packages": {
+    "fastapi": "0.162.0",
+    "httpx": "0.28.1",
+    "pydantic": "2.14.1",
+    "uvicorn": "0.54.0",
+    "PyYAML": "6.0.3"
+  },
+  "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+  "host_cpu_count_visible": 20,
+  "runner_cpu_limit": "1.00 CPU",
+  "environment_mode": "local",
+  "stack": {
+    "gateway": {
+      "status": "ready",
+      "checks": {
+        "config": "ok",
+        "http_client": "ok"
+      },
+      "service": "gateway",
+      "instance": "gateway",
+      "env": "local",
+      "mode": "local",
+      "version": "0.6.0",
+      "info": {
+        "placement_source": "controller",
+        "placement_version": 20,
+        "placement_sha256": "77867e92fa4d3d941bbeaeee73fdf186343c6e67cfd6bca2e97c50bd0740c35e",
+        "link_rtt_ms": {
+          "local--aws-simulated": 40,
+          "local--azure-simulated": 55,
+          "local--gcp-simulated": 45,
+          "aws-simulated--azure-simulated": 70,
+          "aws-simulated--gcp-simulated": 60,
+          "azure-simulated--gcp-simulated": 65
+        },
+        "placement_applied_at": "2026-10-26T08:25:22.817+00:00",
+        "controller_url": "http://controller:8000",
+        "controller_reachable": true,
+        "last_sync_at": "2026-10-26T08:25:24.478+00:00",
+        "last_error": null,
+        "link_delay_injection": "off (SETU_MODE is not simulated)"
+      }
+    },
+    "controller": {
+      "status": "ready",
+      "checks": {
+        "config": "ok",
+        "adapters": "ok"
+      },
+      "service": "controller",
+      "instance": "controller",
+      "env": "local",
+      "mode": "local",
+      "version": "0.6.0"
+    }
+  },
+  "base_placement": {
+    "call_mode": "parallel",
+    "services": {
+      "inventory": {
+        "routing": "primary-fallback",
+        "instances": [
+          {
+            "name": "inventory-a",
+            "env": "aws-simulated",
+            "url": "http://inventory-a:8000",
+            "role": "primary",
+            "weight": 1,
+            "enabled": true
+          },
+          {
+            "name": "inventory-b",
+            "env": "gcp-simulated",
+            "url": "http://inventory-b:8000",
+            "role": "secondary",
+            "weight": 1,
+            "enabled": true
+          }
+        ]
+      },
+      "pricing": {
+        "routing": "primary-fallback",
+        "instances": [
+          {
+            "name": "pricing",
+            "env": "azure-simulated",
+            "url": "http://pricing:8000",
+            "role": "primary",
+            "weight": 1,
+            "enabled": true
+          }
+        ]
+      }
+    },
+    "resilience": {
+      "outer_deadline_ms": 3000,
+      "timeout_ms": 800,
+      "connect_timeout_ms": 300,
+      "retries": 0,
+      "backoff": {
+        "base_ms": 50,
+        "max_ms": 400
+      },
+      "circuit_breaker": {
+        "enabled": false,
+        "consecutive_failures": 5,
+        "reset_timeout_ms": 5000
+      },
+      "fallback": true
+    }
+  },
+  "base_link_rtt_ms": {
+    "local--aws-simulated": 40,
+    "local--azure-simulated": 55,
+    "local--gcp-simulated": 45,
+    "aws-simulated--azure-simulated": 70,
+    "aws-simulated--gcp-simulated": 60,
+    "azure-simulated--gcp-simulated": 65
+  },
+  "run_order": [
+    {
+      "condition": "timeout-retry-breaker",
+      "run_index": 0,
+      "seed": 404031233
+    },
+    {
+      "condition": "timeout-retry-breaker",
+      "run_index": 1,
+      "seed": 404031334
+    },
+    {
+      "condition": "timeout-retry",
+      "run_index": 2,
+      "seed": 404021428
+    },
+    {
+      "condition": "timeout-retry",
+      "run_index": 0,
+      "seed": 404021226
+    },
+    {
+      "condition": "timeout",
+      "run_index": 2,
+      "seed": 404011421
+    },
+    {
+      "condition": "none",
+      "run_index": 1,
+      "seed": 404001313
+    },
+    {
+      "condition": "timeout",
+      "run_index": 1,
+      "seed": 404011320
+    },
+    {
+      "condition": "timeout-retry-breaker",
+      "run_index": 2,
+      "seed": 404031435
+    },
+    {
+      "condition": "none",
+      "run_index": 2,
+      "seed": 404001414
+    },
+    {
+      "condition": "none",
+      "run_index": 0,
+      "seed": 404001212
+    },
+    {
+      "condition": "timeout-retry",
+      "run_index": 1,
+      "seed": 404021327
+    },
+    {
+      "condition": "timeout",
+      "run_index": 0,
+      "seed": 404011219
+    }
+  ],
+  "clock": "latency measured by the runner process with time.perf_counter (monotonic), inside the Compose network, i.e. in the same clock domain as the services",
+  "resource_usage": "not measured by the runner (use scripts/run_experiment.ps1 -DockerStats on the host)",
+  "started_at": "2026-10-26T08:25:25.532+00:00",
+  "finished_at": "2026-10-26T08:34:39.136+00:00",
+  "status": "completed",
+  "error": null,
+  "warnings": [],
+  "runs": [
+    {
+      "run_id": "timeout-retry-breaker-r0",
+      "condition": "timeout-retry-breaker",
+      "condition_index": 3,
+      "run_index": 0,
+      "seed": 404031233,
+      "started_at": "2026-10-26T08:25:25.554+00:00",
+      "finished_at": "2026-10-26T08:26:10.621+00:00",
+      "scheduled": 441,
+      "measure_scheduled": 402,
+      "rate_rps": 10.0,
+      "placement_version": 22,
+      "placement_sha256": "81e59fbcc90b75340712746d2163fcb1eff0146ebdb316daaaaab7dbaccfb1e9",
+      "link_rtt_ms": {
+        "local--aws-simulated": 40,
+        "local--azure-simulated": 55,
+        "local--gcp-simulated": 45,
+        "aws-simulated--azure-simulated": 70,
+        "aws-simulated--gcp-simulated": 60,
+        "azure-simulated--gcp-simulated": 65
+      },
+      "gateway_reset": {
+        "placement_version": 22,
+        "placement_sha256": "81e59fbcc90b75340712746d2163fcb1eff0146ebdb316daaaaab7dbaccfb1e9",
+        "seed": 404031233,
+        "synced": true
+      },
+      "faults": [
+        {
+          "target": "inventory-a",
+          "at_s": 5.0,
+          "spec": {
+            "mode": "hang",
+            "duration_s": 20.0,
+            "probability": 1.0,
+            "delay_ms": 0,
+            "error_status": 503,
+            "seed": null
+          },
+          "actual_measure_offset_s": 5.0006,
+          "lateness_ms": 0.652,
+          "ok": true
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": "timeout-retry-breaker-r1",
+      "condition": "timeout-retry-breaker",
+      "condition_index": 3,
+      "run_index": 1,
+      "seed": 404031334,
+      "started_at": "2026-10-26T08:26:11.677+00:00",
+      "finished_at": "2026-10-26T08:26:56.941+00:00",
+      "scheduled": 427,
+      "measure_scheduled": 374,
+      "rate_rps": 10.0,
+      "placement_version": 24,
+      "placement_sha256": "81e59fbcc90b75340712746d2163fcb1eff0146ebdb316daaaaab7dbaccfb1e9",
+      "link_rtt_ms": {
+        "local--aws-simulated": 40,
+        "local--azure-simulated": 55,
+        "local--gcp-simulated": 45,
+        "aws-simulated--azure-simulated": 70,
+        "aws-simulated--gcp-simulated": 60,
+        "azure-simulated--gcp-simulated": 65
+      },
+      "gateway_reset": {
+        "placement_version": 24,
+        "placement_sha256": "81e59fbcc90b75340712746d2163fcb1eff0146ebdb316daaaaab7dbaccfb1e9",
+        "seed": 404031334,
+        "synced": true
+      },
+      "faults": [
+        {
+          "target": "inventory-a",
+          "at_s": 5.0,
+          "spec": {
+            "mode": "hang",
+            "duration_s": 20.0,
+            "probability": 1.0,
+            "delay_ms": 0,
+            "error_status": 503,
+            "seed": null
+          },
+          "actual_measure_offset_s": 5.0011,
+          "lateness_ms": 1.135,
+          "ok": true
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": "timeout-retry-r2",
+      "condition": "timeout-retry",
+      "condition_index": 2,
+      "run_index": 2,
+      "seed": 404021428,
+      "started_at": "2026-10-26T08:26:57.990+00:00",
+      "finished_at": "2026-10-26T08:27:43.160+00:00",
+      "scheduled": 445,
+      "measure_scheduled": 396,
+      "rate_rps": 10.0,
+      "placement_version": 26,
+      "placement_sha256": "b2e09bd2eabec391803bcf06070ab7f5a2d936fb335f3cc9ba4f55664d2b2bef",
+      "link_rtt_ms": {
+        "local--aws-simulated": 40,
+        "local--azure-simulated": 55,
+        "local--gcp-simulated": 45,
+        "aws-simulated--azure-simulated": 70,
+        "aws-simulated--gcp-simulated": 60,
+        "azure-simulated--gcp-simulated": 65
+      },
+      "gateway_reset": {
+        "placement_version": 26,
+        "placement_sha256": "b2e09bd2eabec391803bcf06070ab7f5a2d936fb335f3cc9ba4f55664d2b2bef",
+        "seed": 404021428,
+        "synced": true
+      },
+      "faults": [
+        {
+          "target": "inventory-a",
+          "at_s": 5.0,
+          "spec": {
+            "mode": "hang",
+            "duration_s": 20.0,
+            "probability": 1.0,
+            "delay_ms": 0,
+            "error_status": 503,
+            "seed": null
+          },
+          "actual_measure_offset_s": 5.0003,
+          "lateness_ms": 0.326,
+          "ok": true
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": "timeout-retry-r0",
+      "condition": "timeout-retry",
+      "condition_index": 2,
+      "run_index": 0,
+      "seed": 404021226,
+      "started_at": "2026-10-26T08:27:44.191+00:00",
+      "finished_at": "2026-10-26T08:28:29.421+00:00",
+      "scheduled": 457,
+      "measure_scheduled": 412,
+      "rate_rps": 10.0,
+      "placement_version": 28,
+      "placement_sha256": "b2e09bd2eabec391803bcf06070ab7f5a2d936fb335f3cc9ba4f55664d2b2bef",
+      "link_rtt_ms": {
+        "local--aws-simulated": 40,
+        "local--azure-simulated": 55,
+        "local--gcp-simulated": 45,
+        "aws-simulated--azure-simulated": 70,
+        "aws-simulated--gcp-simulated": 60,
+        "azure-simulated--gcp-simulated": 65
+      },
+      "gateway_reset": {
+        "placement_version": 28,
+        "placement_sha256": "b2e09bd2eabec391803bcf06070ab7f5a2d936fb335f3cc9ba4f55664d2b2bef",
+        "seed": 404021226,
+        "synced": true
+      },
+      "faults": [
+        {
+          "target": "inventory-a",
+          "at_s": 5.0,
+          "spec": {
+            "mode": "hang",
+            "duration_s": 20.0,
+            "probability": 1.0,
+            "delay_ms": 0,
+            "error_status": 503,
+            "seed": null
+          },
+          "actual_measure_offset_s": 5.0021,
+          "lateness_ms": 2.138,
+          "ok": true
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": "timeout-r2",
+      "condition": "timeout",
+      "condition_index": 1,
+      "run_index": 2,
+      "seed": 404011421,
+      "started_at": "2026-10-26T08:28:30.446+00:00",
+      "finished_at": "2026-10-26T08:29:15.569+00:00",
+      "scheduled": 410,
+      "measure_scheduled": 372,
+      "rate_rps": 10.0,
+      "placement_version": 30,
+      "placement_sha256": "8a0b9e3ef877e20ab32a7984beeb72d7594bb308e264198f9a7190ec15737c19",
+      "link_rtt_ms": {
+        "local--aws-simulated": 40,
+        "local--azure-simulated": 55,
+        "local--gcp-simulated": 45,
+        "aws-simulated--azure-simulated": 70,
+        "aws-simulated--gcp-simulated": 60,
+        "azure-simulated--gcp-simulated": 65
+      },
+      "gateway_reset": {
+        "placement_version": 30,
+        "placement_sha256": "8a0b9e3ef877e20ab32a7984beeb72d7594bb308e264198f9a7190ec15737c19",
+        "seed": 404011421,
+        "synced": true
+      },
+      "faults": [
+        {
+          "target": "inventory-a",
+          "at_s": 5.0,
+          "spec": {
+            "mode": "hang",
+            "duration_s": 20.0,
+            "probability": 1.0,
+            "delay_ms": 0,
+            "error_status": 503,
+            "seed": null
+          },
+          "actual_measure_offset_s": 5.0004,
+          "lateness_ms": 0.412,
+          "ok": true
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": "none-r1",
+      "condition": "none",
+      "condition_index": 0,
+      "run_index": 1,
+      "seed": 404001313,
+      "started_at": "2026-10-26T08:29:16.592+00:00",
+      "finished_at": "2026-10-26T08:30:01.821+00:00",
+      "scheduled": 436,
+      "measure_scheduled": 394,
+      "rate_rps": 10.0,
+      "placement_version": 32,
+      "placement_sha256": "1ff1747b4b8113d1a45b86932a0863f71e27dcce53089ddca20086c272f3a0d5",
+      "link_rtt_ms": {
+        "local--aws-simulated": 40,
+        "local--azure-simulated": 55,
+        "local--gcp-simulated": 45,
+        "aws-simulated--azure-simulated": 70,
+        "aws-simulated--gcp-simulated": 60,
+        "azure-simulated--gcp-simulated": 65
+      },
+      "gateway_reset": {
+        "placement_version": 32,
+        "placement_sha256": "1ff1747b4b8113d1a45b86932a0863f71e27dcce53089ddca20086c272f3a0d5",
+        "seed": 404001313,
+        "synced": true
+      },
+      "faults": [
+        {
+          "target": "inventory-a",
+          "at_s": 5.0,
+          "spec": {
+            "mode": "hang",
+            "duration_s": 20.0,
+            "probability": 1.0,
+            "delay_ms": 0,
+            "error_status": 503,
+            "seed": null
+          },
+          "actual_measure_offset_s": 5.0025,
+          "lateness_ms": 2.542,
+          "ok": true
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": "timeout-r1",
+      "condition": "timeout",
+      "condition_index": 1,
+      "run_index": 1,
+      "seed": 404011320,
+      "started_at": "2026-10-26T08:30:02.862+00:00",
+      "finished_at": "2026-10-26T08:30:48.014+00:00",
+      "scheduled": 438,
+      "measure_scheduled": 391,
+      "rate_rps": 10.0,
+      "placement_version": 34,
+      "placement_sha256": "8a0b9e3ef877e20ab32a7984beeb72d7594bb308e264198f9a7190ec15737c19",
+      "link_rtt_ms": {
+        "local--aws-simulated": 40,
+        "local--azure-simulated": 55,
+        "local--gcp-simulated": 45,
+        "aws-simulated--azure-simulated": 70,
+        "aws-simulated--gcp-simulated": 60,
+        "azure-simulated--gcp-simulated": 65
+      },
+      "gateway_reset": {
+        "placement_version": 34,
+        "placement_sha256": "8a0b9e3ef877e20ab32a7984beeb72d7594bb308e264198f9a7190ec15737c19",
+        "seed": 404011320,
+        "synced": true
+      },
+      "faults": [
+        {
+          "target": "inventory-a",
+          "at_s": 5.0,
+          "spec": {
+            "mode": "hang",
+            "duration_s": 20.0,
+            "probability": 1.0,
+            "delay_ms": 0,
+            "error_status": 503,
+            "seed": null
+          },
+          "actual_measure_offset_s": 5.0003,
+          "lateness_ms": 0.307,
+          "ok": true
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": "timeout-retry-breaker-r2",
+      "condition": "timeout-retry-breaker",
+      "condition_index": 3,
+      "run_index": 2,
+      "seed": 404031435,
+      "started_at": "2026-10-26T08:30:49.089+00:00",
+      "finished_at": "2026-10-26T08:31:34.155+00:00",
+      "scheduled": 484,
+      "measure_scheduled": 427,
+      "rate_rps": 10.0,
+      "placement_version": 36,
+      "placement_sha256": "81e59fbcc90b75340712746d2163fcb1eff0146ebdb316daaaaab7dbaccfb1e9",
+      "link_rtt_ms": {
+        "local--aws-simulated": 40,
+        "local--azure-simulated": 55,
+        "local--gcp-simulated": 45,
+        "aws-simulated--azure-simulated": 70,
+        "aws-simulated--gcp-simulated": 60,
+        "azure-simulated--gcp-simulated": 65
+      },
+      "gateway_reset": {
+        "placement_version": 36,
+        "placement_sha256": "81e59fbcc90b75340712746d2163fcb1eff0146ebdb316daaaaab7dbaccfb1e9",
+        "seed": 404031435,
+        "synced": true
+      },
+      "faults": [
+        {
+          "target": "inventory-a",
+          "at_s": 5.0,
+          "spec": {
+            "mode": "hang",
+            "duration_s": 20.0,
+            "probability": 1.0,
+            "delay_ms": 0,
+            "error_status": 503,
+            "seed": null
+          },
+          "actual_measure_offset_s": 5.0013,
+          "lateness_ms": 1.36,
+          "ok": true
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": "none-r2",
+      "condition": "none",
+      "condition_index": 0,
+      "run_index": 2,
+      "seed": 404001414,
+      "started_at": "2026-10-26T08:31:35.181+00:00",
+      "finished_at": "2026-10-26T08:32:20.116+00:00",
+      "scheduled": 464,
+      "measure_scheduled": 422,
+      "rate_rps": 10.0,
+      "placement_version": 38,
+      "placement_sha256": "1ff1747b4b8113d1a45b86932a0863f71e27dcce53089ddca20086c272f3a0d5",
+      "link_rtt_ms": {
+        "local--aws-simulated": 40,
+        "local--azure-simulated": 55,
+        "local--gcp-simulated": 45,
+        "aws-simulated--azure-simulated": 70,
+        "aws-simulated--gcp-simulated": 60,
+        "azure-simulated--gcp-simulated": 65
+      },
+      "gateway_reset": {
+        "placement_version": 38,
+        "placement_sha256": "1ff1747b4b8113d1a45b86932a0863f71e27dcce53089ddca20086c272f3a0d5",
+        "seed": 404001414,
+        "synced": true
+      },
+      "faults": [
+        {
+          "target": "inventory-a",
+          "at_s": 5.0,
+          "spec": {
+            "mode": "hang",
+            "duration_s": 20.0,
+            "probability": 1.0,
+            "delay_ms": 0,
+            "error_status": 503,
+            "seed": null
+          },
+          "actual_measure_offset_s": 5.0011,
+          "lateness_ms": 1.095,
+          "ok": true
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": "none-r0",
+      "condition": "none",
+      "condition_index": 0,
+      "run_index": 0,
+      "seed": 404001212,
+      "started_at": "2026-10-26T08:32:21.166+00:00",
+      "finished_at": "2026-10-26T08:33:06.446+00:00",
+      "scheduled": 469,
+      "measure_scheduled": 418,
+      "rate_rps": 10.0,
+      "placement_version": 40,
+      "placement_sha256": "1ff1747b4b8113d1a45b86932a0863f71e27dcce53089ddca20086c272f3a0d5",
+      "link_rtt_ms": {
+        "local--aws-simulated": 40,
+        "local--azure-simulated": 55,
+        "local--gcp-simulated": 45,
+        "aws-simulated--azure-simulated": 70,
+        "aws-simulated--gcp-simulated": 60,
+        "azure-simulated--gcp-simulated": 65
+      },
+      "gateway_reset": {
+        "placement_version": 40,
+        "placement_sha256": "1ff1747b4b8113d1a45b86932a0863f71e27dcce53089ddca20086c272f3a0d5",
+        "seed": 404001212,
+        "synced": true
+      },
+      "faults": [
+        {
+          "target": "inventory-a",
+          "at_s": 5.0,
+          "spec": {
+            "mode": "hang",
+            "duration_s": 20.0,
+            "probability": 1.0,
+            "delay_ms": 0,
+            "error_status": 503,
+            "seed": null
+          },
+          "actual_measure_offset_s": 5.0004,
+          "lateness_ms": 0.434,
+          "ok": true
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": "timeout-retry-r1",
+      "condition": "timeout-retry",
+      "condition_index": 2,
+      "run_index": 1,
+      "seed": 404021327,
+      "started_at": "2026-10-26T08:33:07.519+00:00",
+      "finished_at": "2026-10-26T08:33:52.573+00:00",
+      "scheduled": 429,
+      "measure_scheduled": 386,
+      "rate_rps": 10.0,
+      "placement_version": 42,
+      "placement_sha256": "b2e09bd2eabec391803bcf06070ab7f5a2d936fb335f3cc9ba4f55664d2b2bef",
+      "link_rtt_ms": {
+        "local--aws-simulated": 40,
+        "local--azure-simulated": 55,
+        "local--gcp-simulated": 45,
+        "aws-simulated--azure-simulated": 70,
+        "aws-simulated--gcp-simulated": 60,
+        "azure-simulated--gcp-simulated": 65
+      },
+      "gateway_reset": {
+        "placement_version": 42,
+        "placement_sha256": "b2e09bd2eabec391803bcf06070ab7f5a2d936fb335f3cc9ba4f55664d2b2bef",
+        "seed": 404021327,
+        "synced": true
+      },
+      "faults": [
+        {
+          "target": "inventory-a",
+          "at_s": 5.0,
+          "spec": {
+            "mode": "hang",
+            "duration_s": 20.0,
+            "probability": 1.0,
+            "delay_ms": 0,
+            "error_status": 503,
+            "seed": null
+          },
+          "actual_measure_offset_s": 5.0008,
+          "lateness_ms": 0.771,
+          "ok": true
+        }
+      ],
+      "warnings": []
+    },
+    {
+      "run_id": "timeout-r0",
+      "condition": "timeout",
+      "condition_index": 1,
+      "run_index": 0,
+      "seed": 404011219,
+      "started_at": "2026-10-26T08:33:53.641+00:00",
+      "finished_at": "2026-10-26T08:34:38.801+00:00",
+      "scheduled": 452,
+      "measure_scheduled": 412,
+      "rate_rps": 10.0,
+      "placement_version": 44,
+      "placement_sha256": "8a0b9e3ef877e20ab32a7984beeb72d7594bb308e264198f9a7190ec15737c19",
+      "link_rtt_ms": {
+        "local--aws-simulated": 40,
+        "local--azure-simulated": 55,
+        "local--gcp-simulated": 45,
+        "aws-simulated--azure-simulated": 70,
+        "aws-simulated--gcp-simulated": 60,
+        "azure-simulated--gcp-simulated": 65
+      },
+      "gateway_reset": {
+        "placement_version": 44,
+        "placement_sha256": "8a0b9e3ef877e20ab32a7984beeb72d7594bb308e264198f9a7190ec15737c19",
+        "seed": 404011219,
+        "synced": true
+      },
+      "faults": [
+        {
+          "target": "inventory-a",
+          "at_s": 5.0,
+          "spec": {
+            "mode": "hang",
+            "duration_s": 20.0,
+            "probability": 1.0,
+            "delay_ms": 0,
+            "error_status": 503,
+            "seed": null
+          },
+          "actual_measure_offset_s": 5.0008,
+          "lateness_ms": 0.851,
+          "ok": true
+        }
+      ],
+      "warnings": []
+    }
+  ]
+}

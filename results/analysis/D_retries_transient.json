@@ -1,0 +1,136 @@
+{
+  "experiment": {
+    "experiment_id": "20261026T083440Z-D_retries_transient-2022ef",
+    "scenario": "D_retries_transient",
+    "status": "completed",
+    "validation_ok": true,
+    "git_commit": "bfe122c",
+    "mode": "local",
+    "runs_completed": 9,
+    "overrides": {},
+    "warnings": []
+  },
+  "retries": [
+    {
+      "retries": 0,
+      "predicted_success_if_independent": 0.5,
+      "success_rate": {
+        "per_run": [
+          0.5155,
+          0.5008,
+          0.5044
+        ],
+        "n_runs": 3,
+        "median": 0.5044,
+        "ci95": [
+          0.500843,
+          0.515548
+        ]
+      },
+      "inventory_attempts_per_request_per_run": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "median_latency_ok": {
+        "per_run": [
+          16.456,
+          16.576,
+          17.515
+        ],
+        "n_runs": 3,
+        "median": 16.576,
+        "ci95": [
+          16.456,
+          17.515
+        ]
+      },
+      "p95_latency_ok_per_run": [
+        45.216,
+        93.7,
+        103.215
+      ]
+    },
+    {
+      "retries": 1,
+      "predicted_success_if_independent": 0.75,
+      "success_rate": {
+        "per_run": [
+          0.8048,
+          0.7682,
+          0.7329
+        ],
+        "n_runs": 3,
+        "median": 0.7682,
+        "ci95": [
+          0.732865,
+          0.804788
+        ]
+      },
+      "inventory_attempts_per_request_per_run": [
+        1.4309,
+        1.4844,
+        1.5167
+      ],
+      "median_latency_ok": {
+        "per_run": [
+          22.021,
+          22.63,
+          22.262
+        ],
+        "n_runs": 3,
+        "median": 22.262,
+        "ci95": [
+          22.021,
+          22.63
+        ]
+      },
+      "p95_latency_ok_per_run": [
+        74.745,
+        77.423,
+        99.361
+      ]
+    },
+    {
+      "retries": 2,
+      "predicted_success_if_independent": 0.875,
+      "success_rate": {
+        "per_run": [
+          0.8708,
+          0.8789,
+          0.8772
+        ],
+        "n_runs": 3,
+        "median": 0.8772,
+        "ci95": [
+          0.870813,
+          0.878893
+        ]
+      },
+      "inventory_attempts_per_request_per_run": [
+        1.7544,
+        1.7336,
+        1.7608
+      ],
+      "median_latency_ok": {
+        "per_run": [
+          26.905,
+          27.708,
+          28.19
+        ],
+        "n_runs": 3,
+        "median": 27.708,
+        "ci95": [
+          26.905,
+          28.19
+        ]
+      },
+      "p95_latency_ok_per_run": [
+        131.37,
+        194.504,
+        170.739
+      ]
+    }
+  ],
+  "figure": "D_retries_transient.png"
+}

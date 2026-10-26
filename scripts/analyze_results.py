@@ -33,7 +33,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
 from setu_x.experiments.metrics import percentile  # noqa: E402
-from setu_x.experiments.records import read_csv, validate_records  # noqa: E402
+from setu_x.experiments.records import validate_records  # noqa: E402
 from setu_x.experiments.statistics import bootstrap_ci, bootstrap_diff_ci  # noqa: E402
 
 C1, C2, C3, C4 = "#2a78d6", "#eb6834", "#1baf7a", "#6250d6"   # validated categorical slots
@@ -78,6 +78,22 @@ class Exp:
         return d
 
 
+def inventory_attempts(exp: Exp, run_id: str) -> tuple[int, int]:
+    """(inventory attempts, requests) for one run.
+
+    `attempts` in a row is the sum over both dependencies. In parallel call mode pricing is called
+    exactly once per order, and in these scenarios pricing is healthy (no faults, so no retries), so
+    inventory attempts = attempts - 1. Breaker rejections are not attempts (no call is made).
+    """
+    run = next(r for r in exp.manifest["runs"] if r["run_id"] == run_id)
+    cond = next(c for c in exp.manifest["scenario"]["conditions"] if c["name"] == run["condition"])
+    mode = cond.get("call_mode") or exp.manifest["base_placement"]["call_mode"]
+    if mode != "parallel" or any(f["target"] == "pricing" for f in cond.get("faults", [])):
+        raise ValueError(f"{run_id}: inventory attempts are only derivable in parallel mode with healthy pricing")
+    rows = [r for r in exp.measure(run_id) if r.get("attempts") is not None]
+    return sum(int(r["attempts"]) - 1 for r in rows), len(rows)
+
+
 def stat_block(values: list[float], seed: int) -> dict:
     ci = bootstrap_ci(values, median, seed=seed) if len(values) >= 2 else None
     return {"per_run": [round(v, 4) for v in values], "n_runs": len(values),
@@ -100,7 +116,7 @@ def save(fig, out: Path, name: str) -> str:
 
 
 def caption(ax, exp: Exp) -> None:
-    ax.figure.text(0.01, -0.02, f"{exp.id} · {exp.manifest['environment_mode']} mode · commit "
+    ax.figure.text(0.01, -0.07, f"{exp.id} · {exp.manifest['environment_mode']} mode · commit "
                    f"{exp.manifest['git_commit']} · dots = runs, bar = median of runs, line = 95% bootstrap CI",
                    fontsize=7.5, color=MUTED)
 
@@ -171,9 +187,9 @@ def analyse_B(exp: Exp, out: Path) -> dict:
     bseq = median(exp.run_level("seq-d0", "latency_ok_ms.p50") or [math.nan])
     bpar = median(exp.run_level("par-d0", "latency_ok_ms.p50") or [math.nan])
     ax.plot(range(4), [bseq + d for d in ds], color=C1, linestyle="--", linewidth=1, alpha=0.7,
-            label="sequential: d0 + d (configured)")
+            label="sequential: measured d0 + configured d")
     ax.plot(range(4), [bpar + max(50, d) - 50 for d in ds], color=C2, linestyle="--", linewidth=1, alpha=0.7,
-            label="parallel: d0 + max(50, d) − 50 (configured)")
+            label="parallel: measured d0 + max(50, d) − 50")
     ax.set_xticks(range(4), [f"{d} ms" for d in ds])
     ax.set_xlabel("injected delay on the gateway→pricing link, d (inventory link fixed at 50 ms)")
     ax.set_ylabel("median latency of successful requests (ms)")
@@ -223,18 +239,13 @@ def failure_view(exp: Exp, out: Path, prefix: str, title: str) -> dict:
     axes = axes if len(conds) > 1 else [axes]
     for ax, c in zip(axes, conds, strict=True):
         runs = exp.runs_of(c)
-        timeline(ax, exp, runs[0]["run_id"], f"{c} ({runs[0]['run_id']})")
+        timeline(ax, exp, runs[0]["run_id"], c)
         ax.set_xlabel("scheduled send time (s)")
         lat_all = [float(r["latency_ms"]) for m in runs for r in exp.measure(m["run_id"])
                    if r.get("http_status") is not None]
         fails = [float(r["latency_ms"]) for m in runs for r in exp.measure(m["run_id"])
                  if r["outcome"] in ("unavailable", "error")]
-        attempts_inv = []
-        for m in runs:
-            rr = exp.measure(m["run_id"])
-            # attempts = inventory attempts + pricing attempts (pricing healthy: 1 attempt when called)
-            attempts_inv.append(sum((r.get("attempts") or 0) - (1 if r.get("pricing_ms") is not None else 0)
-                                    for r in rr if r.get("attempts") is not None))
+        attempts_inv = [inventory_attempts(exp, m["run_id"])[0] for m in runs]
         res["conditions"][c] = {
             "success_rate": stat_block(exp.run_level(c, "success_rate"), seed),
             "availability": stat_block(exp.run_level(c, "availability"), seed),
@@ -251,8 +262,8 @@ def failure_view(exp: Exp, out: Path, prefix: str, title: str) -> dict:
             "settings": exp.manifest["scenario"]["conditions"][conds.index(c)]["resilience"],
         }
     axes[0].set_ylabel("success rate per second")
-    fig.suptitle(title, fontsize=11)
-    fig.text(0.01, -0.06, f"{exp.id} · shaded: fault window at its actual injection time · first run of each condition",
+    fig.suptitle(title, fontsize=11, y=1.06)
+    fig.text(0.01, -0.1, f"{exp.id} · shaded: fault window at its actual injection time · first run of each condition",
              fontsize=7.5, color=MUTED)
     res["figure_timeline"] = save(fig, out, f"{prefix}_timeline")
     return res
@@ -272,9 +283,8 @@ def analyse_D2(exp: Exp, out: Path) -> dict:
         ax.plot([i - 0.25, i + 0.25], [pred] * 2, color=MUTED, linestyle="--", linewidth=1.2)
         att = []
         for m in exp.runs_of(c):
-            rr = [x for x in exp.measure(m["run_id"]) if x.get("attempts") is not None]
-            inv = [(x["attempts"] or 0) - (1 if x.get("pricing_ms") is not None else 0) for x in rr]
-            att.append(round(sum(inv) / len(inv), 4) if inv else None)
+            total, n = inventory_attempts(exp, m["run_id"])
+            att.append(round(total / n, 4) if n else None)
         res["retries"].append({"retries": r, "predicted_success_if_independent": pred,
                                "success_rate": stat_block(vals, seed),
                                "inventory_attempts_per_request_per_run": att,
@@ -318,12 +328,37 @@ def analyse_E(exp: Exp, out: Path) -> dict:
     a2.set_ylabel("latency of successful requests (ms)")
     a2.set_title("E · Latency percentiles per run", fontsize=10)
     a2.legend(frameon=False, fontsize=8)
-    fig.text(0.01, -0.04, f"{exp.id} · local mode · this host and container limits only (0.5 CPU per service)",
+    fig.text(0.01, -0.08, f"{exp.id} · local mode · p95 shown only for runs with ≥ 200 successes · "
+             "this host and container limits only (0.5 CPU per service)",
              fontsize=7.5, color=MUTED)
     res["figure"] = save(fig, out, "E_scaling")
     stats_file = exp.dir / "docker_stats.csv"
     res["docker_stats"] = "present" if stats_file.exists() else "not recorded"
+    if stats_file.exists():
+        res["cpu_percent_median_per_run"] = cpu_per_run(exp, stats_file)
+        res["cpu_note"] = ("docker stats sampled on the host (host clock, ~1-3 s apart), matched to each run's "
+                           "start/finish time; 100% = one CPU; each service is limited to 0.5 CPU (50%)")
     return res
+
+
+def cpu_per_run(exp: Exp, stats_file: Path) -> dict:
+    import csv
+    from datetime import datetime
+
+    def t(x: str) -> datetime:
+        return datetime.fromisoformat(x.replace("Z", "+00:00"))
+
+    samples = list(csv.DictReader(stats_file.open(encoding="utf-8-sig")))
+    out: dict[str, dict] = {}
+    for run in exp.manifest["runs"]:
+        a, b = t(run["started_at"]), t(run["finished_at"])
+        per: dict[str, float | None] = {}
+        for svc in ("gateway", "inventory-a", "pricing", "runner"):
+            v = [float(x["cpu_percent"].rstrip("%")) for x in samples
+                 if x["container"].endswith(f"-{svc}-1") and a <= t(x["host_time_utc"]) <= b]
+            per[svc] = round(median(v), 1) if v else None
+        out[run["run_id"]] = {"condition": run["condition"], **per}
+    return out
 
 
 def analyse_F(exp: Exp, out: Path) -> dict:
@@ -365,7 +400,8 @@ def analyse_G(exp: Exp, out: Path) -> dict:
     res["H3"] = {"success_gain_fallback_minus_none": diff_block(fb, nf, seed),
                  "p95_cost_fallback_minus_none": diff_block(exp.run_level("fallback", "latency_ok_ms.p95"),
                                                             exp.run_level("no-fallback", "latency_ok_ms.p95"), seed),
-                 "criterion": "supported if fallback raises success and costs latency (expected ≈ timeout + longer link)"}
+                 "criterion": "supported if fallback raises success and costs latency "
+                              "(expected ≈ timeout + longer link)"}
     return res
 
 

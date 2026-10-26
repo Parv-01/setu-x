@@ -1,0 +1,90 @@
+[
+  {
+    "experiment_id": "20261026T081511Z-A_baseline-d47b42",
+    "scenario": "A_baseline",
+    "status": "completed",
+    "validation_ok": true,
+    "git_commit": "bfe122c",
+    "mode": "local",
+    "runs_completed": 5,
+    "overrides": {},
+    "warnings": []
+  },
+  {
+    "experiment_id": "20261026T082045Z-C_service_failure-08f3cb",
+    "scenario": "C_service_failure",
+    "status": "completed",
+    "validation_ok": true,
+    "git_commit": "bfe122c",
+    "mode": "local",
+    "runs_completed": 6,
+    "overrides": {},
+    "warnings": []
+  },
+  {
+    "experiment_id": "20261026T082525Z-D_policies_hang-929ca0",
+    "scenario": "D_policies_hang",
+    "status": "completed",
+    "validation_ok": true,
+    "git_commit": "bfe122c",
+    "mode": "local",
+    "runs_completed": 12,
+    "overrides": {},
+    "warnings": []
+  },
+  {
+    "experiment_id": "20261026T083440Z-D_retries_transient-2022ef",
+    "scenario": "D_retries_transient",
+    "status": "completed",
+    "validation_ok": true,
+    "git_commit": "bfe122c",
+    "mode": "local",
+    "runs_completed": 9,
+    "overrides": {},
+    "warnings": []
+  },
+  {
+    "experiment_id": "20261026T084007Z-E_scaling-c1fe8e",
+    "scenario": "E_scaling",
+    "status": "completed",
+    "validation_ok": true,
+    "git_commit": "bfe122c",
+    "mode": "local",
+    "runs_completed": 15,
+    "overrides": {},
+    "warnings": []
+  },
+  {
+    "experiment_id": "20261026T084953Z-B_network_delay-8d6c60",
+    "scenario": "B_network_delay",
+    "status": "completed",
+    "validation_ok": true,
+    "git_commit": "bfe122c",
+    "mode": "simulated",
+    "runs_completed": 24,
+    "overrides": {},
+    "warnings": []
+  },
+  {
+    "experiment_id": "20261026T090427Z-F_placement-60bad3",
+    "scenario": "F_placement",
+    "status": "completed",
+    "validation_ok": true,
+    "git_commit": "bfe122c",
+    "mode": "simulated",
+    "runs_completed": 12,
+    "overrides": {},
+    "warnings": []
+  },
+  {
+    "experiment_id": "20261026T091145Z-G_hybrid_fallback-08be77",
+    "scenario": "G_hybrid_fallback",
+    "status": "completed",
+    "validation_ok": true,
+    "git_commit": "bfe122c",
+    "mode": "simulated",
+    "runs_completed": 9,
+    "overrides": {},
+    "warnings": []
+  }
+]

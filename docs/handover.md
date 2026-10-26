@@ -2,8 +2,8 @@
 
 Resume from this file if work is interrupted. Updated at every phase boundary.
 
-**Last updated:** 2026-10-25 (Phase 8 in progress)
-**Current phase:** Phase 7 PASS on Linux and Windows (verify 18/18 both). Phase 8: campaign script and analysis script ready; Linux pilot (1 run per condition, not for findings) found and fixed a harness bug (below). Waiting for Parv's Windows campaign run.
+**Last updated:** 2026-10-26 (Phase 8 complete; Phase 9 starting)
+**Current phase:** Phase 8 complete: Windows campaign (8/8 experiments, records validated), analysis and `docs/findings.md`. Phase 9 (GitHub readiness) next.
 
 ## Completed
 
@@ -48,6 +48,14 @@ Resume from this file if work is interrupted. Updated at every phase boundary.
     - 12 Playwright browser tests in a pinned image, compose profile `browser`, run in local and simulated mode.
   - Acceptance helpers gained an explicit SKIP status. A skipped check is never PASS; the verdict becomes INCOMPLETE.
   - `scripts/phase6_acceptance.ps1` (15 checks). `docs/dashboard.md`. Genuine screenshots in `docs/evidence/screenshots/phase6/`. Version 0.6.0.
+
+- **Phase 8 (complete, Parv's Windows PC):**
+  - Campaign `results/campaign_20261026T081408Z.json`: commit `bfe122c`, 64.8 min, i5-13500, Docker Desktop 29.4.2 (20 CPUs, 7.59 GiB), power plan Balanced. 8/8 experiments completed and validated on the device and again here.
+  - `scripts/analyze_results.py` (matplotlib, `requirements/analysis.lock`) re-validates every record and writes `results/analysis/<scenario>.json` and figures.
+    - Fix during analysis: inventory calls are derived as total attempts − 1, valid only in parallel mode with healthy pricing; the script refuses other configurations.
+    - E reads `docker_stats.csv` for per-container CPU.
+  - `docs/findings.md`: H1, H3, H4 and H5 supported; H2 supported with a recovery cost (breaker); E shows congestion collapse at 80 req/s (gateway at its 0.5 CPU limit). Threats to validity listed. Every number was checked against `results/analysis/*.json`.
+  - Pilot results (Linux, 1 run per condition) were not committed.
 
 ## Test status (executed in the build workspace)
 
@@ -99,7 +107,8 @@ Second defect found by the Phase 4 regression run (C7 failed once, then passed o
 4. Leftover folders `E:\Projects\Cloud_Mini_Project\.p0\` (sync staging) and `_to_delete\` (safe to delete).
 5. License not yet chosen (Phase 9).
 6. Phase 2 acceptance scripts are a snapshot: A9/A10 assume no fallback and now get 200s (documented).
-7. Experiments started from the dashboard record the git commit as "not recorded" (the container has no git). Use `scripts/run_experiment.ps1` for Phase 8.
+7. Experiments started from the dashboard record the git commit as "not recorded" (the container has no git). The Phase 8 campaign used `scripts/run_all_experiments.ps1`, which records it.
+8. The gateway has no admission control or load shedding: offered load above ≈ 40 req/s on this machine collapses throughput (findings §E). Documented, not fixed.
 
 ## Build-workspace notes (not part of the repo)
 
@@ -109,8 +118,9 @@ Second defect found by the Phase 4 regression run (C7 failed once, then passed o
 - PowerShell 7.6.8: `<scratchpad>/pwsh/pwsh`, symlinked to `/usr/local/bin/pwsh` (needed because the acceptance script calls `pwsh` for `fault_container.ps1`).
 - Sync: **use a new archive file name for every sync** (reusing a name once delivered a stale copy despite reporting success) and compare `sha256sum` on both sides. Then tar → `device_commit_files` to `.p0\setu-x-<phase>.tgz` → on the device: `tar --overwrite --exclude='setu-x/.git/objects/*'`, then `tar --skip-old-files … 'setu-x/.git/objects'`, then `git fsck`.
 
-## Next commands (Phase 8)
+## Next commands (Phase 9)
 
-1. On Parv's Windows machine, local mode (`docker compose up -d`): run A_baseline, C_service_failure, D_policies_hang, D_retries_transient and E_scaling with `pwsh -File scripts/run_experiment.ps1 -Scenario <name> -DockerStats`.
-2. Then simulated mode (`$env:SETU_MODE='simulated'; docker compose up -d`): run B_network_delay, F_placement and G_hybrid_fallback the same way.
-3. Commit `results/<id>/` for those runs (verify V2 requires each committed result directory to be complete and validated). Produce plots from those files only; evaluate H1–H5 against the rejection criteria in `docs/research_questions.md`; write the findings and the threats to validity.
+1. Add CI (`.github/workflows/ci.yml`): ruff, unit + contract + integration tests, JS tests, secret scan, compose config check. No cloud credentials in CI.
+2. Choose a license (Parv's decision) and add `LICENSE`.
+3. Release checklist; push only with Parv's explicit authorization and his GitHub credentials.
+4. Then Phase 10 (final ≤ 5-slide deck with genuine screenshots and figures from `results/analysis/`) and Phase 11 (`voiceover.md`, final handover).

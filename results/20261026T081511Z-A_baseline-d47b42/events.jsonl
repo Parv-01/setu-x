@@ -1,0 +1,15 @@
+{"run_id":"parallel-r0","source":"controller","seq":5,"ts":"2026-10-26T08:16:17.150+00:00","type":"fault_cleared","target":"inventory-a"}
+{"run_id":"parallel-r0","source":"controller","seq":6,"ts":"2026-10-26T08:16:17.150+00:00","type":"fault_cleared","target":"inventory-b"}
+{"run_id":"parallel-r0","source":"controller","seq":7,"ts":"2026-10-26T08:16:17.150+00:00","type":"fault_cleared","target":"pricing"}
+{"run_id":"parallel-r3","source":"controller","seq":12,"ts":"2026-10-26T08:17:23.430+00:00","type":"fault_cleared","target":"inventory-a"}
+{"run_id":"parallel-r3","source":"controller","seq":13,"ts":"2026-10-26T08:17:23.430+00:00","type":"fault_cleared","target":"pricing"}
+{"run_id":"parallel-r3","source":"controller","seq":14,"ts":"2026-10-26T08:17:23.431+00:00","type":"fault_cleared","target":"inventory-b"}
+{"run_id":"parallel-r2","source":"controller","seq":19,"ts":"2026-10-26T08:18:29.917+00:00","type":"fault_cleared","target":"inventory-b"}
+{"run_id":"parallel-r2","source":"controller","seq":20,"ts":"2026-10-26T08:18:29.918+00:00","type":"fault_cleared","target":"inventory-a"}
+{"run_id":"parallel-r2","source":"controller","seq":21,"ts":"2026-10-26T08:18:29.918+00:00","type":"fault_cleared","target":"pricing"}
+{"run_id":"parallel-r1","source":"controller","seq":26,"ts":"2026-10-26T08:19:36.233+00:00","type":"fault_cleared","target":"inventory-a"}
+{"run_id":"parallel-r1","source":"controller","seq":27,"ts":"2026-10-26T08:19:36.234+00:00","type":"fault_cleared","target":"pricing"}
+{"run_id":"parallel-r1","source":"controller","seq":28,"ts":"2026-10-26T08:19:36.234+00:00","type":"fault_cleared","target":"inventory-b"}
+{"run_id":"parallel-r4","source":"controller","seq":33,"ts":"2026-10-26T08:20:42.552+00:00","type":"fault_cleared","target":"inventory-b"}
+{"run_id":"parallel-r4","source":"controller","seq":34,"ts":"2026-10-26T08:20:42.552+00:00","type":"fault_cleared","target":"inventory-a"}
+{"run_id":"parallel-r4","source":"controller","seq":35,"ts":"2026-10-26T08:20:42.553+00:00","type":"fault_cleared","target":"pricing"}

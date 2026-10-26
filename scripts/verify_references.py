@@ -66,7 +66,8 @@ def main() -> int:
             continue
         m = msg["message"]
         title = html.unescape((m.get("title") or [""])[0])
-        authors = [f"{a.get('given', '')} {a.get('family', '')}".strip() or a.get("name", "") for a in m.get("author", [])]
+        authors = [f"{a.get('given', '')} {a.get('family', '')}".strip() or a.get("name", "")
+                   for a in m.get("author", [])]
         first_family = (m.get("author") or [{}])[0].get("family") or (m.get("author") or [{}])[0].get("name", "")
         year = None
         for key in ("published-print", "published-online", "issued", "published"):
@@ -115,7 +116,9 @@ def main() -> int:
         counts[r["verdict"]] = counts.get(r["verdict"], 0) + 1
         flag = "" if r["verdict"] == "VERIFIED" else "  <-- review"
         reg = r.get("registered", {})
-        print(f"{r['verdict']:<10} {r['id']:<22} {reg.get('year')} | {reg.get('title', r.get('error', ''))[:80]} | abs={'y' if r.get('abstract') else 'n'}{flag}")
+        title = reg.get("title", r.get("error", ""))[:80]
+        has_abstract = "y" if r.get("abstract") else "n"
+        print(f"{r['verdict']:<10} {r['id']:<22} {reg.get('year')} | {title} | abs={has_abstract}{flag}")
         if r["verdict"] == "MISMATCH":
             print(f"           checks={r['checks']} first_author_registered={reg.get('authors', ['?'])[:1]}")
     print("summary:", counts)

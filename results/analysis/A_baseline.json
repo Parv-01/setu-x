@@ -1,0 +1,131 @@
+{
+  "experiment": {
+    "experiment_id": "20261026T081511Z-A_baseline-d47b42",
+    "scenario": "A_baseline",
+    "status": "completed",
+    "validation_ok": true,
+    "git_commit": "bfe122c",
+    "mode": "local",
+    "runs_completed": 5,
+    "overrides": {},
+    "warnings": []
+  },
+  "runs": [
+    {
+      "run_id": "parallel-r0",
+      "n": 1159,
+      "p50": 16.884,
+      "p90": 39.391,
+      "p95": 98.762,
+      "p99": 302.607,
+      "mean": 28.852,
+      "success_rate": 1.0,
+      "send_lag_p99_ms": 2.521
+    },
+    {
+      "run_id": "parallel-r3",
+      "n": 1153,
+      "p50": 15.232,
+      "p90": 34.745,
+      "p95": 54.091,
+      "p99": 112.184,
+      "mean": 19.854,
+      "success_rate": 1.0,
+      "send_lag_p99_ms": 3.042
+    },
+    {
+      "run_id": "parallel-r2",
+      "n": 1166,
+      "p50": 14.659,
+      "p90": 58.94,
+      "p95": 106.2,
+      "p99": 228.966,
+      "mean": 27.694,
+      "success_rate": 1.0,
+      "send_lag_p99_ms": 3.203
+    },
+    {
+      "run_id": "parallel-r1",
+      "n": 1214,
+      "p50": 16.946,
+      "p90": 29.371,
+      "p95": 49.669,
+      "p99": 103.557,
+      "mean": 19.904,
+      "success_rate": 1.0,
+      "send_lag_p99_ms": 2.466
+    },
+    {
+      "run_id": "parallel-r4",
+      "n": 1140,
+      "p50": 14.352,
+      "p90": 30.117,
+      "p95": 44.362,
+      "p99": 89.213,
+      "mean": 18.339,
+      "success_rate": 1.0,
+      "send_lag_p99_ms": 2.673
+    }
+  ],
+  "figure": "A_baseline_ecdf.png",
+  "p50_across_runs": {
+    "per_run": [
+      16.884,
+      15.232,
+      14.659,
+      16.946,
+      14.352
+    ],
+    "n_runs": 5,
+    "median": 15.232,
+    "ci95": [
+      14.352,
+      16.946
+    ]
+  },
+  "p95_across_runs": {
+    "per_run": [
+      98.762,
+      54.091,
+      106.2,
+      49.669,
+      44.362
+    ],
+    "n_runs": 5,
+    "median": 54.091,
+    "ci95": [
+      44.362,
+      106.2
+    ]
+  },
+  "p99_across_runs": {
+    "per_run": [
+      302.607,
+      112.184,
+      228.966,
+      103.557,
+      89.213
+    ],
+    "n_runs": 5,
+    "median": 112.184,
+    "ci95": [
+      89.213,
+      302.607
+    ]
+  },
+  "success_rate": {
+    "per_run": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "n_runs": 5,
+    "median": 1.0,
+    "ci95": [
+      1.0,
+      1.0
+    ]
+  }
+}

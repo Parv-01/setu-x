@@ -1,6 +1,6 @@
 # Validation Report (Phase 7)
 
-**Scope.** This report covers what has been executed and verified for SETU-X up to the end of Phase 7: the application, the experiment harness and the dashboard. It does **not** report experimental findings; those come from the Phase 8 runs. Every "PASS" below names the log that shows it. A check that was not executed is listed as not executed, never as passing.
+**Scope.** This report covers what has been executed and verified for SETU-X up to the end of Phase 8: the application, the experiment harness, the dashboard and the experiment campaign. The experimental findings themselves are in `docs/findings.md`. Every "PASS" below names the log that shows it. A check that was not executed is listed as not executed, never as passing.
 
 **Versions.**
 - Code: SETU-X 0.6.0, verified on commit `21a0ba6` (Linux; the first verify run on `eb4d2f0` also passed 18/18).
@@ -81,7 +81,7 @@ Regression runs: Phase 2 on Phase 3, Phase 3 on Phase 4, Phase 4 on Phase 5, Pha
 | Clean startup, experiment, export and shutdown cycle succeeds | Met | V8 → V11/V12 (records downloaded and reconciled) → V18 |
 | Results traceable to their experiment configurations | Met | V11: manifest holds scenario text + SHA-256 (matches the file), overrides, git commit, seeds, placement SHA-256 per run; V13: request IDs → service logs |
 | All commands in the README tested | Met | V17: 20 commands. Most were executed in the run; the per-phase acceptance commands are backed by PASS logs. Where the workspace could not run a README command as written (see §1), the log says so |
-| No credentials, private keys or fabricated experimental results | Met | V2; `results/` holds no committed results yet, and none may be committed without validation |
+| No credentials, private keys or fabricated experimental results | Met | V2; the only committed results are the 8 Phase 8 experiments, re-validated from the records by `scripts/analyze_results.py` |
 
 ## 5. Deliverable checklist (project brief §15): status at the end of Phase 7
 
@@ -94,8 +94,8 @@ Regression runs: Phase 2 on Phase 3, Phase 3 on Phase 4, Phase 4 on Phase 5, Pha
 | Workload generator; metrics and data export | Done (Phase 5) |
 | Interactive dashboard | Done (Phase 6) |
 | Verified bibliography; literature review; research-gap matrix; explicit hypotheses; methodology | Done (Phase 1, methodology Phase 5; 30/30 DOIs Crossref-verified) |
-| Actual experiment artifacts; evidence-based analysis | **Phase 8** |
-| Limitations and threats to validity | Partly: §6 below and `docs/methodology.md` §10; full write-up with results in Phase 8 |
+| Actual experiment artifacts; evidence-based analysis | Met: `results/2026102*/`, `results/analysis/`, `docs/findings.md` |
+| Limitations and threats to validity | Met: `docs/findings.md` (threats to validity), §6 below and `docs/methodology.md` §10 |
 | Unit, integration, end-to-end tests; clean startup and shutdown; validated exports; validation report | Done (this report) |
 | Security and secret checks | Done (V2 in `verify.ps1`); repeated in CI in Phase 9 |
 | GitHub Actions workflow | **Phase 9** |

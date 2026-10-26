@@ -1,0 +1,363 @@
+{
+  "experiment": {
+    "experiment_id": "20261026T082525Z-D_policies_hang-929ca0",
+    "scenario": "D_policies_hang",
+    "status": "completed",
+    "validation_ok": true,
+    "git_commit": "bfe122c",
+    "mode": "local",
+    "runs_completed": 12,
+    "overrides": {},
+    "warnings": []
+  },
+  "conditions": {
+    "none": {
+      "success_rate": {
+        "per_run": [
+          0.4949,
+          0.4858,
+          0.4641
+        ],
+        "n_runs": 3,
+        "median": 0.4858,
+        "ci95": [
+          0.464115,
+          0.494924
+        ]
+      },
+      "availability": {
+        "per_run": [
+          0.4949,
+          0.4858,
+          0.4641
+        ],
+        "n_runs": 3,
+        "median": 0.4858,
+        "ci95": [
+          0.464115,
+          0.494924
+        ]
+      },
+      "median_latency_ok": {
+        "per_run": [
+          17.283,
+          18.996,
+          19.328
+        ],
+        "n_runs": 3,
+        "median": 18.996,
+        "ci95": [
+          17.283,
+          19.328
+        ]
+      },
+      "p95_latency_responded_per_run": [
+        10019.818,
+        10021.599,
+        10018.024
+      ],
+      "p99_latency_responded_per_run": [
+        null,
+        null,
+        null
+      ],
+      "max_latency_responded_pooled_ms": 10224.0,
+      "failed_latency_p50_pooled_ms": 10006.5,
+      "inventory_attempts_per_run": [
+        394,
+        422,
+        418
+      ],
+      "retries_per_run": [
+        0,
+        0,
+        0
+      ],
+      "fallback_requests_per_run": [
+        0,
+        0,
+        0
+      ],
+      "breaker_rejections_per_run": [
+        0,
+        0,
+        0
+      ],
+      "recovery_s": [
+        0.898,
+        0.999,
+        1.0
+      ],
+      "settings": {
+        "fallback": false,
+        "circuit_breaker": {
+          "enabled": false
+        },
+        "retries": 0,
+        "outer_deadline_ms": 10000,
+        "timeout_ms": 10000
+      }
+    },
+    "timeout": {
+      "success_rate": {
+        "per_run": [
+          0.4946,
+          0.5141,
+          0.5024
+        ],
+        "n_runs": 3,
+        "median": 0.5024,
+        "ci95": [
+          0.494624,
+          0.514066
+        ]
+      },
+      "availability": {
+        "per_run": [
+          0.4946,
+          0.5141,
+          0.5024
+        ],
+        "n_runs": 3,
+        "median": 0.5024,
+        "ci95": [
+          0.494624,
+          0.514066
+        ]
+      },
+      "median_latency_ok": {
+        "per_run": [
+          17.813,
+          17.686,
+          19.483
+        ],
+        "n_runs": 3,
+        "median": 17.813,
+        "ci95": [
+          17.686,
+          19.483
+        ]
+      },
+      "p95_latency_responded_per_run": [
+        817.778,
+        816.753,
+        817.235
+      ],
+      "p99_latency_responded_per_run": [
+        null,
+        null,
+        null
+      ],
+      "max_latency_responded_pooled_ms": 870.1,
+      "failed_latency_p50_pooled_ms": 811.1,
+      "inventory_attempts_per_run": [
+        372,
+        391,
+        412
+      ],
+      "retries_per_run": [
+        0,
+        0,
+        0
+      ],
+      "fallback_requests_per_run": [
+        0,
+        0,
+        0
+      ],
+      "breaker_rejections_per_run": [
+        0,
+        0,
+        0
+      ],
+      "recovery_s": [
+        1.0,
+        1.0,
+        0.999
+      ],
+      "settings": {
+        "fallback": false,
+        "circuit_breaker": {
+          "enabled": false
+        },
+        "retries": 0,
+        "timeout_ms": 800
+      }
+    },
+    "timeout-retry": {
+      "success_rate": {
+        "per_run": [
+          0.5051,
+          0.5267,
+          0.5544
+        ],
+        "n_runs": 3,
+        "median": 0.5267,
+        "ci95": [
+          0.505051,
+          0.554404
+        ]
+      },
+      "availability": {
+        "per_run": [
+          0.5051,
+          0.5267,
+          0.5544
+        ],
+        "n_runs": 3,
+        "median": 0.5267,
+        "ci95": [
+          0.505051,
+          0.554404
+        ]
+      },
+      "median_latency_ok": {
+        "per_run": [
+          19.268,
+          19.152,
+          19.123
+        ],
+        "n_runs": 3,
+        "median": 19.152,
+        "ci95": [
+          19.123,
+          19.268
+        ]
+      },
+      "p95_latency_responded_per_run": [
+        2550.527,
+        2653.302,
+        2564.465
+      ],
+      "p99_latency_responded_per_run": [
+        null,
+        null,
+        null
+      ],
+      "max_latency_responded_pooled_ms": 2764.8,
+      "failed_latency_p50_pooled_ms": 2508.7,
+      "inventory_attempts_per_run": [
+        816,
+        829,
+        759
+      ],
+      "retries_per_run": [
+        420,
+        417,
+        373
+      ],
+      "fallback_requests_per_run": [
+        0,
+        0,
+        0
+      ],
+      "breaker_rejections_per_run": [
+        0,
+        0,
+        0
+      ],
+      "recovery_s": [
+        0.1,
+        0.098,
+        0.099
+      ],
+      "settings": {
+        "fallback": false,
+        "circuit_breaker": {
+          "enabled": false
+        },
+        "retries": 2,
+        "timeout_ms": 800
+      }
+    },
+    "timeout-retry-breaker": {
+      "success_rate": {
+        "per_run": [
+          0.3905,
+          0.3824,
+          0.4145
+        ],
+        "n_runs": 3,
+        "median": 0.3905,
+        "ci95": [
+          0.382353,
+          0.41452
+        ]
+      },
+      "availability": {
+        "per_run": [
+          0.3905,
+          0.3824,
+          0.4145
+        ],
+        "n_runs": 3,
+        "median": 0.3905,
+        "ci95": [
+          0.382353,
+          0.41452
+        ]
+      },
+      "median_latency_ok": {
+        "per_run": [
+          15.96,
+          18.988,
+          15.37
+        ],
+        "n_runs": 3,
+        "median": 15.96,
+        "ci95": [
+          15.37,
+          18.988
+        ]
+      },
+      "p95_latency_responded_per_run": [
+        71.512,
+        66.61,
+        49.385
+      ],
+      "p99_latency_responded_per_run": [
+        null,
+        null,
+        null
+      ],
+      "max_latency_responded_pooled_ms": 1654.0,
+      "failed_latency_p50_pooled_ms": 16.6,
+      "inventory_attempts_per_run": [
+        181,
+        162,
+        195
+      ],
+      "retries_per_run": [
+        4,
+        4,
+        4
+      ],
+      "fallback_requests_per_run": [
+        0,
+        0,
+        0
+      ],
+      "breaker_rejections_per_run": [
+        225,
+        216,
+        236
+      ],
+      "recovery_s": [
+        5.399,
+        5.199,
+        4.499
+      ],
+      "settings": {
+        "fallback": false,
+        "circuit_breaker": {
+          "enabled": true,
+          "consecutive_failures": 5,
+          "reset_timeout_ms": 5000
+        },
+        "retries": 2,
+        "timeout_ms": 800
+      }
+    }
+  },
+  "figure_timeline": "D_policies_hang_timeline.png"
+}
