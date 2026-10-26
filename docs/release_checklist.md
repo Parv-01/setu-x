@@ -1,17 +1,17 @@
 # Release checklist (GitHub)
 
-Nothing in this repository has been pushed anywhere. Publishing needs Parv's explicit go-ahead and his own GitHub account. This file lists what has to be true first, what is still open, and the exact commands.
+Publishing was authorised by Parv on 2026-10-26. This file records the decisions, the pre-push checks and how the repository was published.
 
-## 1. Decisions only Parv can make
+## 1. Decisions (made by Parv, 2026-10-26)
 
-| Decision | Status | Notes |
-|---|---|---|
-| **License** | **Open** | Without a license file, nobody may legally reuse the code (all rights reserved). Common choices: **MIT** (short, permissive), **Apache-2.0** (permissive, with an explicit patent grant), or **CC BY 4.0 for docs and results + MIT/Apache for code** (often used for research artefacts). If the work counts as IIT Patna work, check the institute's IP policy first. |
-| **Repository name and owner** | Open | `setu-x` is the working name. Whether it is free on GitHub, or anywhere else, has **not** been verified. Projects with similar names exist (for example "Setu"). Check under your own account; nothing here claims the name is available or safe as a trademark. |
-| **Public or private** | Open | The repository contains machine details (CPU model, Windows build, Docker version) in `results/campaign_*.json` and the manifests. Personal details found by the §2 review are listed in the two rows below. |
-| **E-mail in commit history** | Open | All commits are authored as `Parv Agarwal <parv.nlpiitp@gmail.com>`, and an older version of `scripts/verify_references.py` contained the same address (now read from `SETU_CROSSREF_MAILTO`). Pushing publishes that address. Options: accept it; or, before the first push, rewrite history to a GitHub `noreply` address (changes every commit hash; the commit `bfe122c` recorded in the Phase 8 results would then no longer exist under that name, so this needs a note in `docs/findings.md`). |
-| **Windows user name in evidence** | Noted | `docs/evidence/verify_windows.log` shows temp paths under `C:\Users\HP\…`. That is a generic account name. The log is kept unedited because it is evidence. |
-| **Affiliation wording** | Set | README: "Independent mini-project, not an officially endorsed IIT Patna project." Keep it if the repository is public. |
+| Decision | Outcome |
+|---|---|
+| License | Apache-2.0 for code (`LICENSE`, `NOTICE`); CC BY 4.0 for documentation, figures, presentation and results (`LICENSES/CC-BY-4.0.txt`). Texts copied unmodified from the SPDX license list (spdx/license-list-data, commit `31ba1a5`) |
+| Repository | `https://github.com/Parv-01/setu-x`, created by Parv. This confirms only that the GitHub name was free under his account; it is not a trademark check |
+| E-mail in commit history | Accepted as is. Commits from 2026-10-26 onwards use parvagarwal9759@gmail.com |
+| Windows user name in evidence | `docs/evidence/verify_windows.log` shows `C:\Users\HP\…` (a generic account name); kept unedited as evidence |
+| Affiliation wording | "Independent mini-project, not an officially endorsed IIT Patna project." |
+| Push | Authorised by Parv on 2026-10-26 |
 
 ## 2. Pre-push checks (run from the repository root)
 

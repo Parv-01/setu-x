@@ -6,6 +6,10 @@ authors:
   - family-names: Agarwal
     given-names: Parv
 version: 0.6.0
+license:
+  - Apache-2.0
+  - CC-BY-4.0
+repository-code: "https://github.com/Parv-01/setu-x"
 abstract: >-
   A Docker-first microservices testbed with a gateway, replicated services, simulated
   AWS/Azure/GCP environment labels, bounded fault injection, retries, timeouts, circuit

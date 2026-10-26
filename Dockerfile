@@ -14,7 +14,7 @@ WORKDIR /app
 
 # ---- builder: resolve and build wheels once (runtime + dev extras) -------------------------
 FROM base AS builder
-COPY pyproject.toml README.md ./
+COPY pyproject.toml README.md LICENSE NOTICE ./
 COPY requirements ./requirements
 COPY src ./src
 # Optional build secret "pip_ca": a CA bundle for networks with a TLS-intercepting proxy

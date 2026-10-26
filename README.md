@@ -1,5 +1,7 @@
 # SETU-X
 
+[![ci](https://github.com/Parv-01/setu-x/actions/workflows/ci.yml/badge.svg)](https://github.com/Parv-01/setu-x/actions/workflows/ci.yml) · Repository: <https://github.com/Parv-01/setu-x> · License: Apache-2.0 (code), CC BY 4.0 (docs and results)
+
 **S**ervice portability · **E**xperimentation · **T**esting · **U**nified orchestration · **X** cross-environment execution and evaluation
 
 *Setu* is Sanskrit for "bridge". The expansion is a project-specific backronym, not a Sanskrit phrase.
@@ -70,4 +72,7 @@ pwsh -ExecutionPolicy Bypass -File scripts/verify.ps1            # Phase 7: ever
 
 ## License
 
-Not yet chosen: this is the author's decision (options in [`docs/release_checklist.md`](docs/release_checklist.md)). Until then, all rights reserved by the author.
+- **Code** (`src/`, `scripts/`, `dashboard/`, `tests/`, `configs/`, `Dockerfile`, `compose.yaml`, `Makefile`, `.github/`): [Apache License 2.0](LICENSE). See also [`NOTICE`](NOTICE).
+- **Documentation, figures, presentation and experiment results** (`docs/`, `presentation/`, `results/`, this README's text): [Creative Commons Attribution 4.0 International](LICENSES/CC-BY-4.0.txt).
+
+Copyright 2026 Parv Agarwal. Independent mini-project, not an officially endorsed IIT Patna project.
